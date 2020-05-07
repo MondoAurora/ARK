@@ -1,0 +1,2 @@
+This is the root of all work directories of any system, organized by vendors.
+It is under Forge root because the same system can have multiple applications (like a Java server and C++ clients) sharing the same work directory to keep temporal configurations or communication queues.
