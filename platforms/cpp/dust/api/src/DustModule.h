@@ -3,17 +3,24 @@
 
 #include "DustApi.h"
 
-extern "C" class DustModuleConnector : public DustNativeLogic {
+extern "C" class DustModuleConnector: public DustNativeLogic {
 
 public:
-	virtual ~DustModuleConnector() {};
+	virtual ~DustModuleConnector() {
+	}
+	;
 
 	virtual DustEntity getMetaUnit(const char* name) = 0;
 	virtual DustEntity getMetaEntity(DustEntity primaryType, const char* name, DustEntity parent, DustEntity constId = DUST_ENTITY_INVALID) = 0;
 };
 
+class DustRuntime;
 
-class DustModule : public DustNativeLogic {
+extern "C" class DustModule: public DustNativeLogic {
+	static DustRuntime* apiRuntime;
+
+	friend class DustData;
+
 public:
 	virtual ~DustModule() {
 	}

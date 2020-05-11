@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="Workspace">
+		<Project filename="../../platforms/cpp/dust/api/ide/CodeBlocks/DustLibApi.cbp" />
+		<Project filename="../../platforms/cpp/dust/main/ide/CodeBlocks/DustLibMain.cbp">
+			<Depends filename="../../platforms/cpp/dust/api/ide/CodeBlocks/DustLibApi.cbp" />
+		</Project>
+		<Project filename="../../platforms/cpp/modules/vendors/dust/Text/ide/CodeBlocks/DustModText.cbp" />
+		<Project filename="../../platforms/cpp/modules/vendors/dust/DplStl/ide/CodeBlocks/DustModDplStl.cbp">
+			<Depends filename="../../platforms/cpp/dust/api/ide/CodeBlocks/DustLibApi.cbp" />
+		</Project>
+		<Project filename="../../platforms/cpp/modules/vendors/dust/Test01/ide/CodeBlocks/DustModTest01.cbp">
+			<Depends filename="../../platforms/cpp/dust/api/ide/CodeBlocks/DustLibApi.cbp" />
+		</Project>
+		<Project filename="../../platforms/cpp/systems/vendors/dust/test01/ide/CodeBlocks/Main/DustAppTest01Main.cbp">
+			<Depends filename="../../platforms/cpp/dust/main/ide/CodeBlocks/DustLibMain.cbp" />
+			<Depends filename="../../platforms/cpp/dust/api/ide/CodeBlocks/DustLibApi.cbp" />
+			<Depends filename="../../platforms/cpp/modules/vendors/dust/DplStl/ide/CodeBlocks/DustModDplStl.cbp" />
+			<Depends filename="../../platforms/cpp/modules/vendors/dust/Test01/ide/CodeBlocks/DustModTest01.cbp" />
+			<Depends filename="../../platforms/cpp/modules/vendors/dust/Text/ide/CodeBlocks/DustModText.cbp" />
+		</Project>
+	</Workspace>
+</CodeBlocks_workspace_file>

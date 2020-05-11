@@ -8,7 +8,6 @@ extern "C" void initModule(DustRuntime *pRuntime) {
 	}
 }
 
-
 DustEntity DustData::getEntityByPath(DustEntity ctx, ...) {
 	DustEntity e = ctx;
 //
@@ -61,7 +60,8 @@ DustEntity DustData::createEntity(DustEntity primaryType) {
 int DustData::getInt(DustEntity entity, DustEntity token, int defValue) {
 	return apiRuntime->getInt(entity, token, defValue);
 }
-double DustData::getDouble(DustEntity entity, DustEntity token, double defValue) {
+double DustData::getDouble(DustEntity entity, DustEntity token,
+		double defValue) {
 	return apiRuntime->getDouble(entity, token, defValue);
 }
 void DustData::setInt(DustEntity entity, DustEntity token, int val) {
@@ -71,7 +71,7 @@ void DustData::setDouble(DustEntity entity, DustEntity token, double val) {
 	apiRuntime->setDouble(entity, token, val);
 }
 
-unsigned int DustData::getRefCount(DustEntity entity, DustEntity token)  {
+unsigned int DustData::getRefCount(DustEntity entity, DustEntity token) {
 	return apiRuntime->getRefCount(entity, token);
 }
 DustEntity DustData::getRefKey(DustEntity entity, DustEntity token, int idx) {

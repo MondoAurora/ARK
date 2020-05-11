@@ -1,4 +1,5 @@
 #include <DustRuntime.h>
+#include "DustMain.h"
 
 #include <iostream>
 
@@ -52,6 +53,7 @@ class DustMainModule {
 
 	DustMainModule(const char* n)
 	: name(n) {
+//		name.append(MODULE_EXT).insert(0, "lib");
 		name.append(MODULE_EXT);
 		hLib = MyLoadLib(name.c_str());
 		getModule_t gm = (getModule_t) MyLoadProc(hLib, DUST_FNAME_GET_MODULE);
@@ -66,34 +68,59 @@ class DustMainModule {
 
 	void initModule(DustRuntime* pR) {
 		initModule_t im = (initModule_t) MyLoadProc(hLib, DUST_FNAME_INIT_MODULE);
-		im(pR);
+
+		if ( im ) {
+			im(pR);
+		} else {
+			cout << "ERROR missing " << DUST_FNAME_INIT_MODULE << " in module " << name << endl;
+		}
+//		pModule->initModule(pR);
+
+		pModule->DustResourceInit();
 	}
 
 	friend class DustMainApp;
 };
 
-extern "C" class DustMainApp : public DustRuntimeConnector {
-	static DustMainApp theApp;
+typedef map<string, DustMainModule*>::iterator ModuleIterator;
 
+
+extern "C" class DustMainApp : public DustRuntimeConnector {
 	map<DustEntity, DustModule*> modByType;
 	map<string, DustMainModule*> modByName;
 
-	DustRuntime *pRuntime = 0;
+	DustTextDictionary *pMainDict;
+	DustRuntime *pRuntime;
+
+	DustMainApp() : pMainDict(0), pRuntime(0) {}
 
 	~DustMainApp() {
+		for (ModuleIterator it = modByName.begin(); it != modByName.end(); ++it) {
+			delete it->second;
+		}
 	}
 
 	virtual void loadModule(const char* name) {
-		string n = name;
+		loadModule(name, false);
+	}
 
-		if ( !mapContains(modByName, n) ) {
-			DustMainModule *pmm = new DustMainModule(name);
+	virtual DustModule* loadModule(const char* name, bool boot) {
+		string n = name;
+		DustMainModule *pmm = mapOptGet(modByName, n);
+
+		if ( !pmm ) {
+			pmm = new DustMainModule(name);
 			modByName[n] = pmm;
 
-			if ( pRuntime ) {
+			if ( !boot ) {
 				pmm->initModule(pRuntime);
 			}
 		}
+
+		return pmm->pModule;
+	}
+
+	virtual void initModule() {
 	}
 
 	virtual DustEntity getTextToken(const char* name) {
@@ -113,17 +140,35 @@ extern "C" class DustMainApp : public DustRuntimeConnector {
 	}
 
 public:
-	static void loadMod(const char* mod) {
-		theApp.loadModule(mod);
+	static DustMainApp theApp;
+
+	void boot(int argc, char **argv) {
+		for ( int i = 1; i < argc; ++i ) {
+			DustModule *pMod = loadModule(argv[i], true);
+
+			if ( !pRuntime ) {
+				pRuntime = (DustRuntime*) pMod->createNative(DUST_BOOT_RUNTIME);
+			}
+			if ( !pMainDict) {
+				pMainDict = (DustTextDictionary*) pMod->createNative(DUST_BOOT_DICTIONARY);
+			}
+		}
+
+		for (ModuleIterator it = modByName.begin(); it != modByName.end(); ++it) {
+			it->second->initModule(pRuntime);
+		}
 	}
 };
 
 DustMainApp DustMainApp::theApp;
 
-int main(int argc, char **argv) {
-	DustMainApp::loadMod("libDustModTest01");
-
-	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
-
-	return 0;
+extern "C" void bootDust(int moduleCount, char **moduleNames) {
+	DustMainApp::theApp.boot(moduleCount, moduleNames);
 }
+
+//int main(int argc, char **argv) {
+//
+//	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
+//
+//	return 0;
+//}
