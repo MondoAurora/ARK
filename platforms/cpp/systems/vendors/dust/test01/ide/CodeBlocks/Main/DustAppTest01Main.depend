@@ -1,7 +1,10 @@
 # depslib dependency file v1.0
-1589191165 source:a:\platforms\cpp\systems\vendors\dust\test01\src\dustgenappmain.cpp
+1589215165 source:a:\platforms\cpp\systems\vendors\dust\test01\src\dustgenappmain.cpp
 	<DustMain.h>
+	<DustApi.h>
 	<iostream>
 
 1589190797 a:\platforms\cpp\dust\main\src\dustmain.h
+
+1588863354 a:\platforms\cpp\dust\api\src\dustapi.h
 

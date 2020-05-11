@@ -11,6 +11,8 @@
 #include <DustRuntime.h>
 
 extern "C" class DplStlRuntime: public DustRuntime {
+    DustRuntimeConnector* pRTC;
+
 public:
 	virtual ~DplStlRuntime();
 

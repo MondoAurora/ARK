@@ -14,6 +14,9 @@ public:
 
 	virtual DustProcessResult DustResourceInit() {
 		cout << "DustModText::DustResourceInit" << endl;
+
+		DustData::setInt(0,0,333);
+
 		return DUST_PROCESS_ACCEPT;
 	}
 
