@@ -1,35 +1,18 @@
 #ifndef DUSTAPI_H_
 #define DUSTAPI_H_
 
-typedef int DustEntity;
+typedef long DustEntity;
 
 #define DUST_REFKEY_ARR_APPEND -1
+#define DUST_ENTITY_INVALID 0
 
-enum DustTokenType {
-	DUST_ENTITY_INVALID = 0,
-	DUST_ENTITY_TRUE,
-	DUST_ENTITY_FALSE,
-
-	DUST_TOKEN_UNIT,
-	DUST_TOKEN_TYPE,
-	DUST_TOKEN_AGENT,
-	DUST_TOKEN_CONST,
-	DUST_TOKEN_TAG,
-
-	DUST_TOKEN_VAL_INT,
-	DUST_TOKEN_VAL_DOUBLE,
-	DUST_TOKEN_VAL_REF,
-
-	DUST_TOKEN_COLL_SET,
-	DUST_TOKEN_COLL_ARR,
-	DUST_TOKEN_COLL_MAP,
-
-	DUST_TOKEN_
-};
+#define mapContains(m, k) (m.find( k ) != m.end())
+#define mapOptGet(m, k) (((m).find( k ) != (m).end()) ? (m)[k] : NULL)
+#define mapOptGetDef(m, k, def) (((m).find( k ) != (m).end()) ? (m)[k] : (def))
 
 enum DustProcessResult {
 	DUST_PROCESS_NOTIMPLEMENTED = DUST_ENTITY_INVALID,
-	DUST_PROCESS_REJECT = DUST_TOKEN_,
+	DUST_PROCESS_REJECT,
 	DUST_PROCESS_ACCEPT_PASS,
 	DUST_PROCESS_ACCEPT,
 	DUST_PROCESS_ACCEPT_READ,
@@ -44,13 +27,34 @@ enum DustChange {
 	DUST_CHG_
 };
 
-enum DustBoot {
-	DUST_BOOT_DICTIONARY = DUST_CHG_,
-	DUST_BOOT_RUNTIME,
-	DUST_BOOT_
+enum DustIdeaType {
+	DUST_IDEA_UNIT = DUST_CHG_,
+	DUST_IDEA_TYPE,
+	DUST_IDEA_AGENT,
+	DUST_IDEA_CONST,
+	DUST_IDEA_TAG,
+
+	DUST_IDEA_
 };
 
-#define DUST_LAST_CONST DUST_BOOT_
+enum DustValType {
+	DUST_VAL_INT = DUST_IDEA_,
+	DUST_VAL_DOUBLE,
+	DUST_VAL_REF,
+
+	DUST_VAL_
+};
+
+enum DustCollType {
+	DUST_COLL_SINGLE = DUST_ENTITY_INVALID,
+	DUST_COLL_SET = DUST_VAL_,
+	DUST_COLL_ARR,
+	DUST_COLL_MAP,
+
+	DUST_COLL_
+};
+
+#define DUST_LAST_CONST_API DUST_COLL_
 
 extern "C" class DustNativeResource {
 public:
@@ -78,6 +82,13 @@ extern "C" class DustNativeLogic: public DustNativeResource, public DustNativeAc
 public:
 	virtual ~DustNativeLogic() {
 	}
+};
+
+class DustMeta {
+public:
+   	static DustEntity getUnit(const char* name);
+	static DustEntity getIdeaEntity(DustEntity unit, const char* name, DustIdeaType ideaType, DustEntity constId = DUST_ENTITY_INVALID);
+	static DustEntity getMemberEntity(DustEntity type, const char* name, DustValType valType, DustCollType collType = DUST_COLL_SINGLE, DustEntity constId = DUST_ENTITY_INVALID);
 };
 
 class DustData {

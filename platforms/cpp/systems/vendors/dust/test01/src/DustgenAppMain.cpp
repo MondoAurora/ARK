@@ -7,7 +7,7 @@ using namespace std;
 
 int main(int argc, char **argv) {
 
-	cout << "calling bootDust..." << endl; // prints !!!Hello World!!!
+	cout << "calling bootDust..." << endl;
 
 	bootDust(argc, argv);
 
@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 	pl->DustActionExecute();
 	}
 
-	cout << "Success." << endl; // prints !!!Hello World!!!
+	cout << "Success." << endl;
 
 	return 0;
 }

@@ -12,6 +12,8 @@
 				<Option object_output="../obj/Debug/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
+				<Option host_application="A:/platforms/cpp/bin/Debug/DustAppTest01Main.exe" />
+				<Option run_host_application_in_terminal="0" />
 				<Option createDefFile="1" />
 				<Compiler>
 					<Add option="-Wall" />

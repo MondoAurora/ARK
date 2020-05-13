@@ -2,14 +2,34 @@
 
 DustRuntime *apiRuntime = 0;
 
-extern "C" void initModule(DustRuntime *pRuntime) {
-	if (!apiRuntime) {
-		apiRuntime = pRuntime;
-	}
+extern "C" void initModule(DustRuntime *pRuntime)
+{
+    if (!apiRuntime)
+    {
+        apiRuntime = pRuntime;
+    }
 }
 
-DustEntity DustData::getEntityByPath(DustEntity ctx, ...) {
-	DustEntity e = ctx;
+
+DustEntity DustMeta::getUnit(const char* name)
+{
+    return apiRuntime->getUnit(name);
+}
+
+DustEntity DustMeta::getIdeaEntity(DustEntity unit, const char* name, DustIdeaType ideaType, DustEntity constId)
+{
+    return apiRuntime->getIdeaEntity(unit, name, ideaType, constId);
+}
+
+DustEntity DustMeta::getMemberEntity(DustEntity type, const char* name, DustValType valType, DustCollType collType, DustEntity constId)
+{
+    return apiRuntime->getMemberEntity(type, name, valType, collType, constId);
+}
+
+
+DustEntity DustData::getEntityByPath(DustEntity ctx, ...)
+{
+    DustEntity e = ctx;
 //
 //	DustProdLightRef *pR = NULL;
 //
@@ -51,41 +71,51 @@ DustEntity DustData::getEntityByPath(DustEntity ctx, ...) {
 //
 //	va_end(args);
 
-	return e;
+    return e;
 }
-DustEntity DustData::createEntity(DustEntity primaryType) {
-	return apiRuntime->createEntity(primaryType);
+DustEntity DustData::createEntity(DustEntity primaryType)
+{
+    return apiRuntime->createEntity(primaryType);
 }
 
-int DustData::getInt(DustEntity entity, DustEntity token, int defValue) {
-	return apiRuntime->getInt(entity, token, defValue);
+int DustData::getInt(DustEntity entity, DustEntity token, int defValue)
+{
+    return apiRuntime->getInt(entity, token, defValue);
 }
 double DustData::getDouble(DustEntity entity, DustEntity token,
-		double defValue) {
-	return apiRuntime->getDouble(entity, token, defValue);
+                           double defValue)
+{
+    return apiRuntime->getDouble(entity, token, defValue);
 }
-void DustData::setInt(DustEntity entity, DustEntity token, int val) {
-	apiRuntime->setInt(entity, token, val);
+void DustData::setInt(DustEntity entity, DustEntity token, int val)
+{
+    apiRuntime->setInt(entity, token, val);
 }
-void DustData::setDouble(DustEntity entity, DustEntity token, double val) {
-	apiRuntime->setDouble(entity, token, val);
+void DustData::setDouble(DustEntity entity, DustEntity token, double val)
+{
+    apiRuntime->setDouble(entity, token, val);
 }
 
-unsigned int DustData::getRefCount(DustEntity entity, DustEntity token) {
-	return apiRuntime->getRefCount(entity, token);
+unsigned int DustData::getRefCount(DustEntity entity, DustEntity token)
+{
+    return apiRuntime->getRefCount(entity, token);
 }
-DustEntity DustData::getRefKey(DustEntity entity, DustEntity token, int idx) {
-	return apiRuntime->getRefKey(entity, token, idx);
+DustEntity DustData::getRefKey(DustEntity entity, DustEntity token, int idx)
+{
+    return apiRuntime->getRefKey(entity, token, idx);
 }
-DustEntity DustData::getRef(DustEntity entity, DustEntity token, int key) {
-	return apiRuntime->getRef(entity, token, key);
+DustEntity DustData::getRef(DustEntity entity, DustEntity token, int key)
+{
+    return apiRuntime->getRef(entity, token, key);
 }
 
 bool DustData::setRef(DustEntity entity, DustEntity token, DustEntity target,
-		int key) {
-	return apiRuntime->setRef(entity, token, target, key);
+                      int key)
+{
+    return apiRuntime->setRef(entity, token, target, key);
 }
 
-void* DustData::getNative(DustEntity entity, DustEntity type) {
-	return apiRuntime->getNative(entity, type);
+void* DustData::getNative(DustEntity entity, DustEntity type)
+{
+    return apiRuntime->getNative(entity, type);
 }

@@ -45,10 +45,6 @@ void* MyLoadProc(my_lib_t hMyLib, const char* szMyProc)
 # endif //_WIN32
 }
 
-
-#define mapContains(m, k) (m.find( k ) != m.end())
-#define mapOptGet(m, k) (((m).find( k ) != (m).end()) ? (m)[k] : NULL)
-
 class DustMainModule
 {
     string name;
@@ -79,6 +75,7 @@ class DustMainModule
         if ( im )
         {
             im(pR);
+            cout << DUST_FNAME_INIT_MODULE << " called in module " << name << endl;
         }
         else
         {
@@ -140,9 +137,9 @@ extern "C" class DustMainApp : public DustRuntimeConnector
     {
     }
 
-    virtual DustEntity getTextToken(const char* name)
+    virtual DustEntity getTextToken(DustEntity parent, const char* name)
     {
-        return 0;
+        return pMainDict->getTextToken(parent, name);
     }
 
     virtual DustModule* getModuleForType(DustEntity type)
@@ -170,16 +167,6 @@ extern "C" class DustMainApp : public DustRuntimeConnector
         return pm;
     }
 
-    virtual DustEntity getMetaUnit(const char* name)
-    {
-        return pRuntime->getMetaUnit(name);
-    }
-
-    virtual DustEntity getMetaEntity(DustEntity primaryType, const char* name, DustEntity parent, DustEntity constId = DUST_ENTITY_INVALID)
-    {
-        return pRuntime->getMetaEntity(primaryType, name, parent, constId);
-    }
-
 public:
     static DustMainApp theApp;
 
@@ -191,19 +178,19 @@ public:
 
             if ( !pRuntime )
             {
-                pRuntime = (DustRuntime*) pMod->createNative(DUST_BOOT_RUNTIME);
+                pRuntime = (DustRuntime*) pMod->createNative(DUST_BOOT_AGENT_RUNTIME);
                 if ( pRuntime )
                 {
-                    modByType[DUST_BOOT_RUNTIME] = pMod;
+                    modByType[DUST_BOOT_AGENT_RUNTIME] = pMod;
                     pRuntime->setConnector(this);
                 }
             }
             if ( !pMainDict)
             {
-                pMainDict = (DustTextDictionary*) pMod->createNative(DUST_BOOT_DICTIONARY);
+                pMainDict = (DustTextDictionary*) pMod->createNative(DUST_BOOT_AGENT_DICTIONARY);
                 if ( pMainDict )
                 {
-                    modByType[DUST_BOOT_DICTIONARY] = pMod;
+                    modByType[DUST_BOOT_AGENT_DICTIONARY] = pMod;
                 }
             }
         }

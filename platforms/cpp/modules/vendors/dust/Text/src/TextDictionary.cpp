@@ -1,12 +1,12 @@
 #include "Text.h"
 
-#include <iostream>
+#include <map>
 
 using namespace std;
 
 TextDictionary::~TextDictionary() {};
 
-DustEntity TextDictionary::getTextToken(const char* name)
+DustEntity TextDictionary::getTextToken(DustEntity txtParent, const char* name)
 {
     DustData::setInt(0, 0, 333);
     return 1;

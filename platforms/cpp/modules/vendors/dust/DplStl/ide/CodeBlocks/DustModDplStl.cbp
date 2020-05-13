@@ -47,8 +47,12 @@
 			<Add library="$(#ark_debug.LIB)/libDustLibApi.a" />
 		</Linker>
 		<Unit filename="../../src/DplStl.h" />
+		<Unit filename="../../src/DplStlData.cpp" />
+		<Unit filename="../../src/DplStlData.h" />
 		<Unit filename="../../src/DplStlRuntime.cpp" />
+		<Unit filename="../../src/DplStlRuntime.h" />
 		<Unit filename="../../src/DustgenModDplStl.cpp" />
+		<Unit filename="../../src/DustgenModDplStl.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

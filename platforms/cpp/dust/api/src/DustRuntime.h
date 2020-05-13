@@ -6,33 +6,40 @@
 #define DUST_FNAME_GET_MODULE "getModule"
 #define DUST_FNAME_INIT_MODULE "initModule"
 
-extern "C" class DustRuntimeConnector: public DustModuleConnector {
-public:
-	virtual ~DustRuntimeConnector() {
-	}
-
-	virtual DustEntity getTextToken(const char* name) = 0;
-	virtual void loadModule(const char* name) = 0;
-	virtual DustModule* getModuleForType(DustEntity type) = 0;
+enum DustBoot {
+	DUST_BOOT_AGENT_RUNTIME = DUST_LAST_CONST_MODULE,
+	DUST_BOOT_AGENT_DICTIONARY,
+	DUST_BOOT_TYPE_PLAINTEXT,
+	DUST_BOOT_REF_GLOBALID,
+	DUST_BOOT_
 };
+
+#define DUST_LAST_CONST_RUNTIME DUST_BOOT_
 
 extern "C" class DustTextDictionary: public DustNativeLogic {
 public:
 	virtual ~DustTextDictionary() {
 	}
 
-	virtual DustEntity getTextToken(const char* name) = 0;
+	virtual DustEntity getTextToken(DustEntity txtParent, const char* name) = 0;
 };
 
-extern "C" class DustRuntime: public DustNativeLogic {
+extern "C" class DustRuntimeConnector: public DustTextDictionary {
+public:
+	virtual ~DustRuntimeConnector() {
+	}
+
+	virtual DustEntity getTextToken(DustEntity txtParent, const char* name) = 0;
+	virtual void loadModule(const char* name) = 0;
+	virtual DustModule* getModuleForType(DustEntity type) = 0;
+};
+
+extern "C" class DustRuntime: public DustModuleConnector {
 public:
 	virtual ~DustRuntime() {
 	}
 
 	virtual void setConnector(DustRuntimeConnector* pConn) = 0;
-
-	virtual DustEntity getMetaUnit(const char* name) = 0;
-	virtual DustEntity getMetaEntity(DustEntity primaryType, const char* name, DustEntity parent, DustEntity constId = DUST_ENTITY_INVALID) = 0;
 
 	virtual DustEntity createEntity(DustEntity primaryType) = 0;
 

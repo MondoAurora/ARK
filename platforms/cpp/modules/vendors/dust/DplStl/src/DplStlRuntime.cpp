@@ -6,6 +6,12 @@ using namespace std;
 
 int ival = 0;
 
+
+DplStlRuntime::DplStlRuntime()
+:store(DUST_LAST_CONST_RUNTIME)
+{
+}
+
 DplStlRuntime::~DplStlRuntime()
 {
 }
@@ -15,15 +21,34 @@ void DplStlRuntime::setConnector(DustRuntimeConnector* pConn)
     pRTC = pConn;
 }
 
-DustEntity DplStlRuntime::getMetaUnit(const char* name)
+DustEntity DplStlRuntime::optGetMetaEntity(DustEntity parent,  const char* name)
+{
+    DustEntity txtToken = pRTC->getTextToken(0, name);
+    return mapOptGetDef(globalEntites, txtToken, DUST_ENTITY_INVALID);
+}
+
+DustEntity DplStlRuntime::getUnit(const char* name) {
+    DustEntity unit = optGetMetaEntity(0, name);
+
+    if ( !unit ) {
+
+    }
+
+    return unit;
+}
+
+DustEntity DplStlRuntime::getIdeaEntity(DustEntity unit, const char* name, DustIdeaType ideaType, DustEntity constId)
 {
     return DUST_ENTITY_INVALID;
 }
 
-DustEntity DplStlRuntime::getMetaEntity(DustEntity primaryType, const char* name, DustEntity parent, DustEntity constId)
+DustEntity DplStlRuntime::getMemberEntity(DustEntity type, const char* name, DustValType valType, DustCollType collType, DustEntity constId)
 {
     return DUST_ENTITY_INVALID;
 }
+
+
+
 
 DustEntity DplStlRuntime::createEntity(DustEntity primaryType)
 {
@@ -78,10 +103,11 @@ void* DplStlRuntime::getNative(DustEntity entity, DustEntity type)
     return pMod ? pMod->createNative(type) : NULL;
 }
 
+
+
+
 DustProcessResult DplStlRuntime::DustResourceInit()
 {
-        DustData::setInt(0, 0, 333);
-
     return DUST_PROCESS_ACCEPT;
 }
 DustProcessResult DplStlRuntime::DustResourceRelease()

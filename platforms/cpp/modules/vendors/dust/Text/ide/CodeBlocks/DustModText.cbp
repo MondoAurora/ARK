@@ -42,11 +42,14 @@
 		</Build>
 		<Compiler>
 			<Add directory="$(#ark_debug.INCLUDE)" />
+			<Add directory="$(#ark_debug.BASE)/units" />
 		</Compiler>
 		<Linker>
 			<Add library="$(#ark_debug.LIB)/libDustLibApi.a" />
 		</Linker>
+		<Unit filename="../../../../../../units/MiND/DustgenUnitMindText.h" />
 		<Unit filename="../../src/DustgenModText.cpp" />
+		<Unit filename="../../src/DustgenModText.h" />
 		<Unit filename="../../src/Text.h" />
 		<Unit filename="../../src/TextDictionary.cpp" />
 		<Extensions>

@@ -3,6 +3,8 @@
 
 #include "DustApi.h"
 
+#define DUST_LAST_CONST_MODULE DUST_LAST_CONST_API
+
 extern "C" class DustModuleConnector: public DustNativeLogic {
 
 public:
@@ -10,8 +12,9 @@ public:
 	}
 	;
 
-	virtual DustEntity getMetaUnit(const char* name) = 0;
-	virtual DustEntity getMetaEntity(DustEntity primaryType, const char* name, DustEntity parent, DustEntity constId = DUST_ENTITY_INVALID) = 0;
+	virtual DustEntity getUnit(const char* name) = 0;
+	virtual DustEntity getIdeaEntity(DustEntity unit, const char* name, DustIdeaType ideaType, DustEntity constId = DUST_ENTITY_INVALID) = 0;
+	virtual DustEntity getMemberEntity(DustEntity type, const char* name, DustValType valType, DustCollType collType = DUST_COLL_SINGLE, DustEntity constId = DUST_ENTITY_INVALID) = 0;
 };
 
 class DustRuntime;
