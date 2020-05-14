@@ -9,6 +9,7 @@
 using namespace std;
 
 class DplStlDataRef;
+class DplStlDataStore;
 
 union DplStlDataValue {
     long valLong;
@@ -41,12 +42,18 @@ public:
 };
 
 class DplStlDataEntity {
+    const DplStlDataStore *pStore;
+    const long id;
+    const DustEntity primaryType;
+
     map<DustEntity, DplStlDataVariant*> model;
     map<DustEntity, void*> native;
 
 public:
-    DplStlDataEntity();
+    DplStlDataEntity(DplStlDataStore *pStore_, long id_, DustEntity primaryType_);
     ~DplStlDataEntity();
+
+    friend class DplStlRuntime;
 };
 
 class DplStlDataStore {
@@ -59,7 +66,7 @@ public:
     DplStlDataStore(long nextId_);
     ~DplStlDataStore();
 
-    DplStlDataEntity* createEntity(DustEntity primaryType, DustEntity eGlobalId, DustEntity requiredId = DUST_ENTITY_INVALID);
+    DplStlDataEntity* getEntity(long id = DUST_ENTITY_APPEND, DustEntity primaryType = DUST_ENTITY_INVALID);
 };
 
 #endif // DPLSTLDATA_H_INCLUDED

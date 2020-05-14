@@ -11,6 +11,18 @@ extern "C" void initModule(DustRuntime *pRuntime)
 }
 
 
+    DustToken::operator DustEntity() {
+        if ( DUST_ENTITY_APPEND == entity ) {
+            entity = DustMeta::getTokenEntity(this);
+        }
+        return entity;
+    }
+
+
+DustEntity DustMeta::getTokenEntity(DustToken* pToken) {
+    return apiRuntime->getUnit(pToken->name);
+}
+
 DustEntity DustMeta::getUnit(const char* name)
 {
     return apiRuntime->getUnit(name);

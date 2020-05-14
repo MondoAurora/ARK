@@ -2,10 +2,16 @@
 #define SRC_TEXT_H_
 
 #include <DustRuntime.h>
-
 #include <MiND/DustgenUnitMindText.h>
 
+#include <map>
+#include <string>
+
+using namespace std;
+
 extern "C" class TextDictionary : public DustTextDictionary {
+    map<string, DustEntity> words;
+
 public:
 	virtual ~TextDictionary();
 

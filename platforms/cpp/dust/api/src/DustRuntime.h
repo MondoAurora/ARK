@@ -10,6 +10,8 @@ enum DustBoot {
 	DUST_BOOT_AGENT_RUNTIME = DUST_LAST_CONST_MODULE,
 	DUST_BOOT_AGENT_DICTIONARY,
 	DUST_BOOT_TYPE_PLAINTEXT,
+	DUST_BOOT_TYPE_UNIT,
+	DUST_BOOT_TYPE_MEMBER,
 	DUST_BOOT_REF_GLOBALID,
 	DUST_BOOT_
 };
@@ -53,9 +55,9 @@ public:
 // Entity reference access
 	virtual unsigned int getRefCount(DustEntity entity, DustEntity token) = 0;
 	virtual DustEntity getRefKey(DustEntity entity, DustEntity token, int idx) = 0;
-	virtual DustEntity getRef(DustEntity entity, DustEntity token, int key = DUST_REFKEY_ARR_APPEND) = 0;
+	virtual DustEntity getRef(DustEntity entity, DustEntity token, int key = DUST_ENTITY_APPEND) = 0;
 
-	virtual bool setRef(DustEntity entity, DustEntity token, DustEntity target, int key = DUST_REFKEY_ARR_APPEND) = 0;
+	virtual bool setRef(DustEntity entity, DustEntity token, DustEntity target, int key = DUST_ENTITY_APPEND) = 0;
 
 // Entity native content access
 	virtual void* getNative(DustEntity entity, DustEntity type) = 0;
