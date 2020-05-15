@@ -2,13 +2,14 @@
 
 #include <iostream>
 
+
 using namespace std;
 
 int ival = 0;
 
 
 DplStlRuntime::DplStlRuntime()
-:store(DUST_LAST_CONST_RUNTIME)
+    :store(DUST_LAST_CONST_RUNTIME)
 {
 }
 
@@ -19,6 +20,22 @@ DplStlRuntime::~DplStlRuntime()
 void DplStlRuntime::setConnector(DustRuntimeConnector* pConn)
 {
     pRTC = pConn;
+}
+
+DustProcessResult DplStlRuntime::DustResourceInit()
+{
+    cout << "Booting runtime" << endl;
+
+    setBootToken(DustUnitMindText::DustUnitText, DUST_BOOT_UNIT_TEXT);
+
+    DustEntity e = DustUnitMindText::DustTypePlainText;
+
+    return DUST_PROCESS_ACCEPT;
+}
+
+DustProcessResult DplStlRuntime::DustResourceRelease()
+{
+    return DUST_PROCESS_ACCEPT;
 }
 
 DustEntity DplStlRuntime::getToken(DustEntity parent,  const char* name)
@@ -37,13 +54,15 @@ DplStlDataEntity* DplStlRuntime::registerGlobalEntity(DustEntity txtToken, DustE
     return pEntity;
 }
 
-DustEntity DplStlRuntime::getUnit(const char* name) {
+DustEntity DplStlRuntime::getUnit(const char* name, DustEntity constId)
+{
     DustEntity txtToken = getToken(0, name);
     DustEntity unit = findEntity(globalEntites, txtToken);
 
-    if ( !unit ) {
-            DplStlDataEntity* pEntity = registerGlobalEntity(txtToken, DUST_BOOT_TYPE_UNIT);
-            unit = pEntity->id;
+    if ( !unit )
+    {
+        DplStlDataEntity* pEntity = registerGlobalEntity(txtToken, DUST_IDEA_UNIT, DUST_ENTITY_INVALID, constId);
+        unit = pEntity->id;
     }
 
     return unit;
@@ -54,9 +73,10 @@ DustEntity DplStlRuntime::getIdeaEntity(DustEntity unit, const char* name, DustI
     DustEntity txtToken = getToken(unit, name);
     DustEntity idea = findEntity(globalEntites, txtToken);
 
-    if ( !idea ) {
-            DplStlDataEntity* pEntity = registerGlobalEntity(txtToken, ideaType, unit, constId);
-            idea = pEntity->id;
+    if ( !idea )
+    {
+        DplStlDataEntity* pEntity = registerGlobalEntity(txtToken, ideaType, unit, constId);
+        idea = pEntity->id;
     }
 
     return idea;
@@ -67,9 +87,10 @@ DustEntity DplStlRuntime::getMemberEntity(DustEntity type, const char* name, Dus
     DustEntity txtToken = getToken(type, name);
     DustEntity member = findEntity(globalEntites, txtToken);
 
-    if ( !member ) {
-            DplStlDataEntity* pEntity = registerGlobalEntity(txtToken, DUST_BOOT_TYPE_MEMBER, type, constId);
-            member = pEntity->id;
+    if ( !member )
+    {
+        DplStlDataEntity* pEntity = registerGlobalEntity(txtToken, DUST_IDEA_MEMBER, type, constId);
+        member = pEntity->id;
     }
 
     return member;
@@ -77,7 +98,8 @@ DustEntity DplStlRuntime::getMemberEntity(DustEntity type, const char* name, Dus
 
 
 
-DplStlDataEntity* DplStlRuntime::resolveEntity(DustEntity entity) {
+DplStlDataEntity* DplStlRuntime::resolveEntity(DustEntity entity)
+{
     return store.getEntity(entity);
 }
 
@@ -133,30 +155,21 @@ void* DplStlRuntime::getNative(DustEntity entity, DustEntity type)
     DplStlDataEntity *pEntity = resolveEntity(entity);
     void* ret = mapOptGet(pEntity->native, type);
 
-    if ( !ret ) {
+    if ( !ret )
+    {
         DustModule *pMod = pRTC->getModuleForType(type);
 
-        if ( pMod ) {
+        if ( pMod )
+        {
             ret = pMod->createNative(type);
-            if ( ret ) {
+            if ( ret )
+            {
                 pEntity->native[type] = ret;
             }
         }
     }
 
     return ret;
-}
-
-
-
-
-DustProcessResult DplStlRuntime::DustResourceInit()
-{
-    return DUST_PROCESS_ACCEPT;
-}
-DustProcessResult DplStlRuntime::DustResourceRelease()
-{
-    return DUST_PROCESS_ACCEPT;
 }
 
 DustProcessResult DplStlRuntime::DustActionExecute()

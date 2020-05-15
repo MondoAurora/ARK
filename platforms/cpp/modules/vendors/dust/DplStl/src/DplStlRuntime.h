@@ -16,7 +16,7 @@ extern "C" class DplStlRuntime: public DustRuntime
     DplStlDataEntity* resolveEntity(DustEntity entity);
 
     DustEntity getToken(DustEntity parent,  const char* name);
-    DplStlDataEntity* registerGlobalEntity(DustEntity txtToken, DustEntity primaryType, DustEntity parent = DUST_ENTITY_INVALID, DustEntity constId = DUST_ENTITY_INVALID);
+    DplStlDataEntity* registerGlobalEntity(DustEntity txtToken, DustEntity primaryType, DustEntity parent = DUST_ENTITY_INVALID, DustEntity constId = DUST_ENTITY_APPEND);
 
 
 public:
@@ -25,9 +25,9 @@ public:
 
     virtual void setConnector(DustRuntimeConnector* pConn);
 
-    virtual DustEntity getUnit(const char* name);
-    virtual DustEntity getIdeaEntity(DustEntity unit, const char* name, DustIdeaType ideaType, DustEntity constId = DUST_ENTITY_INVALID);
-    virtual DustEntity getMemberEntity(DustEntity type, const char* name, DustValType valType, DustCollType collType = DUST_COLL_SINGLE, DustEntity constId = DUST_ENTITY_INVALID);
+    virtual DustEntity getUnit(const char* name, DustEntity constId = DUST_ENTITY_APPEND);
+    virtual DustEntity getIdeaEntity(DustEntity unit, const char* name, DustIdeaType ideaType, DustEntity constId = DUST_ENTITY_APPEND);
+    virtual DustEntity getMemberEntity(DustEntity type, const char* name, DustValType valType, DustCollType collType = DUST_COLL_SINGLE, DustEntity constId = DUST_ENTITY_APPEND);
 
     virtual DustEntity createEntity(DustEntity primaryType);
 

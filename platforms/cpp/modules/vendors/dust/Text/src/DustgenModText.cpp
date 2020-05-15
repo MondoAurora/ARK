@@ -15,7 +15,7 @@ extern "C" DustModule* getModule()
     return &module;
 }
 
-DustUnitMindText *pUnitText;
+//DustUnitMindText *pUnitText;
 
 DustModText::~DustModText()
 {
@@ -25,7 +25,7 @@ DustProcessResult DustModText::DustResourceInit()
 {
     cout << "DustModText::DustResourceInit" << endl;
 
-    pUnitText = new DustUnitMindText();
+//    pUnitText = new DustUnitMindText();
 
     DustData::setInt(0,0,333);
 

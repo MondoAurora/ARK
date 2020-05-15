@@ -2,7 +2,7 @@
 #define SRC_TEXT_H_
 
 #include <DustRuntime.h>
-#include <MiND/DustgenUnitMindText.h>
+#include <MiND/DustgenUnitMindTools.h>
 
 #include <map>
 #include <string>
@@ -19,7 +19,5 @@ public:
 	virtual DustProcessResult DustResourceInit();
 	virtual DustProcessResult DustResourceRelease();
 };
-
-extern DustUnitMindText *pUnitText;
 
 #endif /* SRC_TEXT_H_ */

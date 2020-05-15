@@ -9,14 +9,14 @@
 enum DustBoot {
 	DUST_BOOT_AGENT_RUNTIME = DUST_LAST_CONST_MODULE,
 	DUST_BOOT_AGENT_DICTIONARY,
+	DUST_BOOT_UNIT_TEXT,
 	DUST_BOOT_TYPE_PLAINTEXT,
-	DUST_BOOT_TYPE_UNIT,
-	DUST_BOOT_TYPE_MEMBER,
 	DUST_BOOT_REF_GLOBALID,
 	DUST_BOOT_
 };
 
 #define DUST_LAST_CONST_RUNTIME DUST_BOOT_
+
 
 extern "C" class DustTextDictionary: public DustNativeLogic {
 public:
@@ -36,10 +36,17 @@ public:
 	virtual DustModule* getModuleForType(DustEntity type) = 0;
 };
 
-extern "C" class DustRuntime: public DustModuleConnector {
+extern "C" class DustRuntime: public DustNativeLogic {
+protected:
+    void setBootToken(DustToken &token, DustEntity entity);
+
 public:
 	virtual ~DustRuntime() {
 	}
+
+    virtual DustEntity getUnit(const char* name, DustEntity constId = DUST_ENTITY_APPEND) = 0;
+    virtual DustEntity getIdeaEntity(DustEntity unit, const char* name, DustIdeaType ideaType, DustEntity constId = DUST_ENTITY_APPEND) = 0;
+    virtual DustEntity getMemberEntity(DustEntity type, const char* name, DustValType valType, DustCollType collType = DUST_COLL_SINGLE, DustEntity constId = DUST_ENTITY_APPEND) = 0;
 
 	virtual void setConnector(DustRuntimeConnector* pConn) = 0;
 

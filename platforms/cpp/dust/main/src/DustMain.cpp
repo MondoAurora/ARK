@@ -68,7 +68,7 @@ class DustMainModule
         MyUnloadLib(hLib);
     }
 
-    void initModule(DustRuntime* pR)
+    void initModule0(DustRuntime* pR)
     {
         initModule_t im = (initModule_t) MyLoadProc(hLib, DUST_FNAME_INIT_MODULE);
 
@@ -81,7 +81,11 @@ class DustMainModule
         {
             cout << "ERROR missing " << DUST_FNAME_INIT_MODULE << " in module " << name << endl;
         }
+    }
 
+    void initModule(DustRuntime* pR)
+    {
+        initModule0(pR);
         pModule->DustResourceInit();
     }
 
@@ -99,6 +103,9 @@ extern "C" class DustMainApp : public DustRuntimeConnector
     DustTextDictionary *pMainDict;
     DustRuntime *pRuntime;
 
+    DustMainModule* pRuntimeModule;
+    DustMainModule* pTextModule;
+
     DustMainApp() : pMainDict(0), pRuntime(0) {}
 
     ~DustMainApp()
@@ -114,7 +121,7 @@ extern "C" class DustMainApp : public DustRuntimeConnector
         loadModule(name, false);
     }
 
-    virtual DustModule* loadModule(const char* name, bool boot)
+    virtual DustMainModule* loadModule(const char* name, bool boot)
     {
         string n = name;
         DustMainModule *pmm = mapOptGet(modByName, n);
@@ -130,11 +137,7 @@ extern "C" class DustMainApp : public DustRuntimeConnector
             }
         }
 
-        return pmm->pModule;
-    }
-
-    virtual void initModule()
-    {
+        return pmm;
     }
 
     virtual DustEntity getTextToken(DustEntity parent, const char* name)
@@ -152,14 +155,16 @@ extern "C" class DustMainApp : public DustRuntimeConnector
             {
                 DustModule *pTmpMod = it->second->pModule;
                 void *pTest = pTmpMod->createNative(type);
-                if ( pTest ) {
+                if ( pTest )
+                {
                     pm = pTmpMod;
                     pm->releaseNative(type, pTest);
                     break;
                 }
             }
 
-            if ( pm ) {
+            if ( pm )
+            {
                 modByType[type] = pm;
             }
         }
@@ -174,7 +179,8 @@ public:
     {
         for ( int i = 1; i < argc; ++i )
         {
-            DustModule *pMod = loadModule(argv[i], true);
+            DustMainModule *pmm = loadModule(argv[i], true);
+            DustModule *pMod = pmm->pModule;
 
             if ( !pRuntime )
             {
@@ -183,6 +189,7 @@ public:
                 {
                     modByType[DUST_BOOT_AGENT_RUNTIME] = pMod;
                     pRuntime->setConnector(this);
+                    pRuntimeModule = pmm;
                 }
             }
             if ( !pMainDict)
@@ -191,15 +198,32 @@ public:
                 if ( pMainDict )
                 {
                     modByType[DUST_BOOT_AGENT_DICTIONARY] = pMod;
+                    pTextModule = pmm;
                 }
             }
         }
 
         ::initModule(pRuntime);
 
+        pTextModule->initModule0(pRuntime);
+        pRuntimeModule->initModule(pRuntime);
+
+        pRuntime->DustResourceInit();
+
         for (ModuleIterator it = modByName.begin(); it != modByName.end(); ++it)
         {
-            it->second->initModule(pRuntime);
+            DustMainModule *pmm = it->second;
+            if ( pmm != pRuntimeModule )
+            {
+                if ( pmm != pTextModule )
+                {
+                    pmm->initModule(pRuntime);
+                }
+                else
+                {
+                    pmm->pModule->DustResourceInit();
+                }
+            }
         }
     }
 };

@@ -4,4 +4,7 @@
 #include "DplStlData.h"
 #include "DplStlRuntime.h"
 
+#include <MiND/DustgenUnitMindCore.h>
+#include <MiND/DustgenUnitMindTools.h>
+
 #endif /* SRC_DPLSTL_H_ */

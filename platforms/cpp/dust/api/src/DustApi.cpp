@@ -11,33 +11,32 @@ extern "C" void initModule(DustRuntime *pRuntime)
 }
 
 
-    DustToken::operator DustEntity() {
-        if ( DUST_ENTITY_APPEND == entity ) {
-            entity = DustMeta::getTokenEntity(this);
-        }
-        return entity;
+DustToken::operator DustEntity()
+{
+    if ( DUST_ENTITY_APPEND == entity )
+    {
+        entity = DustData::getTokenEntity(this);
     }
-
-
-DustEntity DustMeta::getTokenEntity(DustToken* pToken) {
-    return apiRuntime->getUnit(pToken->name);
+    return entity;
 }
 
-DustEntity DustMeta::getUnit(const char* name)
+void DustRuntime::setBootToken(DustToken &token, DustEntity entity) {
+    DustEntity e = DustData::getTokenEntity(&token, entity);
+    token.entity = e;
+}
+
+DustEntity DustData::getTokenEntity(DustToken* pToken, DustEntity constId)
 {
-    return apiRuntime->getUnit(name);
+    switch ( pToken->ideaType )
+    {
+    case DUST_IDEA_UNIT:
+        return apiRuntime->getUnit(pToken->name, constId);
+    case DUST_IDEA_MEMBER:
+        return apiRuntime->getMemberEntity(*(pToken->parent), pToken->name, pToken->valType, pToken->collType, constId);
+    default:
+        return apiRuntime->getIdeaEntity(*(pToken->parent), pToken->name, pToken->ideaType, constId);
+    }
 }
-
-DustEntity DustMeta::getIdeaEntity(DustEntity unit, const char* name, DustIdeaType ideaType, DustEntity constId)
-{
-    return apiRuntime->getIdeaEntity(unit, name, ideaType, constId);
-}
-
-DustEntity DustMeta::getMemberEntity(DustEntity type, const char* name, DustValType valType, DustCollType collType, DustEntity constId)
-{
-    return apiRuntime->getMemberEntity(type, name, valType, collType, constId);
-}
-
 
 DustEntity DustData::getEntityByPath(DustEntity ctx, ...)
 {

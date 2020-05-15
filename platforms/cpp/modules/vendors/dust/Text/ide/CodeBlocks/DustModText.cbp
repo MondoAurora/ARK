@@ -47,7 +47,8 @@
 		<Linker>
 			<Add library="$(#ark_debug.LIB)/libDustLibApi.a" />
 		</Linker>
-		<Unit filename="../../../../../../units/MiND/DustgenUnitMindText.h" />
+		<Unit filename="../../../../../../units/MiND/DustgenUnitMindTools.cpp" />
+		<Unit filename="../../../../../../units/MiND/DustgenUnitMindTools.h" />
 		<Unit filename="../../src/DustgenModText.cpp" />
 		<Unit filename="../../src/DustgenModText.h" />
 		<Unit filename="../../src/Text.h" />

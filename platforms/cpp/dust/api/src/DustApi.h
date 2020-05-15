@@ -104,19 +104,10 @@ public:
 
 class DustToken;
 
-class DustMeta
-{
-public:
-    static DustEntity getTokenEntity(DustToken* pToken);
-    static DustEntity getUnit(const char* name);
-    static DustEntity getIdeaEntity(DustEntity unit, const char* name, DustIdeaType ideaType, DustEntity constId = DUST_ENTITY_INVALID);
-    static DustEntity getMemberEntity(DustEntity type, const char* name, DustValType valType, DustCollType collType = DUST_COLL_SINGLE, DustEntity constId = DUST_ENTITY_INVALID);
-};
-
 extern "C" class DustToken {
     DustIdeaType ideaType;
     const char* name;
-    const DustEntity parent;
+    DustToken* parent;
 
     DustValType valType;
     DustCollType collType;
@@ -125,27 +116,31 @@ extern "C" class DustToken {
 
 public:
     DustToken(const char* unitName)
-    : ideaType(DUST_IDEA_UNIT), name(unitName), parent(DUST_ENTITY_INVALID),
+    : ideaType(DUST_IDEA_UNIT), name(unitName), parent(0),
         valType(DUST_VAL_), collType(DUST_COLL_),
         entity(DUST_ENTITY_APPEND) {}
 
-    DustToken(DustEntity unit, const char* ideaName, DustIdeaType ideaType, DustEntity constId = DUST_ENTITY_APPEND)
-    : ideaType(ideaType), name(ideaName), parent(unit),
+    DustToken(DustToken &unit, const char* ideaName, DustIdeaType ideaType)
+    : ideaType(ideaType), name(ideaName), parent(&unit),
         valType(DUST_VAL_), collType(DUST_COLL_),
-        entity(constId) {}
+        entity(DUST_ENTITY_APPEND) {}
 
-    DustToken(DustEntity parent_, const char* memberName, DustValType valType_, DustCollType collType_ = DUST_COLL_SINGLE, DustEntity constId = DUST_ENTITY_APPEND)
-    : ideaType(DUST_IDEA_MEMBER), name(memberName), parent(parent_),
+    DustToken(DustToken &parent_, const char* memberName, DustValType valType_, DustCollType collType_ = DUST_COLL_SINGLE)
+    : ideaType(DUST_IDEA_MEMBER), name(memberName), parent(&parent_),
         valType(valType_), collType(collType_),
-        entity(constId) {}
+        entity(DUST_ENTITY_APPEND) {}
 
     operator DustEntity();
 
-    friend class DustMeta;
+    friend class DustData;
+    friend class DustRuntime;
 };
 
 class DustData
 {
+private:
+        static DustEntity getTokenEntity(DustToken* pToken, DustEntity constId = DUST_ENTITY_APPEND);
+
 public:
 // Entity creation and access
     static DustEntity getEntityByPath(DustEntity ctx, ...);
@@ -167,6 +162,9 @@ public:
 
 // Entity native content access
     static void* getNative(DustEntity entity, DustEntity type);
+
+friend class DustToken;
+friend class DustRuntime;
 };
 
 #endif /* DUSTAPI_H_ */
