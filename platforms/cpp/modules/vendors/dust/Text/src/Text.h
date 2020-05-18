@@ -16,8 +16,8 @@ public:
 	virtual ~TextDictionary();
 
 	virtual DustEntity getTextToken(DustEntity txtParent, const char* name);
-	virtual DustProcessResult DustResourceInit();
-	virtual DustProcessResult DustResourceRelease();
+	virtual DustResultType DustResourceInit();
+	virtual DustResultType DustResourceRelease();
 };
 
 #endif /* SRC_TEXT_H_ */

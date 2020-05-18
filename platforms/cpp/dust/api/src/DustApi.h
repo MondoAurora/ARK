@@ -13,28 +13,28 @@ typedef long DustEntity;
 #define mapOptGet(m, k) (((m).find( k ) != (m).end()) ? (m)[k] : NULL)
 #define findEntity(m, k) (((m).find( k ) != (m).end()) ? (m)[k] : DUST_ENTITY_INVALID)
 
-enum DustProcessResult
+enum DustResultType
 {
-    DUST_PROCESS_NOTIMPLEMENTED = DUST_ENTITY_INVALID,
-    DUST_PROCESS_REJECT,
-    DUST_PROCESS_ACCEPT_PASS,
-    DUST_PROCESS_ACCEPT,
-    DUST_PROCESS_ACCEPT_READ,
-    DUST_PROCESS_READ,
-    DUST_PROCESS_
+    DUST_RESULT_NOTIMPLEMENTED = DUST_ENTITY_INVALID,
+    DUST_RESULT_REJECT,
+    DUST_RESULT_ACCEPT_PASS,
+    DUST_RESULT_ACCEPT,
+    DUST_RESULT_ACCEPT_READ,
+    DUST_RESULT_READ,
+    DUST_RESULT_
 };
 
 enum DustChange
 {
-    DUST_CHG_REF_SET = DUST_PROCESS_,
-    DUST_CHG_REF_REMOVE,
-    DUST_CHG_REF_CLEAR,
-    DUST_CHG_
+    DUST_CHANGE_REF_SET = DUST_RESULT_,
+    DUST_CHANGE_REF_REMOVE,
+    DUST_CHANGE_CLEAR,
+    DUST_CHANGE_
 };
 
 enum DustIdeaType
 {
-    DUST_IDEA_UNIT = DUST_CHG_,
+    DUST_IDEA_UNIT = DUST_CHANGE_,
     DUST_IDEA_TYPE,
     DUST_IDEA_MEMBER,
     DUST_IDEA_AGENT,
@@ -46,8 +46,8 @@ enum DustIdeaType
 
 enum DustValType
 {
-    DUST_VAL_INT = DUST_IDEA_,
-    DUST_VAL_DOUBLE,
+    DUST_VAL_INTEGER = DUST_IDEA_,
+    DUST_VAL_REAL,
     DUST_VAL_REF,
 
     DUST_VAL_
@@ -55,8 +55,8 @@ enum DustValType
 
 enum DustCollType
 {
-    DUST_COLL_SINGLE = DUST_ENTITY_INVALID,
-    DUST_COLL_SET = DUST_VAL_,
+    DUST_COLL_SINGLE = DUST_VAL_,
+    DUST_COLL_SET,
     DUST_COLL_ARR,
     DUST_COLL_MAP,
 
@@ -72,13 +72,13 @@ public:
     {
     }
 
-    virtual DustProcessResult DustResourceInit()
+    virtual DustResultType DustResourceInit()
     {
-        return DUST_PROCESS_ACCEPT;
+        return DUST_RESULT_ACCEPT;
     }
-    virtual DustProcessResult DustResourceRelease()
+    virtual DustResultType DustResourceRelease()
     {
-        return DUST_PROCESS_ACCEPT;
+        return DUST_RESULT_ACCEPT;
     }
 };
 
@@ -88,9 +88,9 @@ public:
     virtual ~DustNativeAction()
     {
     }
-    virtual DustProcessResult DustActionExecute()
+    virtual DustResultType DustActionExecute()
     {
-        return DUST_PROCESS_NOTIMPLEMENTED;
+        return DUST_RESULT_NOTIMPLEMENTED;
     }
 };
 
@@ -147,18 +147,18 @@ public:
     static DustEntity createEntity(DustEntity primaryType);
 
 // Entity value access
-    static int getInt(DustEntity entity, DustEntity token, int defValue);
-    static double getDouble(DustEntity entity, DustEntity token, double defValue);
+    static int getInteger(DustEntity entity, DustEntity token, int defValue);
+    static double getReal(DustEntity entity, DustEntity token, double defValue);
 
-    static void setInt(DustEntity entity, DustEntity token, int val);
-    static void setDouble(DustEntity entity, DustEntity token, double val);
+    static void setInteger(DustEntity entity, DustEntity token, int val);
+    static void setReal(DustEntity entity, DustEntity token, double val);
 
 // Entity reference access
-    static unsigned int getRefCount(DustEntity entity, DustEntity token);
-    static DustEntity getRefKey(DustEntity entity, DustEntity token, int idx);
-    static DustEntity getRef(DustEntity entity, DustEntity token, int key = DUST_ENTITY_APPEND);
+    static long getRefCount(DustEntity entity, DustEntity token);
+    static DustEntity getRefKey(DustEntity entity, DustEntity token, long idx);
+    static DustEntity getRef(DustEntity entity, DustEntity token, long key = DUST_ENTITY_APPEND);
 
-    static bool setRef(DustEntity entity, DustEntity token, DustEntity target, int key = DUST_ENTITY_APPEND);
+    static bool setRef(DustEntity entity, DustEntity token, DustEntity target, long key = DUST_ENTITY_APPEND);
 
 // Entity native content access
     static void* getNative(DustEntity entity, DustEntity type);

@@ -32,25 +32,25 @@ public:
     virtual DustEntity createEntity(DustEntity primaryType);
 
 // Entity value access
-    virtual int getInt(DustEntity entity, DustEntity token, int defValue);
-    virtual double getDouble(DustEntity entity, DustEntity token, double defValue);
+    virtual int getInteger(DustEntity entity, DustEntity token, int defValue);
+    virtual double getReal(DustEntity entity, DustEntity token, double defValue);
 
-    virtual void setInt(DustEntity entity, DustEntity token, int val);
-    virtual void setDouble(DustEntity entity, DustEntity token, double val);
+    virtual void setInteger(DustEntity entity, DustEntity token, int val);
+    virtual void setReal(DustEntity entity, DustEntity token, double val);
 
 // Entity reference access
-    virtual unsigned int getRefCount(DustEntity entity, DustEntity token);
-    virtual DustEntity getRefKey(DustEntity entity, DustEntity token, int idx);
-    virtual DustEntity getRef(DustEntity entity, DustEntity token, int key = DUST_ENTITY_APPEND);
+    virtual long getRefCount(DustEntity entity, DustEntity token);
+    virtual DustEntity getRefKey(DustEntity entity, DustEntity token, long idx);
+    virtual DustEntity getRef(DustEntity entity, DustEntity token, long key = DUST_ENTITY_APPEND);
 
-    virtual bool setRef(DustEntity entity, DustEntity token, DustEntity target, int key = DUST_ENTITY_APPEND);
+    virtual bool setRef(DustEntity entity, DustEntity token, DustEntity target, long key = DUST_ENTITY_APPEND);
 
 // Entity native content access
     virtual void* getNative(DustEntity entity, DustEntity type);
 
-    virtual DustProcessResult DustResourceInit();
-    virtual DustProcessResult DustResourceRelease();
-    virtual DustProcessResult DustActionExecute();
+    virtual DustResultType DustResourceInit();
+    virtual DustResultType DustResourceRelease();
+    virtual DustResultType DustActionExecute();
 };
 
 #endif /* DPLSTLRUNTIME_H_INCLUDED */

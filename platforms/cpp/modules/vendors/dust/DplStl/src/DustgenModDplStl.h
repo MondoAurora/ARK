@@ -5,13 +5,13 @@ class DustModDplStl : public DustModule {
 public:
 	virtual ~DustModDplStl();
 
-	virtual DustProcessResult DustResourceInit() ;
+	virtual DustResultType DustResourceInit() ;
 
-	virtual DustProcessResult DustResourceRelease();
+	virtual DustResultType DustResourceRelease();
 
 	virtual void* createNative(int typeId) const;
 
-	virtual DustProcessResult dispatchCommand(int logicId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param = DUST_ENTITY_INVALID) const;
+	virtual DustResultType dispatchCommand(int logicId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param = DUST_ENTITY_INVALID) const;
 
 	virtual void releaseNative(int typeId, void* pNativeObject) const ;
 };

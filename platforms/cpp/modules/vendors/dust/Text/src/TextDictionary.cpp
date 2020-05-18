@@ -32,12 +32,12 @@ DustEntity TextDictionary::getTextToken(DustEntity txtParent, const char* name)
     return ret;
 }
 
-DustProcessResult TextDictionary::DustResourceInit()
+DustResultType TextDictionary::DustResourceInit()
 {
-    return DUST_PROCESS_ACCEPT;
+    return DUST_RESULT_ACCEPT;
 }
 
-DustProcessResult TextDictionary::DustResourceRelease()
+DustResultType TextDictionary::DustResourceRelease()
 {
-    return DUST_PROCESS_ACCEPT;
+    return DUST_RESULT_ACCEPT;
 }

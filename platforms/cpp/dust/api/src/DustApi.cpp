@@ -89,39 +89,37 @@ DustEntity DustData::createEntity(DustEntity primaryType)
     return apiRuntime->createEntity(primaryType);
 }
 
-int DustData::getInt(DustEntity entity, DustEntity token, int defValue)
+int DustData::getInteger(DustEntity entity, DustEntity token, int defValue)
 {
-    return apiRuntime->getInt(entity, token, defValue);
+    return apiRuntime->getInteger(entity, token, defValue);
 }
-double DustData::getDouble(DustEntity entity, DustEntity token,
-                           double defValue)
+double DustData::getReal(DustEntity entity, DustEntity token, double defValue)
 {
-    return apiRuntime->getDouble(entity, token, defValue);
+    return apiRuntime->getReal(entity, token, defValue);
 }
-void DustData::setInt(DustEntity entity, DustEntity token, int val)
+void DustData::setInteger(DustEntity entity, DustEntity token, int val)
 {
-    apiRuntime->setInt(entity, token, val);
+    apiRuntime->setInteger(entity, token, val);
 }
-void DustData::setDouble(DustEntity entity, DustEntity token, double val)
+void DustData::setReal(DustEntity entity, DustEntity token, double val)
 {
-    apiRuntime->setDouble(entity, token, val);
+    apiRuntime->setReal(entity, token, val);
 }
 
-unsigned int DustData::getRefCount(DustEntity entity, DustEntity token)
+long DustData::getRefCount(DustEntity entity, DustEntity token)
 {
     return apiRuntime->getRefCount(entity, token);
 }
-DustEntity DustData::getRefKey(DustEntity entity, DustEntity token, int idx)
+DustEntity DustData::getRefKey(DustEntity entity, DustEntity token, long idx)
 {
     return apiRuntime->getRefKey(entity, token, idx);
 }
-DustEntity DustData::getRef(DustEntity entity, DustEntity token, int key)
+DustEntity DustData::getRef(DustEntity entity, DustEntity token, long key)
 {
     return apiRuntime->getRef(entity, token, key);
 }
 
-bool DustData::setRef(DustEntity entity, DustEntity token, DustEntity target,
-                      int key)
+bool DustData::setRef(DustEntity entity, DustEntity token, DustEntity target, long key)
 {
     return apiRuntime->setRef(entity, token, target, key);
 }

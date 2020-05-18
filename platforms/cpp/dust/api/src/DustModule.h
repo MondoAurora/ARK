@@ -19,8 +19,8 @@ public:
 	virtual void* createNative(int typeId) const {
 		return 0;
 	}
-	virtual DustProcessResult dispatchCommand(int logicId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param = DUST_ENTITY_INVALID) const {
-		return DUST_PROCESS_NOTIMPLEMENTED;
+	virtual DustResultType dispatchCommand(int logicId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param = DUST_ENTITY_INVALID) const {
+		return DUST_RESULT_NOTIMPLEMENTED;
 	}
 	virtual void releaseNative(int typeId, void* pNativeObject) const {
 	}

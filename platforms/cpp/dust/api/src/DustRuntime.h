@@ -9,9 +9,14 @@
 enum DustBoot {
 	DUST_BOOT_AGENT_RUNTIME = DUST_LAST_CONST_MODULE,
 	DUST_BOOT_AGENT_DICTIONARY,
+
 	DUST_BOOT_UNIT_TEXT,
 	DUST_BOOT_TYPE_PLAINTEXT,
+
+	DUST_BOOT_UNIT_MODEL,
+	DUST_BOOT_TYPE_ENTITY,
 	DUST_BOOT_REF_GLOBALID,
+	DUST_BOOT_REF_OWNER,
 	DUST_BOOT_
 };
 
@@ -53,18 +58,18 @@ public:
 	virtual DustEntity createEntity(DustEntity primaryType) = 0;
 
 // Entity value access
-	virtual int getInt(DustEntity entity, DustEntity token, int defValue) = 0;
-	virtual double getDouble(DustEntity entity, DustEntity token, double defValue) = 0;
+	virtual int getInteger(DustEntity entity, DustEntity token, int defValue) = 0;
+	virtual double getReal(DustEntity entity, DustEntity token, double defValue) = 0;
 
-	virtual void setInt(DustEntity entity, DustEntity token, int val) = 0;
-	virtual void setDouble(DustEntity entity, DustEntity token, double val) = 0;
+	virtual void setInteger(DustEntity entity, DustEntity token, int val) = 0;
+	virtual void setReal(DustEntity entity, DustEntity token, double val) = 0;
 
 // Entity reference access
-	virtual unsigned int getRefCount(DustEntity entity, DustEntity token) = 0;
-	virtual DustEntity getRefKey(DustEntity entity, DustEntity token, int idx) = 0;
-	virtual DustEntity getRef(DustEntity entity, DustEntity token, int key = DUST_ENTITY_APPEND) = 0;
+	virtual long getRefCount(DustEntity entity, DustEntity token) = 0;
+	virtual DustEntity getRefKey(DustEntity entity, DustEntity token, long idx) = 0;
+	virtual DustEntity getRef(DustEntity entity, DustEntity token, long key = DUST_ENTITY_APPEND) = 0;
 
-	virtual bool setRef(DustEntity entity, DustEntity token, DustEntity target, int key = DUST_ENTITY_APPEND) = 0;
+	virtual bool setRef(DustEntity entity, DustEntity token, DustEntity target, long key = DUST_ENTITY_APPEND) = 0;
 
 // Entity native content access
 	virtual void* getNative(DustEntity entity, DustEntity type) = 0;

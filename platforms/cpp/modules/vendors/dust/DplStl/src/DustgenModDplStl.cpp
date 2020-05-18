@@ -12,18 +12,18 @@ DustModDplStl::~DustModDplStl()
 {
 }
 
-DustProcessResult DustModDplStl::DustResourceInit()
+DustResultType DustModDplStl::DustResourceInit()
 {
     cout << "DustModDplStl::DustResourceInit" << endl;
-        DustData::setInt(0,0,333);
+        DustData::setInteger(0,0,333);
 
-    return DUST_PROCESS_ACCEPT;
+    return DUST_RESULT_ACCEPT;
 }
 
-DustProcessResult DustModDplStl::DustResourceRelease()
+DustResultType DustModDplStl::DustResourceRelease()
 {
     cout << "DustModDplStl::DustResourceRelease" << endl;
-    return DUST_PROCESS_ACCEPT;
+    return DUST_RESULT_ACCEPT;
 }
 
 void* DustModDplStl::createNative(int typeId) const
@@ -35,9 +35,9 @@ void* DustModDplStl::createNative(int typeId) const
     return 0;
 }
 
-DustProcessResult DustModDplStl::dispatchCommand(int logicId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param) const
+DustResultType DustModDplStl::dispatchCommand(int logicId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param) const
 {
-    return DUST_PROCESS_NOTIMPLEMENTED;
+    return DUST_RESULT_NOTIMPLEMENTED;
 }
 
 void DustModDplStl::releaseNative(int typeId, void* pNativeObject) const

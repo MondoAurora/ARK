@@ -21,21 +21,21 @@ DustModText::~DustModText()
 {
 }
 
-DustProcessResult DustModText::DustResourceInit()
+DustResultType DustModText::DustResourceInit()
 {
     cout << "DustModText::DustResourceInit" << endl;
 
 //    pUnitText = new DustUnitMindText();
 
-    DustData::setInt(0,0,333);
+    DustData::setInteger(0,0,333);
 
-    return DUST_PROCESS_ACCEPT;
+    return DUST_RESULT_ACCEPT;
 }
 
-DustProcessResult DustModText::DustResourceRelease()
+DustResultType DustModText::DustResourceRelease()
 {
     cout << "DustModText::DustResourceRelease" << endl;
-    return DUST_PROCESS_ACCEPT;
+    return DUST_RESULT_ACCEPT;
 }
 
 void* DustModText::createNative(int typeId) const
@@ -51,9 +51,9 @@ void* DustModText::createNative(int typeId) const
     return 0;
 }
 
-DustProcessResult DustModText::dispatchCommand(int logicId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param) const
+DustResultType DustModText::dispatchCommand(int logicId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param) const
 {
-    return DUST_PROCESS_NOTIMPLEMENTED;
+    return DUST_RESULT_NOTIMPLEMENTED;
 }
 
 void DustModText::releaseNative(int typeId, void* pNativeObject) const
