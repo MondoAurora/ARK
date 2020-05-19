@@ -52,6 +52,7 @@ public:
     DustAccessType access;
     DustEntity entity;
     DustEntity token;
+    DustValType valType;
     long key;
 
     union
@@ -61,10 +62,13 @@ public:
     };
 
     DustAccessData(DustAccessType a, DustEntity e, DustEntity t, long k = DUST_ENTITY_APPEND, long k2 = DUST_ENTITY_APPEND)
-        : access(a), entity(e), token(t), key(k), valLong(k2) {}
+        : access(a), entity(e), token(t), valType(DUST_VAL_), key(k), valLong(k2) {}
 
-    DustAccessData(DustAccessType a, DustEntity e, DustEntity t, double v, long k = DUST_ENTITY_APPEND)
-        : access(DUST_ACCESS_SET), entity(e), token(t), key(k), valDouble(v) { }
+    DustAccessData(DustEntity e, DustEntity t, DustValType vt, long v, long k = DUST_ENTITY_APPEND)
+        : access(DUST_ACCESS_SET), entity(e), token(t), valType(vt), key(k), valLong(v) {}
+
+    DustAccessData(DustEntity e, DustEntity t, double v, long k = DUST_ENTITY_APPEND)
+        : access(DUST_ACCESS_SET), entity(e), token(t), valType(DUST_VAL_REAL), key(k), valDouble(v) { }
 
 };
 

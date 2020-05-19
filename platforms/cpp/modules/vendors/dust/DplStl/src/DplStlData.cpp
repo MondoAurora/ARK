@@ -20,6 +20,10 @@ bool DplStlDataVariant::access(DustAccessData &ad)
     bool ret = false;
     DplStlDataValue *pVal = &value;
 
+    if ( !valType ) {
+        valType = ad.valType;
+    }
+
     switch ( ad.access )
     {
        case DUST_ACCESS_GET:
@@ -122,7 +126,7 @@ bool DplStlDataEntity::access(DustAccessData &ad)
             ret = true;
             break;
         default:
-            pVar->access(ad);
+            ret = pVar->access(ad);
         }
     }
 
