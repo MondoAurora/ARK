@@ -3,6 +3,9 @@
 
 #include <DustModule.h>
 
+#include <MiND/DustgenUnitMindTools.h>
+#include <MiND/DustgenUnitMindCore.h>
+
 using namespace std;
 
 class T01 : public DustNativeLogic
@@ -10,6 +13,17 @@ class T01 : public DustNativeLogic
     virtual DustResultType DustActionExecute()
     {
         cout << "T01 sees int value " << DustData::getInteger(0,0,0) << endl;
+
+        DustEntity e = DustData::getRef(DustUnitMindText::DustTypePlainText, DustUnitMindModel::DustRefGlobalId);
+
+        string *pStr = (string*) DustData::getNative(e, DustUnitMindText::DustTypePlainText);
+
+        cout << "T01 read plain text type id " << pStr->c_str() << endl;
+
+        pStr = (string*) DustData::getNative(e, DustUnitMindText::DustTypePlainText);
+
+        cout << "T01 read plain text type id SECOND TIME " << pStr->c_str() << endl;
+
         return DUST_RESULT_ACCEPT;
     }
 };

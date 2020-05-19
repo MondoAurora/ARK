@@ -5,9 +5,6 @@
 
 using namespace std;
 
-int ival = 0;
-
-
 DplStlRuntime::DplStlRuntime()
     :store(DUST_LAST_CONST_RUNTIME)
 {
@@ -52,9 +49,11 @@ DustResultType DplStlRuntime::DustResourceInit()
     setBootToken(DustUnitMindNarrative::DustConstResultAcceptPass, DUST_RESULT_ACCEPT_PASS);
     setBootToken(DustUnitMindNarrative::DustConstResultAcceptRead, DUST_RESULT_ACCEPT_READ);
 
-    setBootToken(DustUnitMindDialog::DustConstChangeClear, DUST_CHANGE_CLEAR);
-    setBootToken(DustUnitMindDialog::DustConstChangeRefSet, DUST_CHANGE_REF_SET);
-    setBootToken(DustUnitMindDialog::DustConstChangeRefRemove, DUST_CHANGE_REF_REMOVE);
+    setBootToken(DustUnitMindDialog::DustConstAccessGet, DUST_ACCESS_GET);
+    setBootToken(DustUnitMindDialog::DustConstAccessSet, DUST_ACCESS_SET);
+    setBootToken(DustUnitMindDialog::DustConstAccessMove, DUST_ACCESS_MOVE);
+    setBootToken(DustUnitMindDialog::DustConstAccessRemove, DUST_ACCESS_REMOVE);
+    setBootToken(DustUnitMindDialog::DustConstAccessClear, DUST_ACCESS_CLEAR);
 
     return DUST_RESULT_ACCEPT;
 }
@@ -66,19 +65,25 @@ DustResultType DplStlRuntime::DustResourceRelease()
 
 DustEntity DplStlRuntime::getToken(DustEntity parent,  const char* name)
 {
-    DustEntity txtParent = parent ? getRef(parent, DUST_BOOT_REF_GLOBALID) : DUST_ENTITY_INVALID;
+    DustEntity txtParent = parent ? DustData::getRef(parent, DUST_BOOT_REF_GLOBALID) : DUST_ENTITY_INVALID;
     return pRTC->getTextToken(txtParent, name);
 }
 
 DplStlDataEntity* DplStlRuntime::registerGlobalEntity(DustEntity txtToken, DustEntity primaryType, DustEntity parent, DustEntity constId)
 {
     DplStlDataEntity* pEntity = store.getEntity(constId, primaryType);
-    globalEntites[txtToken] = pEntity->id;
+    DustEntity entity = pEntity->id;
+    globalEntites[txtToken] = entity;
 
-    pEntity->changeRef(DUST_CHANGE_REF_SET, DUST_BOOT_REF_GLOBALID, txtToken);
+    DustData::setRef(entity, DUST_BOOT_REF_GLOBALID, txtToken);
     if ( parent ) {
-        pEntity->changeRef(DUST_CHANGE_REF_SET, DUST_BOOT_REF_OWNER, parent);
+        DustData::setRef(entity, DUST_BOOT_REF_OWNER, parent);
     }
+//    pEntity->changeRef(DUST_ACCESS_SET, DUST_BOOT_REF_GLOBALID, txtToken);
+//    if ( parent )
+//    {
+//        pEntity->changeRef(DUST_ACCESS_SET, DUST_BOOT_REF_OWNER, parent);
+//    }
 
     return pEntity;
 }
@@ -126,7 +131,6 @@ DustEntity DplStlRuntime::getMemberEntity(DustEntity type, const char* name, Dus
 }
 
 
-
 DplStlDataEntity* DplStlRuntime::resolveEntity(DustEntity entity)
 {
     return store.getEntity(entity);
@@ -138,53 +142,88 @@ DustEntity DplStlRuntime::createEntity(DustEntity primaryType)
     return store.getEntity(DUST_ENTITY_APPEND, primaryType)->id;
 }
 
-int DplStlRuntime::getInteger(DustEntity entity, DustEntity token, int defValue)
+long DplStlRuntime::getMemberCount(DustEntity entity, DustEntity token)
 {
-    return ival;
+    long c = 0;
+
+    DplStlDataEntity *pEntity = resolveEntity(entity);
+    if ( pEntity )
+    {
+        DplStlDataVariant *pVar = pEntity->getVariant(token, false);
+        if ( pVar )
+        {
+            c = pVar->collection ? pVar->collection->size() : 1;
+        }
+    }
+
+    return c;
 }
 
-double DplStlRuntime::getReal(DustEntity entity, DustEntity token, double defValue)
+DustEntity DplStlRuntime::getMemberKey(DustEntity entity, DustEntity token, long idx)
 {
-    return 0;
+    DustEntity key = DUST_ENTITY_INVALID;
+
+    if ( 0 <= idx )
+    {
+
+        DplStlDataEntity *pEntity = resolveEntity(entity);
+        if ( pEntity )
+        {
+            DplStlDataVariant *pVar = pEntity->getVariant(token, false);
+            if ( pVar && pVar->collection && ( (unsigned) idx < pVar->collection->size()))
+            {
+                key = pVar->collection->at(idx)->valRef->eKey;
+            }
+        }
+    }
+
+    return key;
 }
 
-void DplStlRuntime::setInteger(DustEntity entity, DustEntity token, int val)
+bool DplStlRuntime::accessMember(DustAccessData &ad)
 {
-    ival = val;
-    cout << "test data set to " << val << endl;
+    DplStlDataEntity *pEntity = resolveEntity(ad.entity);
+
+    return pEntity ? pEntity->access(ad) : false;
+
+//    if ( !pEntity )
+//    {
+//        return false;
+//    }
+//
+//    DplStlDataVariant *pVar = pEntity->getVariant(ad.token, DUST_ACCESS_SET == ad.access);
+//
+//    if ( pVar )
+//    {
+//        if ( DUST_ACCESS_GET == ad.access )
+//        {
+//            ret = true;
+//            switch ( pVar->valType )
+//            {
+//            case DUST_VAL_INTEGER:
+//                ad.valLong = pVar->value.valLong;
+//                break;
+//            case DUST_VAL_REAL:
+//                ad.valDouble = pVar->value.valDouble;
+//                break;
+//            case DUST_VAL_REF:
+//                ad.valLong = pVar->value.valRef->eTarget;
+//                break;
+//            case DUST_VAL_:
+//                ret = false;
+//                break;
+//            }
+//        }
+//        else
+//        {
+//            ret = pEntity->access(ad, pVar);
+//        }
+//    }
+//
+//    return ret;
 }
 
-void DplStlRuntime::setReal(DustEntity entity, DustEntity token, double val)
-{
-}
 
-
-long DplStlRuntime::getRefCount(DustEntity entity, DustEntity token)
-{
-    return 0;
-}
-
-DustEntity DplStlRuntime::getRefKey(DustEntity entity, DustEntity token, long idx)
-{
-    return DUST_ENTITY_INVALID;
-}
-
-DustEntity DplStlRuntime::getRef(DustEntity entity, DustEntity token, long key)
-{
-   DplStlDataEntity *pEntity = resolveEntity(entity);
-   DplStlDataVariant *pVar = pEntity->getVariant(DUST_CHANGE_, token);
-
-    return pVar ? pVar->value.valRef->eTarget : DUST_ENTITY_INVALID;
-}
-
-bool DplStlRuntime::setRef(DustEntity entity, DustEntity token, DustEntity target, long key)
-{
-   DplStlDataEntity *pEntity = resolveEntity(entity);
-
-   pEntity->changeRef(DUST_CHANGE_REF_SET, token, target, key);
-
-    return false;
-}
 
 void* DplStlRuntime::getNative(DustEntity entity, DustEntity type)
 {

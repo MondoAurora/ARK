@@ -6,7 +6,7 @@ using namespace std;
 
 
 DplStlDataVariant::DplStlDataVariant(DplStlDataTokenInfo &tokenInfo)
-:valType(tokenInfo.valType), collType(tokenInfo.collType), collection(0)
+    :valType(tokenInfo.valType), collType(tokenInfo.collType), collection(0)
 {
     value.valRef = 0;
 }
@@ -15,18 +15,69 @@ DplStlDataVariant::~DplStlDataVariant()
 {
 };
 
-void DplStlDataVariant::changeRef(DustChange change, DustEntity token, DustEntity source, DustEntity target, DustEntity key)
+bool DplStlDataVariant::access(DustAccessData &ad)
 {
-    if ( value.valRef )
+    bool ret = false;
+    DplStlDataValue *pVal = &value;
+
+    switch ( ad.access )
     {
-        delete value.valRef;
+       case DUST_ACCESS_GET:
+            ret = true;
+            switch ( valType )
+            {
+            case DUST_VAL_INTEGER:
+                ad.valLong = pVal->valLong;
+                break;
+            case DUST_VAL_REAL:
+                ad.valDouble = pVal->valDouble;
+                break;
+            case DUST_VAL_REF:
+                ad.valLong = pVal->valRef->eTarget;
+                break;
+            case DUST_VAL_:
+                ret = false;
+                break;
+            }
+        break;
+    case DUST_ACCESS_SET:
+        ret = true;
+
+        switch ( valType )
+        {
+        case DUST_VAL_INTEGER:
+            pVal->valLong = ad.valLong;
+            break;
+        case DUST_VAL_REAL:
+            pVal->valDouble = ad.valDouble;
+            break;
+        case DUST_VAL_REF:
+            pVal->valRef = new DplStlDataRef(this, ad.token, ad.entity, ad.valLong, ad.key);
+            break;
+        case DUST_VAL_:
+            ret = false;
+            break;
+        }
+        break;
+    default:
+        break;
     }
 
-    value.valRef = new DplStlDataRef(this, token, source, target);
+    return ret;
 }
 
-DplStlDataRef::DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eToken_, DustEntity eSource_, DustEntity eTarget_)
-    :pVariant(pVariant_), eToken(eToken_), eSource(eSource_), eTarget(eTarget_)
+//void DplStlDataVariant::changeRef(DustAccessType change, DustEntity token, DustEntity source, DustEntity target, DustEntity key)
+//{
+//    if ( value.valRef )
+//    {
+//        delete value.valRef;
+//    }
+//
+//    value.valRef = new DplStlDataRef(this, token, source, target, key);
+//}
+
+DplStlDataRef::DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eToken_, DustEntity eSource_, DustEntity eTarget_, DustEntity eKey_)
+    :pVariant(pVariant_), eToken(eToken_), eSource(eSource_), eTarget(eTarget_), eKey(eKey_)
 {}
 
 DplStlDataRef::~DplStlDataRef()
@@ -42,41 +93,57 @@ DplStlDataEntity::~DplStlDataEntity()
 {
 };
 
-DplStlDataVariant *DplStlDataEntity::getVariant(DustChange change, DustEntity token)
+DplStlDataVariant *DplStlDataEntity::getVariant(DustEntity token, bool createIfMissing)
 {
     DplStlDataVariant *pVar = mapOptGet(model, token);
 
-    if ( !pVar )
+    if ( !pVar && createIfMissing)
     {
-        switch( change )
-        {
-        case DUST_CHANGE_REF_SET:
-            pVar = new DplStlDataVariant(pStore->tokenInfo[token]);
-            model[token] = pVar;
-            break;
-        default:
-            break;
-        }
+        pVar = new DplStlDataVariant(pStore->tokenInfo[token]);
+        model[token] = pVar;
     }
 
     return pVar;
 }
 
-
-void DplStlDataEntity::changeRef(DustChange change, DustEntity token, DustEntity target, DustEntity key)
+bool DplStlDataEntity::access(DustAccessData &ad)
 {
-    DplStlDataVariant *pVar = getVariant(change, token);
+    bool ret = false;
 
-    switch( change )
+    DplStlDataVariant *pVar = getVariant(ad.token, DUST_ACCESS_SET == ad.access);
+
+    if ( pVar )
     {
-    case DUST_CHANGE_REF_SET:
-        pVar->changeRef(change, token, id, target, key);
-        break;
-    default:
-        break;
+        switch ( ad.access )
+        {
+        case DUST_ACCESS_CLEAR:
+            delete pVar;
+            model.erase(ad.token);
+            ret = true;
+            break;
+        default:
+            pVar->access(ad);
+        }
     }
 
+    return ret;
 }
+
+
+//void DplStlDataEntity::changeRef(DustAccessType change, DustEntity token, DustEntity target, DustEntity key)
+//{
+//    DplStlDataVariant *pVar = getVariant(token, DUST_ACCESS_SET == change);
+//
+//    switch( change )
+//    {
+//    case DUST_ACCESS_SET:
+//        pVar->changeRef(change, token, id, target, key);
+//        break;
+//    default:
+//        break;
+//    }
+//
+//}
 
 
 DplStlDataStore::DplStlDataStore(long nextId_)

@@ -44,9 +44,11 @@ extern DustToken DustConstResultRead;
 namespace DustUnitMindDialog {
 extern DustToken DustUnitDialog;
 
-extern DustToken DustConstChangeRefSet;
-extern DustToken DustConstChangeRefRemove;
-extern DustToken DustConstChangeClear;
+extern DustToken DustConstAccessGet;
+extern DustToken DustConstAccessSet;
+extern DustToken DustConstAccessMove;
+extern DustToken DustConstAccessRemove;
+extern DustToken DustConstAccessClear;
 };
 
 #endif // DUSTGENUNITMINDCORE_H_INCLUDED

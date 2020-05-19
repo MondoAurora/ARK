@@ -89,39 +89,71 @@ DustEntity DustData::createEntity(DustEntity primaryType)
     return apiRuntime->createEntity(primaryType);
 }
 
-int DustData::getInteger(DustEntity entity, DustEntity token, int defValue)
+
+long DustData::getMemberCount(DustEntity entity, DustEntity token)
 {
-    return apiRuntime->getInteger(entity, token, defValue);
+    return apiRuntime->getMemberCount(entity, token);
 }
-double DustData::getReal(DustEntity entity, DustEntity token, double defValue)
+DustEntity DustData::getMemberKey(DustEntity entity, DustEntity token, long idx)
 {
-    return apiRuntime->getReal(entity, token, defValue);
+    return apiRuntime->getMemberKey(entity, token, idx);
 }
-void DustData::setInteger(DustEntity entity, DustEntity token, int val)
-{
-    apiRuntime->setInteger(entity, token, val);
+bool DustData::clearMember(DustEntity entity, DustEntity token) {
+    DustAccessData ad(DUST_ACCESS_CLEAR, entity, token);
+    return apiRuntime->accessMember(ad);
 }
-void DustData::setReal(DustEntity entity, DustEntity token, double val)
-{
-    apiRuntime->setReal(entity, token, val);
+bool DustData::moveMember(DustEntity entity, DustEntity token, long keyFrom, long keyTo) {
+    DustAccessData ad(DUST_ACCESS_MOVE, entity, token, keyFrom, keyTo);
+    return apiRuntime->accessMember(ad);
 }
 
-long DustData::getRefCount(DustEntity entity, DustEntity token)
+long DustData::getInteger(DustEntity entity, DustEntity token, long defValue, long key)
 {
-    return apiRuntime->getRefCount(entity, token);
+    DustAccessData ad(DUST_ACCESS_GET, entity, token, key);
+    return apiRuntime->accessMember(ad) ? ad.valLong : defValue;
 }
-DustEntity DustData::getRefKey(DustEntity entity, DustEntity token, long idx)
+double DustData::getReal(DustEntity entity, DustEntity token, double defValue, long key)
 {
-    return apiRuntime->getRefKey(entity, token, idx);
+    DustAccessData ad(DUST_ACCESS_GET, entity, token, key);
+    return apiRuntime->accessMember(ad) ? ad.valDouble : defValue;
 }
-DustEntity DustData::getRef(DustEntity entity, DustEntity token, long key)
+DustEntity DustData::getRef(DustEntity entity, DustEntity token, DustEntity defValue, long key)
 {
-    return apiRuntime->getRef(entity, token, key);
+    DustAccessData ad(DUST_ACCESS_GET, entity, token, key);
+    return apiRuntime->accessMember(ad) ? ad.valLong : defValue;
 }
 
+
+bool DustData::setInteger(DustEntity entity, DustEntity token, long val, long key)
+{
+    DustAccessData ad(DUST_ACCESS_SET, entity, token, val, key);
+    return apiRuntime->accessMember(ad);
+}
+bool DustData::setReal(DustEntity entity, DustEntity token, double val, long key)
+{
+    DustAccessData ad(DUST_ACCESS_SET, entity, token, val, key);
+    return apiRuntime->accessMember(ad);
+}
 bool DustData::setRef(DustEntity entity, DustEntity token, DustEntity target, long key)
 {
-    return apiRuntime->setRef(entity, token, target, key);
+    DustAccessData ad(DUST_ACCESS_SET, entity, token, target, key);
+    return apiRuntime->accessMember(ad);
+}
+
+bool DustData::removeInteger(DustEntity entity, DustEntity token, long val, long key)
+{
+    DustAccessData ad(DUST_ACCESS_REMOVE, entity, token, val, key);
+    return apiRuntime->accessMember(ad);
+}
+bool DustData::removeReal(DustEntity entity, DustEntity token, double val, long key)
+{
+    DustAccessData ad(DUST_ACCESS_REMOVE, entity, token, val, key);
+    return apiRuntime->accessMember(ad);
+}
+bool DustData::removeRef(DustEntity entity, DustEntity token, DustEntity target, long key)
+{
+    DustAccessData ad(DUST_ACCESS_REMOVE, entity, token, target, key);
+    return apiRuntime->accessMember(ad);
 }
 
 void* DustData::getNative(DustEntity entity, DustEntity type)

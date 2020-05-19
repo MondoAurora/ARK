@@ -18,11 +18,13 @@ DustEntity TextDictionary::getTextToken(DustEntity txtParent, const char* name)
     }
 
     DustEntity ret = findEntity(words, key);
+//    cout << "Search for " << key.c_str() << " in " << this << " map size " << words.size() << endl;
 
     if ( !ret ) {
         ret = DustData::createEntity(DUST_BOOT_TYPE_PLAINTEXT);
         pStr = (string*) DustData::getNative(ret, DUST_BOOT_TYPE_PLAINTEXT);
         (*pStr) = key;
+        words[key] = ret;
 
         cout << "New key created " << ((string*) DustData::getNative(ret, DUST_BOOT_TYPE_PLAINTEXT))->c_str() << endl;
     } else {

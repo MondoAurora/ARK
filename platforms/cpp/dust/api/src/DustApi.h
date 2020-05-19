@@ -24,17 +24,19 @@ enum DustResultType
     DUST_RESULT_
 };
 
-enum DustChange
+enum DustAccessType
 {
-    DUST_CHANGE_REF_SET = DUST_RESULT_,
-    DUST_CHANGE_REF_REMOVE,
-    DUST_CHANGE_CLEAR,
-    DUST_CHANGE_
+    DUST_ACCESS_GET = DUST_RESULT_,
+    DUST_ACCESS_SET,
+    DUST_ACCESS_MOVE,
+    DUST_ACCESS_REMOVE,
+    DUST_ACCESS_CLEAR,
+    DUST_ACCESS_
 };
 
 enum DustIdeaType
 {
-    DUST_IDEA_UNIT = DUST_CHANGE_,
+    DUST_IDEA_UNIT = DUST_ACCESS_,
     DUST_IDEA_TYPE,
     DUST_IDEA_MEMBER,
     DUST_IDEA_AGENT,
@@ -146,19 +148,22 @@ public:
     static DustEntity getEntityByPath(DustEntity ctx, ...);
     static DustEntity createEntity(DustEntity primaryType);
 
-// Entity value access
-    static int getInteger(DustEntity entity, DustEntity token, int defValue);
-    static double getReal(DustEntity entity, DustEntity token, double defValue);
+    static long getMemberCount(DustEntity entity, DustEntity token);
+    static DustEntity getMemberKey(DustEntity entity, DustEntity token, long idx);
+    static bool clearMember(DustEntity entity, DustEntity token);
+    static bool moveMember(DustEntity entity, DustEntity token, long keyFrom, long keyTo);
 
-    static void setInteger(DustEntity entity, DustEntity token, int val);
-    static void setReal(DustEntity entity, DustEntity token, double val);
+    static long getInteger(DustEntity entity, DustEntity token, long defValue = 0, long key = DUST_ENTITY_APPEND);
+    static double getReal(DustEntity entity, DustEntity token, double defValue = 0.0, long key = DUST_ENTITY_APPEND);
+    static DustEntity getRef(DustEntity entity, DustEntity token, DustEntity defValue = DUST_ENTITY_INVALID, long key = DUST_ENTITY_APPEND);
 
-// Entity reference access
-    static long getRefCount(DustEntity entity, DustEntity token);
-    static DustEntity getRefKey(DustEntity entity, DustEntity token, long idx);
-    static DustEntity getRef(DustEntity entity, DustEntity token, long key = DUST_ENTITY_APPEND);
-
+    static bool setInteger(DustEntity entity, DustEntity token, long val, long key = DUST_ENTITY_APPEND);
+    static bool setReal(DustEntity entity, DustEntity token, double val, long key = DUST_ENTITY_APPEND);
     static bool setRef(DustEntity entity, DustEntity token, DustEntity target, long key = DUST_ENTITY_APPEND);
+
+    static bool removeInteger(DustEntity entity, DustEntity token, long val, long key = DUST_ENTITY_APPEND);
+    static bool removeReal(DustEntity entity, DustEntity token, double val, long key = DUST_ENTITY_APPEND);
+    static bool removeRef(DustEntity entity, DustEntity token, DustEntity target, long key = DUST_ENTITY_APPEND);
 
 // Entity native content access
     static void* getNative(DustEntity entity, DustEntity type);

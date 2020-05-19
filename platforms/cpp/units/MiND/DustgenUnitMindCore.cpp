@@ -39,7 +39,9 @@ DustToken DustUnitMindNarrative::DustConstResultAcceptRead(DustUnitNarrative, "A
 using namespace DustUnitMindDialog;
 DustToken DustUnitMindDialog::DustUnitDialog("Dialog");
 
-DustToken DustUnitMindDialog::DustConstChangeClear(DustUnitDialog, "Clear", DUST_IDEA_CONST);
-DustToken DustUnitMindDialog::DustConstChangeRefSet(DustUnitDialog, "Set", DUST_IDEA_CONST);
-DustToken DustUnitMindDialog::DustConstChangeRefRemove(DustUnitDialog, "Remove", DUST_IDEA_CONST);
+DustToken DustUnitMindDialog::DustConstAccessGet(DustUnitDialog, "Get", DUST_IDEA_CONST);
+DustToken DustUnitMindDialog::DustConstAccessSet(DustUnitDialog, "Set", DUST_IDEA_CONST);
+DustToken DustUnitMindDialog::DustConstAccessMove(DustUnitDialog, "Move", DUST_IDEA_CONST);
+DustToken DustUnitMindDialog::DustConstAccessRemove(DustUnitDialog, "Remove", DUST_IDEA_CONST);
+DustToken DustUnitMindDialog::DustConstAccessClear(DustUnitDialog, "Clear", DUST_IDEA_CONST);
 

@@ -1,7 +1,7 @@
 #ifndef DPLSTLDATA_H_INCLUDED
 #define DPLSTLDATA_H_INCLUDED
 
-#include <DustApi.h>
+#include <DustRuntime.h>
 
 #include <vector>
 #include <map>
@@ -37,7 +37,8 @@ public:
     DplStlDataVariant(DplStlDataTokenInfo &tokenInfo);
     ~DplStlDataVariant();
 
-    void changeRef(DustChange change, DustEntity token, DustEntity source, DustEntity target, DustEntity key);
+//    void changeRef(DustAccessType change, DustEntity token, DustEntity source, DustEntity target, DustEntity key);
+    bool access(DustAccessData &ad);
 
     friend class DplStlRuntime;
     friend class DplStlDataEntity;
@@ -50,13 +51,15 @@ class DplStlDataRef
     DustEntity eToken;
     DustEntity eSource;
     DustEntity eTarget;
+    DustEntity eKey;
 
 public:
-    DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eToken_, DustEntity eSource_, DustEntity eTarget_);
+    DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eToken_, DustEntity eSource_, DustEntity eTarget_, DustEntity eKey_);
     ~DplStlDataRef();
 
     friend class DplStlRuntime;
     friend class DplStlDataEntity;
+    friend class DplStlDataVariant;
 
 };
 
@@ -69,13 +72,15 @@ class DplStlDataEntity
     map<DustEntity, DplStlDataVariant*> model;
     map<DustEntity, void*> native;
 
-    DplStlDataVariant *getVariant(DustChange change, DustEntity token);
+   DplStlDataVariant *getVariant(DustEntity token, bool createIfMissing);
 
 public:
     DplStlDataEntity(DplStlDataStore *pStore_, long id_, DustEntity primaryType_);
     ~DplStlDataEntity();
 
-    void changeRef(DustChange change, DustEntity token, DustEntity target, DustEntity key = DUST_ENTITY_APPEND);
+//    void changeRef(DustAccessType change, DustEntity token, DustEntity target, DustEntity key = DUST_ENTITY_APPEND);
+
+    bool access(DustAccessData &ad);
 
     friend class DplStlRuntime;
 };
