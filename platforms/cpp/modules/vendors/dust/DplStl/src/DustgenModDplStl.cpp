@@ -14,8 +14,7 @@ DustModDplStl::~DustModDplStl()
 
 DustResultType DustModDplStl::DustResourceInit()
 {
-    cout << "DustModDplStl::DustResourceInit" << endl;
-        DustData::setInteger(0,0,333);
+    DustUtils::log() << "DustModDplStl::DustResourceInit" << endl;
 
     return DUST_RESULT_ACCEPT;
 }

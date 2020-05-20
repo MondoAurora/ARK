@@ -5,8 +5,8 @@
 using namespace std;
 
 
-DplStlDataVariant::DplStlDataVariant(DplStlDataTokenInfo &tokenInfo)
-    :valType(tokenInfo.valType), collType(tokenInfo.collType), collection(0)
+DplStlDataVariant::DplStlDataVariant(DustTokenInfo *pTI)
+    :pTokenInfo(pTI), collection(0)
 {
     value.valRef = 0;
 }
@@ -20,34 +20,30 @@ bool DplStlDataVariant::access(DustAccessData &ad)
     bool ret = false;
     DplStlDataValue *pVal = &value;
 
-    if ( !valType ) {
-        valType = ad.valType;
-    }
-
     switch ( ad.access )
     {
-       case DUST_ACCESS_GET:
-            ret = true;
-            switch ( valType )
-            {
-            case DUST_VAL_INTEGER:
-                ad.valLong = pVal->valLong;
-                break;
-            case DUST_VAL_REAL:
-                ad.valDouble = pVal->valDouble;
-                break;
-            case DUST_VAL_REF:
-                ad.valLong = pVal->valRef->eTarget;
-                break;
-            case DUST_VAL_:
-                ret = false;
-                break;
-            }
+    case DUST_ACCESS_GET:
+        ret = true;
+        switch ( pTokenInfo->valType )
+        {
+        case DUST_VAL_INTEGER:
+            ad.valLong = pVal->valLong;
+            break;
+        case DUST_VAL_REAL:
+            ad.valDouble = pVal->valDouble;
+            break;
+        case DUST_VAL_REF:
+            ad.valLong = pVal->valRef->eTarget;
+            break;
+        case DUST_VAL_:
+            ret = false;
+            break;
+        }
         break;
     case DUST_ACCESS_SET:
         ret = true;
 
-        switch ( valType )
+        switch ( pTokenInfo->valType )
         {
         case DUST_VAL_INTEGER:
             pVal->valLong = ad.valLong;
@@ -70,16 +66,6 @@ bool DplStlDataVariant::access(DustAccessData &ad)
     return ret;
 }
 
-//void DplStlDataVariant::changeRef(DustAccessType change, DustEntity token, DustEntity source, DustEntity target, DustEntity key)
-//{
-//    if ( value.valRef )
-//    {
-//        delete value.valRef;
-//    }
-//
-//    value.valRef = new DplStlDataRef(this, token, source, target, key);
-//}
-
 DplStlDataRef::DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eToken_, DustEntity eSource_, DustEntity eTarget_, DustEntity eKey_)
     :pVariant(pVariant_), eToken(eToken_), eSource(eSource_), eTarget(eTarget_), eKey(eKey_)
 {}
@@ -91,6 +77,11 @@ DplStlDataRef::~DplStlDataRef()
 DplStlDataEntity::DplStlDataEntity(DplStlDataStore *pStore_, long id_, DustEntity primaryType_)
     :pStore(pStore_), id(id_), primaryType(primaryType_)
 {
+    DustAccessData ad(id_, DUST_BOOT_INT_ID, id_);
+    access(ad);
+    ad.token = DUST_BOOT_REF_PRIMARYTYPE;
+    ad.valLong = primaryType_;
+    access(ad);
 }
 
 DplStlDataEntity::~DplStlDataEntity()
@@ -103,7 +94,7 @@ DplStlDataVariant *DplStlDataEntity::getVariant(DustEntity token, bool createIfM
 
     if ( !pVar && createIfMissing)
     {
-        pVar = new DplStlDataVariant(pStore->tokenInfo[token]);
+        pVar = new DplStlDataVariant(pStore->getTokenInfo(token));
         model[token] = pVar;
     }
 
@@ -133,23 +124,6 @@ bool DplStlDataEntity::access(DustAccessData &ad)
     return ret;
 }
 
-
-//void DplStlDataEntity::changeRef(DustAccessType change, DustEntity token, DustEntity target, DustEntity key)
-//{
-//    DplStlDataVariant *pVar = getVariant(token, DUST_ACCESS_SET == change);
-//
-//    switch( change )
-//    {
-//    case DUST_ACCESS_SET:
-//        pVar->changeRef(change, token, id, target, key);
-//        break;
-//    default:
-//        break;
-//    }
-//
-//}
-
-
 DplStlDataStore::DplStlDataStore(long nextId_)
     :nextId(nextId_)
 {
@@ -158,6 +132,24 @@ DplStlDataStore::DplStlDataStore(long nextId_)
 DplStlDataStore::~DplStlDataStore()
 {
 
+}
+
+DustTokenInfo* DplStlDataStore::getTokenInfo(DustEntity token)
+{
+    DustTokenInfo* pTI = tokenInfo[token];
+
+    if ( !pTI )
+    {
+        DplStlDataEntity *pTokenEntity = getEntity(token);
+        cout << "Now I should load pTI info from " << token << " : " << pTokenEntity << endl;
+
+        DustValType vT = DUST_VAL_INTEGER;
+        DustCollType cT = DUST_COLL_SINGLE;
+
+        pTI = new DustTokenInfo(vT, cT);
+    }
+
+    return pTI;
 }
 
 DplStlDataEntity* DplStlDataStore::getEntity(long id, DustEntity primaryType)

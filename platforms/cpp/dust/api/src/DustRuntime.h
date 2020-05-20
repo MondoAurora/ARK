@@ -16,8 +16,12 @@ enum DustBoot
 
     DUST_BOOT_UNIT_MODEL,
     DUST_BOOT_TYPE_ENTITY,
+    DUST_BOOT_REF_UNIT,
+    DUST_BOOT_INT_ID,
+    DUST_BOOT_REF_PRIMARYTYPE,
     DUST_BOOT_REF_GLOBALID,
     DUST_BOOT_REF_OWNER,
+    DUST_BOOT_REF_TAGS,
     DUST_BOOT_
 };
 
@@ -52,7 +56,6 @@ public:
     DustAccessType access;
     DustEntity entity;
     DustEntity token;
-    DustValType valType;
     long key;
 
     union
@@ -62,14 +65,20 @@ public:
     };
 
     DustAccessData(DustAccessType a, DustEntity e, DustEntity t, long k = DUST_ENTITY_APPEND, long k2 = DUST_ENTITY_APPEND)
-        : access(a), entity(e), token(t), valType(DUST_VAL_), key(k), valLong(k2) {}
+        : access(a), entity(e), token(t), key(k), valLong(k2) {}
 
-    DustAccessData(DustEntity e, DustEntity t, DustValType vt, long v, long k = DUST_ENTITY_APPEND)
-        : access(DUST_ACCESS_SET), entity(e), token(t), valType(vt), key(k), valLong(v) {}
+    DustAccessData(DustEntity e, DustEntity t, long v, long k = DUST_ENTITY_APPEND)
+        : access(DUST_ACCESS_SET), entity(e), token(t), key(k), valLong(v) {}
 
     DustAccessData(DustEntity e, DustEntity t, double v, long k = DUST_ENTITY_APPEND)
-        : access(DUST_ACCESS_SET), entity(e), token(t), valType(DUST_VAL_REAL), key(k), valDouble(v) { }
+        : access(DUST_ACCESS_SET), entity(e), token(t), key(k), valDouble(v) { }
 
+    void setValLong(DustEntity t, long v, long k = DUST_ENTITY_APPEND)
+    {
+        token = t;
+        valLong = v;
+        key = k;
+    }
 };
 
 extern "C" class DustRuntime: public DustNativeLogic

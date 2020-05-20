@@ -7,8 +7,12 @@ namespace DustUnitMindModel {
 extern DustToken DustUnitModel;
 
 extern DustToken DustTypeEntity;
+extern DustToken DustRefUnit;
+extern DustToken DustIntId;
+extern DustToken DustRefPrimaryType;
 extern DustToken DustRefGlobalId;
 extern DustToken DustRefOwner;
+extern DustToken DustRefTags;
 
 extern DustToken DustTypeUnit;
 };
@@ -19,13 +23,13 @@ extern DustToken DustUnitIdea;
 extern DustToken DustTypeType;
 extern DustToken DustTypeMember;
 extern DustToken DustTypeAgent;
-extern DustToken DustTypeConst;
 extern DustToken DustTypeTag;
 
 extern DustToken DustConstValInteger;
 extern DustToken DustConstValReal;
 extern DustToken DustConstValRef;
 
+extern DustToken DustConstCollSingle;
 extern DustToken DustConstCollSet;
 extern DustToken DustConstCollArr;
 extern DustToken DustConstCollMap;

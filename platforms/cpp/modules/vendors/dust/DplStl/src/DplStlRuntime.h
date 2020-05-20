@@ -16,8 +16,8 @@ extern "C" class DplStlRuntime: public DustRuntime
     DplStlDataEntity* resolveEntity(DustEntity entity);
 
     DustEntity getToken(DustEntity parent,  const char* name);
-    DplStlDataEntity* registerGlobalEntity(DustEntity txtToken, DustEntity primaryType, DustEntity parent = DUST_ENTITY_INVALID, DustEntity constId = DUST_ENTITY_APPEND);
 
+    DplStlDataEntity* registerGlobalEntity(DustEntity txtToken, DustEntity primaryType, DustEntity parent = DUST_ENTITY_INVALID, DustEntity constId = DUST_ENTITY_APPEND);
 
 public:
     DplStlRuntime();

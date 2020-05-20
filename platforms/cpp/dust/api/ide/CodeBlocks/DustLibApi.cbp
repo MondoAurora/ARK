@@ -40,6 +40,8 @@
 		<Unit filename="../../src/DustApi.h" />
 		<Unit filename="../../src/DustModule.h" />
 		<Unit filename="../../src/DustRuntime.h" />
+		<Unit filename="../../src/DustUtils.cpp" />
+		<Unit filename="../../src/DustUtils.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

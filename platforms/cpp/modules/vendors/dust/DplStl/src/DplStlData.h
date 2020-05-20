@@ -11,6 +11,17 @@ using namespace std;
 class DplStlDataRef;
 class DplStlDataStore;
 
+class DustTokenInfo
+{
+public:
+    DustValType valType;
+    DustCollType collType;
+
+    DustTokenInfo(DustValType valType, DustCollType collType)
+        : valType(valType), collType(collType)
+    {};
+};
+
 union DplStlDataValue
 {
     long valLong;
@@ -18,26 +29,17 @@ union DplStlDataValue
     DplStlDataRef *valRef;
 };
 
-class DplStlDataTokenInfo
-{
-public:
-    DustValType valType;
-    DustCollType collType;
-};
-
 class DplStlDataVariant
 {
-    DustValType valType;
-    DustCollType collType;
+    DustTokenInfo *pTokenInfo;
 
     DplStlDataValue value;
     vector<DplStlDataValue*>* collection;
 
 public:
-    DplStlDataVariant(DplStlDataTokenInfo &tokenInfo);
+    DplStlDataVariant(DustTokenInfo *pTI);
     ~DplStlDataVariant();
 
-//    void changeRef(DustAccessType change, DustEntity token, DustEntity source, DustEntity target, DustEntity key);
     bool access(DustAccessData &ad);
 
     friend class DplStlRuntime;
@@ -72,13 +74,11 @@ class DplStlDataEntity
     map<DustEntity, DplStlDataVariant*> model;
     map<DustEntity, void*> native;
 
-   DplStlDataVariant *getVariant(DustEntity token, bool createIfMissing);
+    DplStlDataVariant *getVariant(DustEntity token, bool createIfMissing);
 
 public:
     DplStlDataEntity(DplStlDataStore *pStore_, long id_, DustEntity primaryType_);
     ~DplStlDataEntity();
-
-//    void changeRef(DustAccessType change, DustEntity token, DustEntity target, DustEntity key = DUST_ENTITY_APPEND);
 
     bool access(DustAccessData &ad);
 
@@ -91,15 +91,18 @@ class DplStlDataStore
 
     long nextId;
     map<DustEntity, DplStlDataEntity*> entities;
-    map<DustEntity, DplStlDataTokenInfo> tokenInfo;
+    map<DustEntity, DustTokenInfo*> tokenInfo;
 
 public:
     DplStlDataStore(long nextId_);
     ~DplStlDataStore();
 
+    DustTokenInfo* getTokenInfo(DustEntity token);
+
     DplStlDataEntity* getEntity(long id = DUST_ENTITY_APPEND, DustEntity primaryType = DUST_ENTITY_INVALID);
 
     friend class DplStlDataEntity;
+    friend class DplStlRuntime;
 };
 
 #endif // DPLSTLDATA_H_INCLUDED

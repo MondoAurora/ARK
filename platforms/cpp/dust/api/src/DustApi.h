@@ -24,9 +24,20 @@ enum DustResultType
     DUST_RESULT_
 };
 
+enum DustEventType
+{
+    DUST_EVENT_CRITICAL = DUST_RESULT_,
+    DUST_EVENT_ERROR,
+    DUST_EVENT_WARNING,
+    DUST_EVENT_INFO,
+    DUST_EVENT_TRACE,
+    DUST_EVENT_DEBUG,
+    DUST_EVENT_
+};
+
 enum DustAccessType
 {
-    DUST_ACCESS_GET = DUST_RESULT_,
+    DUST_ACCESS_GET = DUST_EVENT_,
     DUST_ACCESS_SET,
     DUST_ACCESS_MOVE,
     DUST_ACCESS_REMOVE,
@@ -40,7 +51,6 @@ enum DustIdeaType
     DUST_IDEA_TYPE,
     DUST_IDEA_MEMBER,
     DUST_IDEA_AGENT,
-    DUST_IDEA_CONST,
     DUST_IDEA_TAG,
 
     DUST_IDEA_
@@ -106,7 +116,8 @@ public:
 
 class DustToken;
 
-extern "C" class DustToken {
+extern "C" class DustToken
+{
     DustIdeaType ideaType;
     const char* name;
     DustToken* parent;
@@ -114,23 +125,36 @@ extern "C" class DustToken {
     DustValType valType;
     DustCollType collType;
 
-   DustEntity entity;
+    DustEntity entity;
 
 public:
     DustToken(const char* unitName)
-    : ideaType(DUST_IDEA_UNIT), name(unitName), parent(0),
-        valType(DUST_VAL_), collType(DUST_COLL_),
-        entity(DUST_ENTITY_APPEND) {}
+        : ideaType(DUST_IDEA_UNIT), name(unitName), parent(0),
+          valType(DUST_VAL_), collType(DUST_COLL_),
+          entity(DUST_ENTITY_APPEND) {}
 
     DustToken(DustToken &unit, const char* ideaName, DustIdeaType ideaType)
-    : ideaType(ideaType), name(ideaName), parent(&unit),
-        valType(DUST_VAL_), collType(DUST_COLL_),
-        entity(DUST_ENTITY_APPEND) {}
+        : ideaType(ideaType), name(ideaName), parent(&unit),
+          valType(DUST_VAL_), collType(DUST_COLL_),
+          entity(DUST_ENTITY_APPEND) {}
 
     DustToken(DustToken &parent_, const char* memberName, DustValType valType_, DustCollType collType_ = DUST_COLL_SINGLE)
-    : ideaType(DUST_IDEA_MEMBER), name(memberName), parent(&parent_),
-        valType(valType_), collType(collType_),
-        entity(DUST_ENTITY_APPEND) {}
+        : ideaType(DUST_IDEA_MEMBER), name(memberName), parent(&parent_),
+          valType(valType_), collType(collType_),
+          entity(DUST_ENTITY_APPEND) {}
+
+    DustIdeaType getIdeaType() const
+    {
+        return ideaType;
+    }
+    DustValType getValType() const
+    {
+        return valType;
+    }
+    DustCollType getCollType() const
+    {
+        return collType;
+    }
 
     operator DustEntity();
 
@@ -141,7 +165,7 @@ public:
 class DustData
 {
 private:
-        static DustEntity getTokenEntity(DustToken* pToken, DustEntity constId = DUST_ENTITY_APPEND);
+    static DustEntity getTokenEntity(DustToken* pToken, DustEntity constId = DUST_ENTITY_APPEND);
 
 public:
 // Entity creation and access
@@ -168,8 +192,8 @@ public:
 // Entity native content access
     static void* getNative(DustEntity entity, DustEntity type);
 
-friend class DustToken;
-friend class DustRuntime;
+    friend class DustToken;
+    friend class DustRuntime;
 };
 
 #endif /* DUSTAPI_H_ */

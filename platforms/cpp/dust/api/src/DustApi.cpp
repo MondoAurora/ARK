@@ -126,7 +126,7 @@ DustEntity DustData::getRef(DustEntity entity, DustEntity token, DustEntity defV
 
 bool DustData::setInteger(DustEntity entity, DustEntity token, long val, long key)
 {
-    DustAccessData ad(entity, token, DUST_VAL_INTEGER, val, key);
+    DustAccessData ad(entity, token, val, key);
     return apiRuntime->accessMember(ad);
 }
 bool DustData::setReal(DustEntity entity, DustEntity token, double val, long key)
@@ -136,7 +136,7 @@ bool DustData::setReal(DustEntity entity, DustEntity token, double val, long key
 }
 bool DustData::setRef(DustEntity entity, DustEntity token, DustEntity target, long key)
 {
-    DustAccessData ad(entity, token, DUST_VAL_REF, target, key);
+    DustAccessData ad(entity, token, target, key);
     return apiRuntime->accessMember(ad);
 }
 

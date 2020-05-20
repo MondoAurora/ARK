@@ -1,7 +1,7 @@
 #ifndef DUSTMODULE_H_
 #define DUSTMODULE_H_
 
-#include "DustApi.h"
+#include "DustUtils.h"
 
 #define DUST_LAST_CONST_MODULE DUST_LAST_CONST_API
 
