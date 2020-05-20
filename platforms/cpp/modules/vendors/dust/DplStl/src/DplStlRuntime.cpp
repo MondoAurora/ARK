@@ -189,7 +189,7 @@ long DplStlRuntime::getMemberCount(DustEntity entity, DustEntity token)
         DplStlDataVariant *pVar = pEntity->getVariant(token, false);
         if ( pVar )
         {
-            c = pVar->collection ? pVar->collection->size() : 1;
+            c = pVar->pColl ? pVar->pColl->size() : 1;
         }
     }
 
@@ -207,9 +207,9 @@ DustEntity DplStlRuntime::getMemberKey(DustEntity entity, DustEntity token, long
         if ( pEntity )
         {
             DplStlDataVariant *pVar = pEntity->getVariant(token, false);
-            if ( pVar && pVar->collection && ( (unsigned) idx < pVar->collection->size()))
+            if ( pVar && pVar->pColl && ( (unsigned) idx < pVar->pColl->size()))
             {
-                key = pVar->collection->at(idx)->valRef->eKey;
+                key = pVar->pColl->at(idx)->valRef->eKey;
             }
         }
     }

@@ -4,9 +4,60 @@
 
 using namespace std;
 
+DplStlDataValue::DplStlDataValue()
+    :valLong(0) {}
+
+bool DplStlDataValue::match(DustValType vT, DustAccessData &ad)
+{
+    switch ( vT )
+    {
+    case DUST_VAL_INTEGER:
+        return ad.valLong == valLong;
+    case DUST_VAL_REAL:
+        return ad.valDouble == valDouble;
+    case DUST_VAL_REF:
+        return ad.valLong == valRef->eTarget;
+    default:
+        return false;
+    }
+}
+
+bool DplStlDataValue::loadFrom(DustValType vT, DustAccessData &ad)
+{
+    switch ( vT )
+    {
+    case DUST_VAL_INTEGER:
+        valLong = ad.valLong;
+        return true;
+    case DUST_VAL_REAL:
+        valDouble = ad.valDouble;
+        return true;
+    default:
+        DustUtils::log(DUST_EVENT_ERROR) << "Improper valType";
+        return false;
+    }
+}
+
+bool DplStlDataValue::writeTo(DustValType vT, DustAccessData &ad)
+{
+    switch ( vT )
+    {
+    case DUST_VAL_INTEGER:
+        ad.valLong = valLong;
+        return true;
+    case DUST_VAL_REAL:
+        ad.valDouble = valDouble;
+        return true;
+    case DUST_VAL_REF:
+        ad.valLong = valRef->eTarget;
+        return true;
+    default:
+        return false;
+    }
+}
 
 DplStlDataVariant::DplStlDataVariant(DustTokenInfo *pTI)
-    :pTokenInfo(pTI), collection(0)
+    :pTokenInfo(pTI), pColl(0)
 {
     value.valRef = 0;
 }
@@ -15,48 +66,61 @@ DplStlDataVariant::~DplStlDataVariant()
 {
 };
 
+DplStlDataValue* DplStlDataVariant::locate(DustAccessData &ad)
+{
+    DplStlDataValue* ret = &value;
+
+    if ( DUST_COLL_SINGLE != pTokenInfo->collType )
+    {
+        if ( !pColl )
+        {
+            if ( DUST_ENTITY_APPEND == ad.key )
+            {
+                return &value;
+            }
+            else
+            {
+                switch (  pTokenInfo->collType )
+                {
+                case DUST_COLL_SET:
+                    break;
+                case DUST_COLL_ARR:
+                    break;
+                case DUST_COLL_MAP:
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+        else
+        {
+        }
+    }
+
+    return ret;
+}
+
+
 bool DplStlDataVariant::access(DustAccessData &ad)
 {
     bool ret = false;
-    DplStlDataValue *pVal = &value;
+    DplStlDataValue *pVal = locate(ad);
 
     switch ( ad.access )
     {
     case DUST_ACCESS_GET:
-        ret = true;
-        switch ( pTokenInfo->valType )
-        {
-        case DUST_VAL_INTEGER:
-            ad.valLong = pVal->valLong;
-            break;
-        case DUST_VAL_REAL:
-            ad.valDouble = pVal->valDouble;
-            break;
-        case DUST_VAL_REF:
-            ad.valLong = pVal->valRef->eTarget;
-            break;
-        case DUST_VAL_:
-            ret = false;
-            break;
-        }
+        ret = pVal->writeTo(pTokenInfo->valType, ad);
         break;
     case DUST_ACCESS_SET:
-        ret = true;
-
-        switch ( pTokenInfo->valType )
+        if ( DUST_VAL_REF == pTokenInfo->valType )
         {
-        case DUST_VAL_INTEGER:
-            pVal->valLong = ad.valLong;
-            break;
-        case DUST_VAL_REAL:
-            pVal->valDouble = ad.valDouble;
-            break;
-        case DUST_VAL_REF:
             pVal->valRef = new DplStlDataRef(this, ad.token, ad.entity, ad.valLong, ad.key);
-            break;
-        case DUST_VAL_:
-            ret = false;
-            break;
+            ret = true;
+        }
+        else
+        {
+            ret = pVal->loadFrom(pTokenInfo->valType, ad);
         }
         break;
     default:
@@ -101,20 +165,38 @@ DplStlDataVariant *DplStlDataEntity::getVariant(DustEntity token, bool createIfM
     return pVar;
 }
 
+void DplStlDataEntity::deleteVariant(DustEntity token, DplStlDataVariant *pVar)
+{
+    delete pVar;
+    model.erase(token);
+
+}
+
 bool DplStlDataEntity::access(DustAccessData &ad)
 {
     bool ret = false;
 
     DplStlDataVariant *pVar = getVariant(ad.token, DUST_ACCESS_SET == ad.access);
+    bool single = ( DUST_COLL_SINGLE == pVar->pTokenInfo->collType );
 
     if ( pVar )
     {
         switch ( ad.access )
         {
         case DUST_ACCESS_CLEAR:
-            delete pVar;
-            model.erase(ad.token);
+            deleteVariant(ad.token, pVar);
             ret = true;
+            break;
+        case DUST_ACCESS_REMOVE:
+            if ( single )
+            {
+                deleteVariant(ad.token, pVar);
+                ret = true;
+            }
+            else
+            {
+                ret = pVar->access(ad);
+            }
             break;
         default:
             ret = pVar->access(ad);

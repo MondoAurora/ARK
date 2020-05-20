@@ -22,11 +22,24 @@ public:
     {};
 };
 
-union DplStlDataValue
+class DplStlDataValue
 {
-    long valLong;
-    double valDouble;
-    DplStlDataRef *valRef;
+    union
+    {
+        long valLong;
+        double valDouble;
+        DplStlDataRef *valRef;
+    };
+
+public:
+    DplStlDataValue();
+
+    bool match(DustValType vT, DustAccessData &ad);
+    bool loadFrom(DustValType vT, DustAccessData &ad);
+    bool writeTo(DustValType vT, DustAccessData &ad);
+
+    friend class DplStlDataVariant;
+    friend class DplStlRuntime;
 };
 
 class DplStlDataVariant
@@ -34,7 +47,9 @@ class DplStlDataVariant
     DustTokenInfo *pTokenInfo;
 
     DplStlDataValue value;
-    vector<DplStlDataValue*>* collection;
+    vector<DplStlDataValue*>* pColl;
+
+    DplStlDataValue* locate(DustAccessData &ad);
 
 public:
     DplStlDataVariant(DustTokenInfo *pTI);
@@ -62,7 +77,7 @@ public:
     friend class DplStlRuntime;
     friend class DplStlDataEntity;
     friend class DplStlDataVariant;
-
+    friend class DplStlDataValue;
 };
 
 class DplStlDataEntity
@@ -75,6 +90,8 @@ class DplStlDataEntity
     map<DustEntity, void*> native;
 
     DplStlDataVariant *getVariant(DustEntity token, bool createIfMissing);
+
+    void deleteVariant(DustEntity token, DplStlDataVariant *var);
 
 public:
     DplStlDataEntity(DplStlDataStore *pStore_, long id_, DustEntity primaryType_);
