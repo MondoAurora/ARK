@@ -11,19 +11,21 @@ using namespace std;
 class DplStlDataRef;
 class DplStlDataStore;
 
-class DustTokenInfo
+class DplStlTokenInfo
 {
 public:
     DustValType valType;
     DustCollType collType;
 
-    DustTokenInfo(DustValType valType, DustCollType collType)
+    DplStlTokenInfo(DustValType valType, DustCollType collType)
         : valType(valType), collType(collType)
     {};
 };
 
 class DplStlDataValue
 {
+    DustEntity key;
+
     union
     {
         long valLong;
@@ -33,10 +35,13 @@ class DplStlDataValue
 
 public:
     DplStlDataValue();
+    DplStlDataValue(DustValType vT, const DplStlDataValue &src);
 
     bool match(DustValType vT, DustAccessData &ad);
     bool loadFrom(DustValType vT, DustAccessData &ad);
     bool writeTo(DustValType vT, DustAccessData &ad);
+
+    bool setRef(DustEntity key, DplStlDataRef *pRef);
 
     friend class DplStlDataVariant;
     friend class DplStlRuntime;
@@ -44,15 +49,17 @@ public:
 
 class DplStlDataVariant
 {
-    DustTokenInfo *pTokenInfo;
+    DplStlTokenInfo *pTokenInfo;
 
     DplStlDataValue value;
     vector<DplStlDataValue*>* pColl;
 
-    DplStlDataValue* locate(DustAccessData &ad);
+    bool matchValue(DustValType vt, DustCollType ct, DustAccessData &ad, DplStlDataValue* pVal);
+    DplStlDataValue* locateForOverride(DustAccessData &ad);
+    DplStlDataValue * add(DustValType vt, DustAccessData &ad);
 
 public:
-    DplStlDataVariant(DustTokenInfo *pTI);
+    DplStlDataVariant(DplStlTokenInfo *pTI);
     ~DplStlDataVariant();
 
     bool access(DustAccessData &ad);
@@ -68,10 +75,9 @@ class DplStlDataRef
     DustEntity eToken;
     DustEntity eSource;
     DustEntity eTarget;
-    DustEntity eKey;
 
 public:
-    DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eToken_, DustEntity eSource_, DustEntity eTarget_, DustEntity eKey_);
+    DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eToken_, DustEntity eSource_, DustEntity eTarget_);
     ~DplStlDataRef();
 
     friend class DplStlRuntime;
@@ -108,13 +114,13 @@ class DplStlDataStore
 
     long nextId;
     map<DustEntity, DplStlDataEntity*> entities;
-    map<DustEntity, DustTokenInfo*> tokenInfo;
+    map<DustEntity, DplStlTokenInfo*> tokenInfo;
 
 public:
     DplStlDataStore(long nextId_);
     ~DplStlDataStore();
 
-    DustTokenInfo* getTokenInfo(DustEntity token);
+    DplStlTokenInfo* getTokenInfo(DustEntity token);
 
     DplStlDataEntity* getEntity(long id = DUST_ENTITY_APPEND, DustEntity primaryType = DUST_ENTITY_INVALID);
 

@@ -72,7 +72,7 @@ DustResultType DplStlRuntime::DustResourceInit()
         DustToken* pT = it->second;
         if ( DUST_IDEA_MEMBER == pT->getIdeaType() )
         {
-            store.tokenInfo[it->first] = new DustTokenInfo(pT->getValType(), pT->getCollType());
+            store.tokenInfo[it->first] = new DplStlTokenInfo(pT->getValType(), pT->getCollType());
         }
     }
 
@@ -209,7 +209,7 @@ DustEntity DplStlRuntime::getMemberKey(DustEntity entity, DustEntity token, long
             DplStlDataVariant *pVar = pEntity->getVariant(token, false);
             if ( pVar && pVar->pColl && ( (unsigned) idx < pVar->pColl->size()))
             {
-                key = pVar->pColl->at(idx)->valRef->eKey;
+                key = pVar->pColl->at(idx)->key;
             }
         }
     }

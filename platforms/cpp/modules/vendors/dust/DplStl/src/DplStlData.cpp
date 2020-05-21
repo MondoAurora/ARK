@@ -5,10 +5,35 @@
 using namespace std;
 
 DplStlDataValue::DplStlDataValue()
-    :valLong(0) {}
+    :key(DUST_ENTITY_APPEND), valLong(0) {}
+
+DplStlDataValue::DplStlDataValue(DustValType vT, const DplStlDataValue &src)
+{
+    key = src.key;
+
+    switch ( vT )
+    {
+    case DUST_VAL_INTEGER:
+        valLong = src.valLong;
+        break;
+    case DUST_VAL_REAL:
+        valDouble = src.valDouble;
+        break;
+    case DUST_VAL_REF:
+        valRef = src.valRef;
+        break;
+    default:
+        break;
+    }
+}
 
 bool DplStlDataValue::match(DustValType vT, DustAccessData &ad)
 {
+    if ( key != ad.key )
+    {
+        return false;
+    }
+
     switch ( vT )
     {
     case DUST_VAL_INTEGER:
@@ -16,7 +41,7 @@ bool DplStlDataValue::match(DustValType vT, DustAccessData &ad)
     case DUST_VAL_REAL:
         return ad.valDouble == valDouble;
     case DUST_VAL_REF:
-        return ad.valLong == valRef->eTarget;
+        return valRef ? ad.valLong == valRef->eTarget : false;
     default:
         return false;
     }
@@ -24,6 +49,8 @@ bool DplStlDataValue::match(DustValType vT, DustAccessData &ad)
 
 bool DplStlDataValue::loadFrom(DustValType vT, DustAccessData &ad)
 {
+    key = ad.key;
+
     switch ( vT )
     {
     case DUST_VAL_INTEGER:
@@ -40,6 +67,8 @@ bool DplStlDataValue::loadFrom(DustValType vT, DustAccessData &ad)
 
 bool DplStlDataValue::writeTo(DustValType vT, DustAccessData &ad)
 {
+    ad.key = key;
+
     switch ( vT )
     {
     case DUST_VAL_INTEGER:
@@ -56,7 +85,19 @@ bool DplStlDataValue::writeTo(DustValType vT, DustAccessData &ad)
     }
 }
 
-DplStlDataVariant::DplStlDataVariant(DustTokenInfo *pTI)
+bool DplStlDataValue::setRef(DustEntity k, DplStlDataRef *pR)
+{
+    if ( valRef )
+    {
+        delete valRef;
+    }
+    key = k;
+    valRef = pR;
+
+    return true;
+}
+
+DplStlDataVariant::DplStlDataVariant(DplStlTokenInfo *pTI)
     :pTokenInfo(pTI), pColl(0)
 {
     value.valRef = 0;
@@ -66,62 +107,106 @@ DplStlDataVariant::~DplStlDataVariant()
 {
 };
 
-DplStlDataValue* DplStlDataVariant::locate(DustAccessData &ad)
+bool DplStlDataVariant::matchValue(DustValType vt, DustCollType ct, DustAccessData &ad, DplStlDataValue* pVal)
+{
+    switch (  ct )
+    {
+    case DUST_COLL_SET:
+        return pVal->match(vt, ad);
+    case DUST_COLL_MAP:
+        return pVal->key == ad.key;
+    default:
+        return false;
+    }
+}
+
+DplStlDataValue* DplStlDataVariant::locateForOverride(DustAccessData &ad)
 {
     DplStlDataValue* ret = &value;
+    DustCollType ct = pTokenInfo->collType;
 
-    if ( DUST_COLL_SINGLE != pTokenInfo->collType )
+    if ( DUST_COLL_SINGLE != ct )
     {
-        if ( !pColl )
+        DustValType vt = pTokenInfo->valType;
+        if ( pColl )
         {
-            if ( DUST_ENTITY_APPEND == ad.key )
+            int s = pColl->size();
+            DplStlDataValue* pv;
+
+            switch (  ct )
             {
-                return &value;
-            }
-            else
-            {
-                switch (  pTokenInfo->collType )
+            case DUST_COLL_ARR:
+                return ((0 <= ad.key) && (ad.key < s)) ? pColl->at(ad.key) : NULL;
+            case DUST_COLL_SET:
+            case DUST_COLL_MAP:
+                for ( int i = 0; i < s; ++i )
                 {
-                case DUST_COLL_SET:
-                    break;
-                case DUST_COLL_ARR:
-                    break;
-                case DUST_COLL_MAP:
-                    break;
-                default:
-                    break;
+                    pv = pColl->at(i);
+                    if ( matchValue(vt, ct, ad, pv))
+                    {
+                        return pv;
+                    }
                 }
+                break;
+            default:
+                break;
             }
         }
         else
         {
+            if ( !matchValue(vt, ct, ad, ret))
+            {
+                ret = NULL;
+            }
         }
     }
 
     return ret;
 }
 
+DplStlDataValue * DplStlDataVariant::add(DustValType vt, DustAccessData &ad)
+{
+    if ( !pColl )
+    {
+        pColl = new vector<DplStlDataValue*>();
+        pColl->push_back(new DplStlDataValue(vt, value));
+    }
+
+    DplStlDataValue *pv = new DplStlDataValue();
+    pv->loadFrom(vt, ad);
+    pColl->push_back(pv);
+
+    return pv;
+}
 
 bool DplStlDataVariant::access(DustAccessData &ad)
 {
     bool ret = false;
-    DplStlDataValue *pVal = locate(ad);
+    DustValType vt = pTokenInfo->valType;
+    DplStlDataValue *pVal = locateForOverride(ad);
 
     switch ( ad.access )
     {
     case DUST_ACCESS_GET:
-        ret = pVal->writeTo(pTokenInfo->valType, ad);
+        ret = pVal ? pVal->writeTo(vt, ad) : false;
         break;
     case DUST_ACCESS_SET:
-        if ( DUST_VAL_REF == pTokenInfo->valType )
+        if ( pVal )
         {
-            pVal->valRef = new DplStlDataRef(this, ad.token, ad.entity, ad.valLong, ad.key);
-            ret = true;
+            if ( !pVal->match(vt, ad))
+            {
+                ret = ( DUST_VAL_REF == vt )
+                      ? pVal->setRef(ad.key, new DplStlDataRef(this, ad.token, ad.entity, ad.valLong))
+                      : pVal->loadFrom(vt, ad);
+            }
         }
         else
         {
-            ret = pVal->loadFrom(pTokenInfo->valType, ad);
+            add(vt, ad);
+            ret = true;
         }
+        break;
+    case DUST_ACCESS_REMOVE:
         break;
     default:
         break;
@@ -130,8 +215,8 @@ bool DplStlDataVariant::access(DustAccessData &ad)
     return ret;
 }
 
-DplStlDataRef::DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eToken_, DustEntity eSource_, DustEntity eTarget_, DustEntity eKey_)
-    :pVariant(pVariant_), eToken(eToken_), eSource(eSource_), eTarget(eTarget_), eKey(eKey_)
+DplStlDataRef::DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eToken_, DustEntity eSource_, DustEntity eTarget_)
+    :pVariant(pVariant_), eToken(eToken_), eSource(eSource_), eTarget(eTarget_)
 {}
 
 DplStlDataRef::~DplStlDataRef()
@@ -196,6 +281,10 @@ bool DplStlDataEntity::access(DustAccessData &ad)
             else
             {
                 ret = pVar->access(ad);
+                if ( ret && pVar->pColl && pVar->pColl->empty() )
+                {
+                    deleteVariant(ad.token, pVar);
+                }
             }
             break;
         default:
@@ -216,9 +305,9 @@ DplStlDataStore::~DplStlDataStore()
 
 }
 
-DustTokenInfo* DplStlDataStore::getTokenInfo(DustEntity token)
+DplStlTokenInfo* DplStlDataStore::getTokenInfo(DustEntity token)
 {
-    DustTokenInfo* pTI = tokenInfo[token];
+    DplStlTokenInfo* pTI = tokenInfo[token];
 
     if ( !pTI )
     {
@@ -228,7 +317,7 @@ DustTokenInfo* DplStlDataStore::getTokenInfo(DustEntity token)
         DustValType vT = DUST_VAL_INTEGER;
         DustCollType cT = DUST_COLL_SINGLE;
 
-        pTI = new DustTokenInfo(vT, cT);
+        pTI = new DplStlTokenInfo(vT, cT);
     }
 
     return pTI;
