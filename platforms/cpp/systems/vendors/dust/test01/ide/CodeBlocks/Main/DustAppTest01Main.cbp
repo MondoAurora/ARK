@@ -40,6 +40,8 @@
 			<Add library="$(#ark_debug.LIB)/libDustLibApi.a" />
 			<Add library="$(#ark_debug.LIB)/libDustLibMain.a" />
 		</Linker>
+		<Unit filename="../../../../../../../units/vendors/dust/DustgenUnitTest01.cpp" />
+		<Unit filename="../../../../../../../units/vendors/dust/DustgenUnitTest01.h" />
 		<Unit filename="../../../src/DustgenAppMain.cpp" />
 		<Extensions>
 			<code_completion />

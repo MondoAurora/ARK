@@ -3,7 +3,10 @@
 
 #include <iostream>
 
+#include <vendors/dust/DustgenUnitTest01.h>
+
 using namespace std;
+using namespace DustUnitDustTest01;
 
 int main(int argc, char **argv) {
 
@@ -11,7 +14,7 @@ int main(int argc, char **argv) {
 
 	bootDust(argc, argv);
 
-	DustNativeLogic *pl = (DustNativeLogic*) DustData::getNative(0, 99);
+	DustNativeLogic *pl = (DustNativeLogic*) DustData::getNative(0, DustAgentTest01);
 
 	if ( pl ) {
 	pl->DustActionExecute();

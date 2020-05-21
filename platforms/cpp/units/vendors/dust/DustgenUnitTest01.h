@@ -6,6 +6,8 @@
 namespace DustUnitDustTest01 {
 extern DustToken DustUnitTest01;
 
+extern DustToken DustAgentTest01;
+
 extern DustToken DustTypeColor;
 extern DustToken DustIntCode;
 

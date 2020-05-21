@@ -71,7 +71,7 @@ public:
 
     virtual void* createNative(int typeId) const
     {
-        if ( 99 == typeId )
+        if ( DustAgentTest01 == typeId )
         {
             return new T01();
         }
@@ -83,7 +83,7 @@ public:
     }
     virtual void releaseNative(int typeId, void* pNativeObject) const
     {
-        if ( 99 == typeId )
+        if ( DustAgentTest01 == typeId )
         {
             delete (T01*) pNativeObject;
         }

@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include <map>
+#include <set>
 #include <string>
 
 using namespace std;
@@ -93,12 +94,15 @@ class DustMainModule
 };
 
 typedef map<string, DustMainModule*>::iterator ModuleIterator;
+typedef set<DustMainModule*>::iterator ActiveModuleIterator;
 
 
 extern "C" class DustMainApp : public DustRuntimeConnector
 {
     map<DustEntity, DustModule*> modByType;
+
     map<string, DustMainModule*> modByName;
+    set<DustMainModule*> activeModules;
 
     DustTextDictionary *pMainDict;
     DustRuntime *pRuntime;
@@ -151,9 +155,9 @@ extern "C" class DustMainApp : public DustRuntimeConnector
 
         if ( !pm )
         {
-            for (ModuleIterator it = modByName.begin(); it != modByName.end(); ++it)
+            for (ActiveModuleIterator it = activeModules.begin(); it != activeModules.end(); ++it)
             {
-                DustModule *pTmpMod = it->second->pModule;
+                DustModule *pTmpMod = (*it)->pModule;
                 void *pTest = pTmpMod->createNative(type);
                 if ( pTest )
                 {
@@ -190,6 +194,7 @@ public:
                     modByType[DUST_BOOT_AGENT_RUNTIME] = pMod;
                     pRuntime->setConnector(this);
                     pRuntimeModule = pmm;
+                    activeModules.insert(pmm);
                 }
             }
             if ( !pMainDict)
@@ -199,6 +204,7 @@ public:
                 {
                     modByType[DUST_BOOT_AGENT_DICTIONARY] = pMod;
                     pTextModule = pmm;
+                    activeModules.insert(pmm);
                 }
             }
         }
@@ -213,6 +219,8 @@ public:
         for (ModuleIterator it = modByName.begin(); it != modByName.end(); ++it)
         {
             DustMainModule *pmm = it->second;
+            activeModules.insert(pmm);
+
             if ( pmm != pRuntimeModule )
             {
                 if ( pmm != pTextModule )
@@ -235,9 +243,3 @@ extern "C" void bootDust(int moduleCount, char **moduleNames)
     DustMainApp::theApp.boot(moduleCount, moduleNames);
 }
 
-//int main(int argc, char **argv) {
-//
-//	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
-//
-//	return 0;
-//}
