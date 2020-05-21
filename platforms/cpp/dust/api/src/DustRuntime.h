@@ -73,11 +73,17 @@ public:
     DustAccessData(DustEntity e, DustEntity t, double v, long k = DUST_ENTITY_APPEND)
         : access(DUST_ACCESS_SET), entity(e), token(t), key(k), valDouble(v) { }
 
-    void setValLong(DustEntity t, long v, long k = DUST_ENTITY_APPEND)
+    void updateLong(long v, DustEntity t = DUST_ENTITY_NOCHANGE, long k = DUST_ENTITY_NOCHANGE)
     {
-        token = t;
         valLong = v;
-        key = k;
+        if ( DUST_ENTITY_NOCHANGE != t )
+        {
+            token = t;
+        }
+        if ( DUST_ENTITY_NOCHANGE != k )
+        {
+            key = k;
+        }
     }
 };
 

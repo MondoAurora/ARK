@@ -15,19 +15,13 @@ extern "C" DustModule* getModule()
     return &module;
 }
 
-//DustUnitMindText *pUnitText;
-
 DustModText::~DustModText()
 {
 }
 
 DustResultType DustModText::DustResourceInit()
 {
-    cout << "DustModText::DustResourceInit" << endl;
-
-//    pUnitText = new DustUnitMindText();
-
-    DustData::setInteger(0,0,333);
+    DustUtils::log() << "DustModText::DustResourceInit" << endl;
 
     return DUST_RESULT_ACCEPT;
 }

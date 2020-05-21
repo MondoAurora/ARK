@@ -1,8 +1,24 @@
 
 #include "DustUtils.h"
+#include "DustRuntime.h"
 
 #include <iostream>
 #include <string>
+
+DustEntity DustUtils::getSingleTag(DustEntity e, DustEntity parent, DustEntity defVal)
+{
+    for ( int i = DustData::getMemberCount(e, DUST_BOOT_REF_TAGS); i-->0; )
+    {
+        DustEntity t = DustData::getRef(e, DUST_BOOT_REF_TAGS, DUST_ENTITY_INVALID, i);
+        if ( t ) {
+            if ( parent == DustData::getRef(t, DUST_BOOT_REF_OWNER) ) {
+                return t;
+            }
+        }
+    }
+
+    return defVal;
+}
 
 
 class dev0_buffer : public std::streambuf

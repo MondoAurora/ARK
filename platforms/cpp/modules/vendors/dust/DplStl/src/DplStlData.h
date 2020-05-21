@@ -56,6 +56,8 @@ class DplStlDataVariant
 
     bool matchValue(DustValType vt, DustCollType ct, DustAccessData &ad, DplStlDataValue* pVal);
     DplStlDataValue* locateForOverride(DustAccessData &ad);
+
+    bool setValue(DustValType vt, DustAccessData &ad, DplStlDataValue * pVal);
     DplStlDataValue * add(DustValType vt, DustAccessData &ad);
 
 public:

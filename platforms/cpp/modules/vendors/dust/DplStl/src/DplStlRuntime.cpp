@@ -46,26 +46,26 @@ DustResultType DplStlRuntime::DustResourceInit()
     setBootInfo(DustUnitMindIdea::DustTypeAgent, DUST_IDEA_AGENT);
     setBootInfo(DustUnitMindIdea::DustTypeTag, DUST_IDEA_TAG);
 
-    setBootInfo(DustUnitMindIdea::DustConstValInteger, DUST_VAL_INTEGER);
-    setBootInfo(DustUnitMindIdea::DustConstValReal, DUST_VAL_REAL);
-    setBootInfo(DustUnitMindIdea::DustConstValRef, DUST_VAL_REF);
+    setBootInfo(DustUnitMindIdea::DustTagValInteger, DUST_VAL_INTEGER);
+    setBootInfo(DustUnitMindIdea::DustTagValReal, DUST_VAL_REAL);
+    setBootInfo(DustUnitMindIdea::DustTagValRef, DUST_VAL_REF);
 
-    setBootInfo(DustUnitMindIdea::DustConstCollSingle, DUST_COLL_SINGLE);
-    setBootInfo(DustUnitMindIdea::DustConstCollSet, DUST_COLL_SET);
-    setBootInfo(DustUnitMindIdea::DustConstCollArr, DUST_COLL_ARR);
-    setBootInfo(DustUnitMindIdea::DustConstCollMap, DUST_COLL_MAP);
+    setBootInfo(DustUnitMindIdea::DustTagCollSingle, DUST_COLL_SINGLE);
+    setBootInfo(DustUnitMindIdea::DustTagCollSet, DUST_COLL_SET);
+    setBootInfo(DustUnitMindIdea::DustTagCollArr, DUST_COLL_ARR);
+    setBootInfo(DustUnitMindIdea::DustTagCollMap, DUST_COLL_MAP);
 
-    setBootInfo(DustUnitMindNarrative::DustConstResultReject, DUST_RESULT_REJECT);
-    setBootInfo(DustUnitMindNarrative::DustConstResultRead, DUST_RESULT_READ);
-    setBootInfo(DustUnitMindNarrative::DustConstResultAccept, DUST_RESULT_ACCEPT);
-    setBootInfo(DustUnitMindNarrative::DustConstResultAcceptPass, DUST_RESULT_ACCEPT_PASS);
-    setBootInfo(DustUnitMindNarrative::DustConstResultAcceptRead, DUST_RESULT_ACCEPT_READ);
+    setBootInfo(DustUnitMindNarrative::DustTagResultReject, DUST_RESULT_REJECT);
+    setBootInfo(DustUnitMindNarrative::DustTagResultRead, DUST_RESULT_READ);
+    setBootInfo(DustUnitMindNarrative::DustTagResultAccept, DUST_RESULT_ACCEPT);
+    setBootInfo(DustUnitMindNarrative::DustTagResultAcceptPass, DUST_RESULT_ACCEPT_PASS);
+    setBootInfo(DustUnitMindNarrative::DustTagResultAcceptRead, DUST_RESULT_ACCEPT_READ);
 
-    setBootInfo(DustUnitMindDialog::DustConstAccessGet, DUST_ACCESS_GET);
-    setBootInfo(DustUnitMindDialog::DustConstAccessSet, DUST_ACCESS_SET);
-    setBootInfo(DustUnitMindDialog::DustConstAccessMove, DUST_ACCESS_MOVE);
-    setBootInfo(DustUnitMindDialog::DustConstAccessRemove, DUST_ACCESS_REMOVE);
-    setBootInfo(DustUnitMindDialog::DustConstAccessClear, DUST_ACCESS_CLEAR);
+    setBootInfo(DustUnitMindDialog::DustTagAccessGet, DUST_ACCESS_GET);
+    setBootInfo(DustUnitMindDialog::DustTagAccessSet, DUST_ACCESS_SET);
+    setBootInfo(DustUnitMindDialog::DustTagAccessMove, DUST_ACCESS_MOVE);
+    setBootInfo(DustUnitMindDialog::DustTagAccessRemove, DUST_ACCESS_REMOVE);
+    setBootInfo(DustUnitMindDialog::DustTagAccessClear, DUST_ACCESS_CLEAR);
 
     for (BootIterator it = bootEntites.begin(); it != bootEntites.end(); ++it)
     {
@@ -91,56 +91,71 @@ DustResultType DplStlRuntime::DustResourceRelease()
     return DUST_RESULT_ACCEPT;
 }
 
-DustEntity DplStlRuntime::getToken(DustEntity parent,  const char* name)
+DustEntity DplStlRuntime::getTextToken(DustEntity parent,  const char* name)
 {
     DustEntity txtParent = parent ? DustData::getRef(parent, DUST_BOOT_REF_GLOBALID) : DUST_ENTITY_INVALID;
     return pRTC->getTextToken(txtParent, name);
+}
+
+void DplStlRuntime::optSetParent(DustAccessData &ad, DplStlDataEntity* pEntity, DustEntity parent)
+{
+    if ( parent )
+    {
+        ad.updateLong(parent, DUST_BOOT_REF_OWNER);
+        pEntity->access(ad);
+
+        for ( DustEntity p = parent; p; p = DustData::getRef(p, DUST_BOOT_REF_OWNER) )
+        {
+            DustEntity unit = DustData::getRef(p, DUST_BOOT_REF_UNIT);
+            if ( unit )
+            {
+                ad.updateLong(unit, DUST_BOOT_REF_UNIT);
+                pEntity->access(ad);
+                break;
+            }
+        }
+    }
 }
 
 DplStlDataEntity* DplStlRuntime::registerGlobalEntity(DustEntity txtToken, DustEntity primaryType, DustEntity parent, DustEntity constId)
 {
     DplStlDataEntity* pEntity = store.getEntity(constId, primaryType);
     DustEntity entity = pEntity->id;
-    globalEntites[txtToken] = entity;
 
+    globalEntites[txtToken] = entity;
     DustAccessData ad(entity, DUST_BOOT_REF_GLOBALID, txtToken);
     pEntity->access(ad);
 
-    if ( parent )
-    {
-        ad.setValLong(DUST_BOOT_REF_OWNER, parent);
-        pEntity->access(ad);
-    }
+    optSetParent(ad, pEntity, parent);
 
     return pEntity;
 }
 
 DustEntity DplStlRuntime::getUnit(const char* name, DustEntity constId)
 {
-    DustEntity txtToken = getToken(0, name);
+    DustEntity txtToken = getTextToken(0, name);
     DustEntity unit = findEntity(globalEntites, txtToken);
 
     if ( !unit )
     {
         DplStlDataEntity* pEntity = registerGlobalEntity(txtToken, DUST_IDEA_UNIT, DUST_ENTITY_INVALID, constId);
         unit = pEntity->id;
+        DustAccessData ad(unit, DUST_BOOT_REF_UNIT, unit);
+        pEntity->access(ad);
     }
 
     return unit;
 }
 
-DustEntity DplStlRuntime::getIdeaEntity(DustEntity unit, const char* name, DustIdeaType ideaType, DustEntity constId)
+DustEntity DplStlRuntime::getIdeaEntity(DustEntity parent, const char* name, DustIdeaType ideaType, DustEntity constId)
 {
-    DustEntity txtToken = getToken(unit, name);
+    DustEntity txtToken = getTextToken(parent, name);
     DustEntity idea = findEntity(globalEntites, txtToken);
 
     if ( !idea )
     {
-        DplStlDataEntity* pEntity = registerGlobalEntity(txtToken, ideaType, unit, constId);
+        DplStlDataEntity* pEntity = registerGlobalEntity(txtToken, ideaType, parent, constId);
         idea = pEntity->id;
-
-        DustAccessData ad(idea, DUST_BOOT_REF_UNIT, unit);
-        pEntity->access(ad);
     }
 
     return idea;
@@ -148,7 +163,7 @@ DustEntity DplStlRuntime::getIdeaEntity(DustEntity unit, const char* name, DustI
 
 DustEntity DplStlRuntime::getMemberEntity(DustEntity type, const char* name, DustValType valType, DustCollType collType, DustEntity constId)
 {
-    DustEntity txtToken = getToken(type, name);
+    DustEntity txtToken = getTextToken(type, name);
     DustEntity member = findEntity(globalEntites, txtToken);
 
     if ( !member )
@@ -156,12 +171,11 @@ DustEntity DplStlRuntime::getMemberEntity(DustEntity type, const char* name, Dus
         DplStlDataEntity* pEntity = registerGlobalEntity(txtToken, DUST_IDEA_MEMBER, type, constId);
         member = pEntity->id;
 
-        DustEntity unit = DustData::getRef(type, DUST_BOOT_REF_UNIT);
-        if ( unit )
-        {
-            DustAccessData ad(member, DUST_BOOT_REF_UNIT, unit);
-            pEntity->access(ad);
-        }
+        DustAccessData ad(member, DUST_BOOT_REF_TAGS, (long) valType);
+        pEntity->access(ad);
+
+        ad.updateLong(collType);
+        pEntity->access(ad);
     }
 
     return member;
@@ -202,14 +216,13 @@ DustEntity DplStlRuntime::getMemberKey(DustEntity entity, DustEntity token, long
 
     if ( 0 <= idx )
     {
-
         DplStlDataEntity *pEntity = resolveEntity(entity);
         if ( pEntity )
         {
             DplStlDataVariant *pVar = pEntity->getVariant(token, false);
             if ( pVar && pVar->pColl && ( (unsigned) idx < pVar->pColl->size()))
             {
-                key = pVar->pColl->at(idx)->key;
+                key = (DUST_COLL_MAP == pVar->pTokenInfo->collType) ? pVar->pColl->at(idx)->key : idx;
             }
         }
     }

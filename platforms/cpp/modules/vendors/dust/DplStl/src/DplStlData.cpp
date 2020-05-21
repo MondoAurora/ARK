@@ -60,7 +60,7 @@ bool DplStlDataValue::loadFrom(DustValType vT, DustAccessData &ad)
         valDouble = ad.valDouble;
         return true;
     default:
-        DustUtils::log(DUST_EVENT_ERROR) << "Improper valType";
+        DustUtils::log(DUST_EVENT_ERROR) << "Improper valType ";
         return false;
     }
 }
@@ -78,7 +78,7 @@ bool DplStlDataValue::writeTo(DustValType vT, DustAccessData &ad)
         ad.valDouble = valDouble;
         return true;
     case DUST_VAL_REF:
-        ad.valLong = valRef->eTarget;
+        ad.valLong = valRef ? valRef->eTarget : DUST_ENTITY_INVALID;
         return true;
     default:
         return false;
@@ -138,6 +138,10 @@ DplStlDataValue* DplStlDataVariant::locateForOverride(DustAccessData &ad)
             case DUST_COLL_ARR:
                 return ((0 <= ad.key) && (ad.key < s)) ? pColl->at(ad.key) : NULL;
             case DUST_COLL_SET:
+                if ((0 <= ad.key) && (ad.key < s)) {
+                    return pColl->at(ad.key);
+                }
+                // no break
             case DUST_COLL_MAP:
                 for ( int i = 0; i < s; ++i )
                 {
@@ -164,6 +168,13 @@ DplStlDataValue* DplStlDataVariant::locateForOverride(DustAccessData &ad)
     return ret;
 }
 
+bool DplStlDataVariant::setValue(DustValType vt, DustAccessData &ad, DplStlDataValue * pVal)
+{
+    return ( DUST_VAL_REF == vt )
+                      ? pVal->setRef(ad.key, new DplStlDataRef(this, ad.token, ad.entity, ad.valLong))
+                      : pVal->loadFrom(vt, ad);
+}
+
 DplStlDataValue * DplStlDataVariant::add(DustValType vt, DustAccessData &ad)
 {
     if ( !pColl )
@@ -173,7 +184,7 @@ DplStlDataValue * DplStlDataVariant::add(DustValType vt, DustAccessData &ad)
     }
 
     DplStlDataValue *pv = new DplStlDataValue();
-    pv->loadFrom(vt, ad);
+    setValue(vt, ad, pv);
     pColl->push_back(pv);
 
     return pv;
@@ -195,9 +206,7 @@ bool DplStlDataVariant::access(DustAccessData &ad)
         {
             if ( !pVal->match(vt, ad))
             {
-                ret = ( DUST_VAL_REF == vt )
-                      ? pVal->setRef(ad.key, new DplStlDataRef(this, ad.token, ad.entity, ad.valLong))
-                      : pVal->loadFrom(vt, ad);
+                ret = setValue(vt, ad, pVal);
             }
         }
         else
@@ -311,11 +320,12 @@ DplStlTokenInfo* DplStlDataStore::getTokenInfo(DustEntity token)
 
     if ( !pTI )
     {
-        DplStlDataEntity *pTokenEntity = getEntity(token);
-        cout << "Now I should load pTI info from " << token << " : " << pTokenEntity << endl;
+//        DplStlDataEntity *pTokenEntity = getEntity(token);
 
-        DustValType vT = DUST_VAL_INTEGER;
-        DustCollType cT = DUST_COLL_SINGLE;
+        DustValType vT = (DustValType) DustUtils::getSingleTag(token, DustUnitMindIdea::DustTagVal, DUST_VAL_INTEGER);
+        DustCollType cT = (DustCollType) DustUtils::getSingleTag(token, DustUnitMindIdea::DustTagColl, DUST_COLL_SINGLE);
+
+        cout << "Dynamic token def " << token << ", vT " << vT << ", cT " << cT << endl;
 
         pTI = new DplStlTokenInfo(vT, cT);
     }

@@ -3,6 +3,7 @@
 
 typedef long DustEntity;
 
+#define DUST_ENTITY_NOCHANGE -2
 #define DUST_ENTITY_APPEND -1
 #define DUST_ENTITY_INVALID 0
 

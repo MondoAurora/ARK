@@ -22,30 +22,34 @@ DustToken DustUnitMindIdea::DustTypeMember(DustUnitIdea, "Member", DUST_IDEA_TYP
 DustToken DustUnitMindIdea::DustTypeAgent(DustUnitIdea, "Agent", DUST_IDEA_TYPE);
 DustToken DustUnitMindIdea::DustTypeTag(DustUnitIdea, "Tag", DUST_IDEA_TYPE);
 
-DustToken DustUnitMindIdea::DustConstValInteger(DustUnitIdea, "Integer", DUST_IDEA_TAG);
-DustToken DustUnitMindIdea::DustConstValReal(DustUnitIdea, "Real", DUST_IDEA_TAG);
-DustToken DustUnitMindIdea::DustConstValRef(DustUnitIdea, "Ref", DUST_IDEA_TAG);
+DustToken DustUnitMindIdea::DustTagVal(DustUnitIdea, "ValueType", DUST_IDEA_TAG);
+DustToken DustUnitMindIdea::DustTagValInteger(DustTagVal, "Integer", DUST_IDEA_TAG);
+DustToken DustUnitMindIdea::DustTagValReal(DustTagVal, "Real", DUST_IDEA_TAG);
+DustToken DustUnitMindIdea::DustTagValRef(DustTagVal, "Ref", DUST_IDEA_TAG);
 
-DustToken DustUnitMindIdea::DustConstCollSingle(DustUnitIdea, "Single", DUST_IDEA_TAG);
-DustToken DustUnitMindIdea::DustConstCollSet(DustUnitIdea, "Set", DUST_IDEA_TAG);
-DustToken DustUnitMindIdea::DustConstCollArr(DustUnitIdea, "Arr", DUST_IDEA_TAG);
-DustToken DustUnitMindIdea::DustConstCollMap(DustUnitIdea, "Map", DUST_IDEA_TAG);
+DustToken DustUnitMindIdea::DustTagColl(DustUnitIdea, "CollectionType", DUST_IDEA_TAG);
+DustToken DustUnitMindIdea::DustTagCollSingle(DustTagColl, "Single", DUST_IDEA_TAG);
+DustToken DustUnitMindIdea::DustTagCollSet(DustTagColl, "Set", DUST_IDEA_TAG);
+DustToken DustUnitMindIdea::DustTagCollArr(DustTagColl, "Arr", DUST_IDEA_TAG);
+DustToken DustUnitMindIdea::DustTagCollMap(DustTagColl, "Map", DUST_IDEA_TAG);
 
 using namespace DustUnitMindNarrative;
 DustToken DustUnitMindNarrative::DustUnitNarrative("Narrative");
 
-DustToken DustUnitMindNarrative::DustConstResultReject(DustUnitNarrative, "Reject", DUST_IDEA_TAG);
-DustToken DustUnitMindNarrative::DustConstResultRead(DustUnitNarrative, "Read", DUST_IDEA_TAG);
-DustToken DustUnitMindNarrative::DustConstResultAcceptPass(DustUnitNarrative, "AcceptPass", DUST_IDEA_TAG);
-DustToken DustUnitMindNarrative::DustConstResultAccept(DustUnitNarrative, "Accept", DUST_IDEA_TAG);
-DustToken DustUnitMindNarrative::DustConstResultAcceptRead(DustUnitNarrative, "AcceptRead", DUST_IDEA_TAG);
+DustToken DustUnitMindNarrative::DustTagResult(DustUnitNarrative, "ResultType", DUST_IDEA_TAG);
+DustToken DustUnitMindNarrative::DustTagResultReject(DustTagResult, "Reject", DUST_IDEA_TAG);
+DustToken DustUnitMindNarrative::DustTagResultRead(DustTagResult, "Read", DUST_IDEA_TAG);
+DustToken DustUnitMindNarrative::DustTagResultAcceptPass(DustTagResult, "AcceptPass", DUST_IDEA_TAG);
+DustToken DustUnitMindNarrative::DustTagResultAccept(DustTagResult, "Accept", DUST_IDEA_TAG);
+DustToken DustUnitMindNarrative::DustTagResultAcceptRead(DustTagResult, "AcceptRead", DUST_IDEA_TAG);
 
 using namespace DustUnitMindDialog;
 DustToken DustUnitMindDialog::DustUnitDialog("Dialog");
 
-DustToken DustUnitMindDialog::DustConstAccessGet(DustUnitDialog, "Get", DUST_IDEA_TAG);
-DustToken DustUnitMindDialog::DustConstAccessSet(DustUnitDialog, "Set", DUST_IDEA_TAG);
-DustToken DustUnitMindDialog::DustConstAccessMove(DustUnitDialog, "Move", DUST_IDEA_TAG);
-DustToken DustUnitMindDialog::DustConstAccessRemove(DustUnitDialog, "Remove", DUST_IDEA_TAG);
-DustToken DustUnitMindDialog::DustConstAccessClear(DustUnitDialog, "Clear", DUST_IDEA_TAG);
+DustToken DustUnitMindDialog::DustTagAccess(DustUnitDialog, "AccessType", DUST_IDEA_TAG);
+DustToken DustUnitMindDialog::DustTagAccessGet(DustTagAccess, "Get", DUST_IDEA_TAG);
+DustToken DustUnitMindDialog::DustTagAccessSet(DustTagAccess, "Set", DUST_IDEA_TAG);
+DustToken DustUnitMindDialog::DustTagAccessMove(DustTagAccess, "Move", DUST_IDEA_TAG);
+DustToken DustUnitMindDialog::DustTagAccessRemove(DustTagAccess, "Remove", DUST_IDEA_TAG);
+DustToken DustUnitMindDialog::DustTagAccessClear(DustTagAccess, "Clear", DUST_IDEA_TAG);
 

@@ -51,6 +51,8 @@
 		<Unit filename="../../../../../../units/MiND/DustgenUnitMindCore.h" />
 		<Unit filename="../../../../../../units/MiND/DustgenUnitMindTools.cpp" />
 		<Unit filename="../../../../../../units/MiND/DustgenUnitMindTools.h" />
+		<Unit filename="../../../../../../units/vendors/dust/DustgenUnitTest01.cpp" />
+		<Unit filename="../../../../../../units/vendors/dust/DustgenUnitTest01.h" />
 		<Unit filename="../../src/test01.cpp" />
 		<Extensions>
 			<code_completion />

@@ -25,34 +25,38 @@ extern DustToken DustTypeMember;
 extern DustToken DustTypeAgent;
 extern DustToken DustTypeTag;
 
-extern DustToken DustConstValInteger;
-extern DustToken DustConstValReal;
-extern DustToken DustConstValRef;
+extern DustToken DustTagVal;
+extern DustToken DustTagValInteger;
+extern DustToken DustTagValReal;
+extern DustToken DustTagValRef;
 
-extern DustToken DustConstCollSingle;
-extern DustToken DustConstCollSet;
-extern DustToken DustConstCollArr;
-extern DustToken DustConstCollMap;
+extern DustToken DustTagColl;
+extern DustToken DustTagCollSingle;
+extern DustToken DustTagCollSet;
+extern DustToken DustTagCollArr;
+extern DustToken DustTagCollMap;
 };
 
 namespace DustUnitMindNarrative {
 extern DustToken DustUnitNarrative;
 
-extern DustToken DustConstResultReject;
-extern DustToken DustConstResultAcceptPass;
-extern DustToken DustConstResultAccept;
-extern DustToken DustConstResultAcceptRead;
-extern DustToken DustConstResultRead;
+extern DustToken DustTagResult;
+extern DustToken DustTagResultReject;
+extern DustToken DustTagResultAcceptPass;
+extern DustToken DustTagResultAccept;
+extern DustToken DustTagResultAcceptRead;
+extern DustToken DustTagResultRead;
 };
 
 namespace DustUnitMindDialog {
 extern DustToken DustUnitDialog;
 
-extern DustToken DustConstAccessGet;
-extern DustToken DustConstAccessSet;
-extern DustToken DustConstAccessMove;
-extern DustToken DustConstAccessRemove;
-extern DustToken DustConstAccessClear;
+extern DustToken DustTagAccess;
+extern DustToken DustTagAccessGet;
+extern DustToken DustTagAccessSet;
+extern DustToken DustTagAccessMove;
+extern DustToken DustTagAccessRemove;
+extern DustToken DustTagAccessClear;
 };
 
 #endif // DUSTGENUNITMINDCORE_H_INCLUDED
