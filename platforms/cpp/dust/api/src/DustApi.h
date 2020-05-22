@@ -54,6 +54,10 @@ enum DustIdeaType
     DUST_IDEA_AGENT,
     DUST_IDEA_TAG,
 
+    DUST_NATIVE_CONSTANT,
+    DUST_NATIVE_SERVICE,
+    DUST_NATIVE_COMMAND,
+
     DUST_IDEA_
 };
 
@@ -119,7 +123,7 @@ class DustToken;
 
 extern "C" class DustToken
 {
-    DustIdeaType ideaType;
+    DustEntity primaryType;
     const char* name;
     DustToken* parent;
 
@@ -130,23 +134,23 @@ extern "C" class DustToken
 
 public:
     DustToken(const char* unitName)
-        : ideaType(DUST_IDEA_UNIT), name(unitName), parent(0),
+        : primaryType(DUST_IDEA_UNIT), name(unitName), parent(0),
           valType(DUST_VAL_), collType(DUST_COLL_),
           entity(DUST_ENTITY_APPEND) {}
 
-    DustToken(DustToken &unit, const char* ideaName, DustIdeaType ideaType)
-        : ideaType(ideaType), name(ideaName), parent(&unit),
+    DustToken(DustToken &unit, const char* ideaName, DustEntity primaryType_)
+        : primaryType(primaryType_), name(ideaName), parent(&unit),
           valType(DUST_VAL_), collType(DUST_COLL_),
           entity(DUST_ENTITY_APPEND) {}
 
     DustToken(DustToken &parent_, const char* memberName, DustValType valType_, DustCollType collType_ = DUST_COLL_SINGLE)
-        : ideaType(DUST_IDEA_MEMBER), name(memberName), parent(&parent_),
+        : primaryType(DUST_IDEA_MEMBER), name(memberName), parent(&parent_),
           valType(valType_), collType(collType_),
           entity(DUST_ENTITY_APPEND) {}
 
-    DustIdeaType getIdeaType() const
+    DustEntity getPrimaryType() const
     {
-        return ideaType;
+        return primaryType;
     }
     DustValType getValType() const
     {

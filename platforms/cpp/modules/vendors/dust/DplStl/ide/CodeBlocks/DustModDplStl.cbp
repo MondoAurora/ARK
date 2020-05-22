@@ -49,6 +49,8 @@
 		</Linker>
 		<Unit filename="../../../../../../units/MiND/DustgenUnitMindCore.cpp" />
 		<Unit filename="../../../../../../units/MiND/DustgenUnitMindCore.h" />
+		<Unit filename="../../../../../../units/MiND/DustgenUnitMindDust.cpp" />
+		<Unit filename="../../../../../../units/MiND/DustgenUnitMindDust.h" />
 		<Unit filename="../../../../../../units/MiND/DustgenUnitMindTools.cpp" />
 		<Unit filename="../../../../../../units/MiND/DustgenUnitMindTools.h" />
 		<Unit filename="../../src/DplStl.h" />

@@ -46,6 +46,11 @@ extern DustToken DustTagResultAcceptPass;
 extern DustToken DustTagResultAccept;
 extern DustToken DustTagResultAcceptRead;
 extern DustToken DustTagResultRead;
+
+extern DustToken DustAgentDialog;
+extern DustToken DustAgentSequence;
+extern DustToken DustAgentSelect;
+extern DustToken DustAgentRepeat;
 };
 
 namespace DustUnitMindDialog {

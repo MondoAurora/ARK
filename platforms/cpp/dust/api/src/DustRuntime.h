@@ -98,7 +98,7 @@ public:
     }
 
     virtual DustEntity getUnit(const char* name, DustEntity constId = DUST_ENTITY_APPEND) = 0;
-    virtual DustEntity getIdeaEntity(DustEntity unit, const char* name, DustIdeaType ideaType, DustEntity constId = DUST_ENTITY_APPEND) = 0;
+    virtual DustEntity getTokenEntity(DustEntity unit, const char* name, DustEntity primaryType, DustEntity constId = DUST_ENTITY_APPEND) = 0;
     virtual DustEntity getMemberEntity(DustEntity type, const char* name, DustValType valType, DustCollType collType = DUST_COLL_SINGLE, DustEntity constId = DUST_ENTITY_APPEND) = 0;
 
     virtual void setConnector(DustRuntimeConnector* pConn) = 0;

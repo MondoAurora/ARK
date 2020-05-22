@@ -27,14 +27,14 @@ void DustRuntime::setBootToken(DustToken &token, DustEntity entity) {
 
 DustEntity DustData::getTokenEntity(DustToken* pToken, DustEntity constId)
 {
-    switch ( pToken->ideaType )
+    switch ( pToken->primaryType )
     {
     case DUST_IDEA_UNIT:
         return apiRuntime->getUnit(pToken->name, constId);
     case DUST_IDEA_MEMBER:
         return apiRuntime->getMemberEntity(*(pToken->parent), pToken->name, pToken->valType, pToken->collType, constId);
     default:
-        return apiRuntime->getIdeaEntity(*(pToken->parent), pToken->name, pToken->ideaType, constId);
+        return apiRuntime->getTokenEntity(*(pToken->parent), pToken->name, pToken->primaryType, constId);
     }
 }
 

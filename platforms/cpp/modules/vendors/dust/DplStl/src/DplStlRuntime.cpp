@@ -46,6 +46,10 @@ DustResultType DplStlRuntime::DustResourceInit()
     setBootInfo(DustUnitMindIdea::DustTypeAgent, DUST_IDEA_AGENT);
     setBootInfo(DustUnitMindIdea::DustTypeTag, DUST_IDEA_TAG);
 
+    setBootInfo(DustUnitMindNative::DustTypeConstant, DUST_NATIVE_CONSTANT);
+    setBootInfo(DustUnitMindNative::DustTypeService, DUST_NATIVE_SERVICE);
+    setBootInfo(DustUnitMindNative::DustTypeCommand, DUST_NATIVE_COMMAND);
+
     setBootInfo(DustUnitMindIdea::DustTagValInteger, DUST_VAL_INTEGER);
     setBootInfo(DustUnitMindIdea::DustTagValReal, DUST_VAL_REAL);
     setBootInfo(DustUnitMindIdea::DustTagValRef, DUST_VAL_REF);
@@ -70,7 +74,7 @@ DustResultType DplStlRuntime::DustResourceInit()
     for (BootIterator it = bootEntites.begin(); it != bootEntites.end(); ++it)
     {
         DustToken* pT = it->second;
-        if ( DUST_IDEA_MEMBER == pT->getIdeaType() )
+        if ( DUST_IDEA_MEMBER == pT->getPrimaryType() )
         {
             store.tokenInfo[it->first] = new DplStlTokenInfo(pT->getValType(), pT->getCollType());
         }
@@ -147,14 +151,14 @@ DustEntity DplStlRuntime::getUnit(const char* name, DustEntity constId)
     return unit;
 }
 
-DustEntity DplStlRuntime::getIdeaEntity(DustEntity parent, const char* name, DustIdeaType ideaType, DustEntity constId)
+DustEntity DplStlRuntime::getTokenEntity(DustEntity parent, const char* name, DustEntity primaryType, DustEntity constId)
 {
     DustEntity txtToken = getTextToken(parent, name);
     DustEntity idea = findEntity(globalEntites, txtToken);
 
     if ( !idea )
     {
-        DplStlDataEntity* pEntity = registerGlobalEntity(txtToken, ideaType, parent, constId);
+        DplStlDataEntity* pEntity = registerGlobalEntity(txtToken, primaryType, parent, constId);
         idea = pEntity->id;
     }
 
