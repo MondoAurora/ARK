@@ -4,9 +4,13 @@
 
 using namespace std;
 
+DplStlRuntime* DplStlRuntime::pRuntime = NULL;
+
 DplStlRuntime::DplStlRuntime()
     :store(DUST_LAST_CONST_RUNTIME)
 {
+    pRuntime = this;
+    cores.push_back(new DplStlLogicCore(this));
 }
 
 DplStlRuntime::~DplStlRuntime()
@@ -245,7 +249,7 @@ bool DplStlRuntime::accessMember(DustAccessData &ad)
 void* DplStlRuntime::getNative(DustEntity entity, DustEntity type)
 {
     DplStlDataEntity *pEntity = resolveEntity(entity);
-    void* ret = mapOptGet(pEntity->native, type);
+    void* ret = mapOptGet(pEntity->native, ( DUST_ENTITY_APPEND == type ) ? pEntity->primaryType : type);
 
     if ( !ret )
     {
@@ -269,3 +273,10 @@ DustResultType DplStlRuntime::DustActionExecute()
     return DUST_RESULT_NOTIMPLEMENTED;
 }
 
+DplStlRuntime* DplStlRuntime::getRuntime() {
+return pRuntime;
+}
+
+DplStlLogicCore* DplStlRuntime::getCurrentCore() {
+    return pRuntime->cores[0];
+}

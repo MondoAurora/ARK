@@ -108,6 +108,7 @@ public:
     bool access(DustAccessData &ad);
 
     friend class DplStlRuntime;
+    friend class DplStlLogicState;
 };
 
 class DplStlDataStore
@@ -127,6 +128,7 @@ public:
     DplStlDataEntity* getEntity(long id = DUST_ENTITY_APPEND, DustEntity primaryType = DUST_ENTITY_INVALID);
 
     friend class DplStlDataEntity;
+    friend class DplStlLogicState;
     friend class DplStlRuntime;
 };
 

@@ -4,16 +4,25 @@
 #include <DustRuntime.h>
 
 #include "DplStlData.h"
+#include "DplStlAgentsRuntime.h"
 
 extern "C" class DplStlRuntime: public DustRuntime
 {
     DustRuntimeConnector* pRTC;
 
+    static DplStlRuntime* pRuntime;
+
     DplStlDataStore store;
     map<DustEntity, DustEntity> globalEntites;
 
+   	map<DustEntity, DustEntity> agentResolution;
+
+    DustNativeLogic *pScheduler;
+	vector<DplStlLogicCore*> cores;
+	vector<DplStlLogicDialog*> dialogs;
+
+
     DustEntity optGetMetaEntity(DustEntity parent,  const char* name);
-    DplStlDataEntity* resolveEntity(DustEntity entity);
 
     DustEntity getTextToken(DustEntity parent,  const char* name);
     void optSetParent(DustAccessData &ad, DplStlDataEntity* pEntity, DustEntity parent);
@@ -30,6 +39,7 @@ public:
     virtual DustEntity getTokenEntity(DustEntity unit, const char* name, DustEntity primaryType, DustEntity constId = DUST_ENTITY_APPEND);
     virtual DustEntity getMemberEntity(DustEntity type, const char* name, DustValType valType, DustCollType collType = DUST_COLL_SINGLE, DustEntity constId = DUST_ENTITY_APPEND);
 
+    DplStlDataEntity* resolveEntity(DustEntity entity);
     virtual DustEntity createEntity(DustEntity primaryType);
 
     virtual long getMemberCount(DustEntity entity, DustEntity token);
@@ -38,11 +48,17 @@ public:
    	virtual bool accessMember(DustAccessData &access);
 
 // Entity native content access
-    virtual void* getNative(DustEntity entity, DustEntity type);
+    virtual void* getNative(DustEntity entity, DustEntity type = DUST_ENTITY_APPEND);
 
     virtual DustResultType DustResourceInit();
     virtual DustResultType DustResourceRelease();
     virtual DustResultType DustActionExecute();
+
+   	static DplStlRuntime* getRuntime();
+   	static DplStlLogicCore* getCurrentCore();
+
+   	friend class DplStlLogicState;
+   	friend class DplStlLogicCore;
 };
 
 #endif /* DPLSTLRUNTIME_H_INCLUDED */

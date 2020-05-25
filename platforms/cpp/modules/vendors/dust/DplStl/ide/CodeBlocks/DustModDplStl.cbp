@@ -54,6 +54,10 @@
 		<Unit filename="../../../../../../units/MiND/DustgenUnitMindTools.cpp" />
 		<Unit filename="../../../../../../units/MiND/DustgenUnitMindTools.h" />
 		<Unit filename="../../src/DplStl.h" />
+		<Unit filename="../../src/DplStlAgentsNarrative.cpp" />
+		<Unit filename="../../src/DplStlAgentsNarrative.h" />
+		<Unit filename="../../src/DplStlAgentsRuntime.cpp" />
+		<Unit filename="../../src/DplStlAgentsRuntime.h" />
 		<Unit filename="../../src/DplStlData.cpp" />
 		<Unit filename="../../src/DplStlData.h" />
 		<Unit filename="../../src/DplStlRuntime.cpp" />

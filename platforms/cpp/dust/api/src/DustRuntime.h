@@ -111,7 +111,7 @@ public:
     virtual bool accessMember(DustAccessData &access) = 0;
 
 // Entity native content access
-    virtual void* getNative(DustEntity entity, DustEntity type) = 0;
+    virtual void* getNative(DustEntity entity, DustEntity type = DUST_ENTITY_APPEND) = 0;
 };
 
 typedef DustModule* (*getModule_t)();

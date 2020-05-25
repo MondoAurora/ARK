@@ -3,6 +3,7 @@
 
 typedef long DustEntity;
 
+#define DPL_CTX_SELF -3
 #define DUST_ENTITY_NOCHANGE -2
 #define DUST_ENTITY_APPEND -1
 #define DUST_ENTITY_INVALID 0
@@ -195,7 +196,7 @@ public:
     static bool removeRef(DustEntity entity, DustEntity token, DustEntity target, long key = DUST_ENTITY_APPEND);
 
 // Entity native content access
-    static void* getNative(DustEntity entity, DustEntity type);
+    static void* getNative(DustEntity entity, DustEntity type = DUST_ENTITY_APPEND);
 
     friend class DustToken;
     friend class DustRuntime;

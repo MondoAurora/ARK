@@ -14,7 +14,9 @@ int main(int argc, char **argv) {
 
 	bootDust(argc, argv);
 
-	DustNativeLogic *pl = (DustNativeLogic*) DustData::getNative(0, DustAgentTest01);
+	DustEntity e = DustData::createEntity(DustAgentTest01);
+
+	DustNativeLogic *pl = (DustNativeLogic*) DustData::getNative(e);
 
 	if ( pl ) {
 	pl->DustActionExecute();
