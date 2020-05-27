@@ -1,5 +1,9 @@
 #include "DustRuntime.h"
 
+#include <iostream>
+
+using namespace std;
+
 DustRuntime *apiRuntime = 0;
 
 extern "C" void initModule(DustRuntime *pRuntime)
@@ -8,6 +12,36 @@ extern "C" void initModule(DustRuntime *pRuntime)
     {
         apiRuntime = pRuntime;
     }
+}
+
+void DustModule::registerFactory(DustFactoryLogic *pFactory) {
+    DustEntity typeId = pFactory->DustFactoryGetType();
+    logicFactories[typeId] = pFactory;
+
+    cout << "registerFactory " << typeId << " id: " << &logicFactories << " count: " << logicFactories.size() << endl;
+
+}
+
+void DustModule::registerAlgorithm(DustEntity agent, DustEntity implRoot) {
+    algorithms[agent] = implRoot;
+}
+
+bool DustModule::isNativeProvided(DustEntity typeId) {
+    cout << "isNativeProvided " << typeId << " id: " << &logicFactories << " count: " << logicFactories.size() << endl;
+
+    return mapContains(logicFactories, typeId);
+}
+void* DustModule::createNative(DustEntity typeId) {
+    DustFactoryLogic *pf = mapOptGet(logicFactories, typeId);
+    return pf->DustFactoryCreate();
+}
+void DustModule::releaseNative(DustEntity typeId, void* pNativeObject) {
+    DustFactoryLogic *pf = mapOptGet(logicFactories, typeId);
+    return pf->DustFactoryDestroy(pNativeObject);
+}
+DustResultType DustModule::dispatchCommand(DustEntity typeId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param ){
+    DustFactoryLogic *pf = mapOptGet(logicFactories, typeId);
+    return pf->DustFactoryDispatch(pLogic, cmd, param);
 }
 
 

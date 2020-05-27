@@ -158,11 +158,9 @@ extern "C" class DustMainApp : public DustRuntimeConnector
             for (ActiveModuleIterator it = activeModules.begin(); it != activeModules.end(); ++it)
             {
                 DustModule *pTmpMod = (*it)->pModule;
-                void *pTest = pTmpMod->createNative(type);
-                if ( pTest )
+                if ( pTmpMod->isNativeProvided(type))
                 {
                     pm = pTmpMod;
-                    pm->releaseNative(type, pTest);
                     break;
                 }
             }
@@ -188,9 +186,8 @@ public:
 
             if ( !pRuntime )
             {
-                pRuntime = (DustRuntime*) pMod->createNative(DUST_BOOT_AGENT_RUNTIME);
-                if ( pRuntime )
-                {
+                if (pMod->isNativeProvided(DUST_BOOT_AGENT_RUNTIME)) {
+                    pRuntime = (DustRuntime*) pMod->createNative(DUST_BOOT_AGENT_RUNTIME);
                     modByType[DUST_BOOT_AGENT_RUNTIME] = pMod;
                     pRuntime->setConnector(this);
                     pRuntimeModule = pmm;
@@ -199,9 +196,8 @@ public:
             }
             if ( !pMainDict)
             {
-                pMainDict = (DustTextDictionary*) pMod->createNative(DUST_BOOT_AGENT_DICTIONARY);
-                if ( pMainDict )
-                {
+                if (pMod->isNativeProvided(DUST_BOOT_AGENT_DICTIONARY)) {
+                    pMainDict = (DustTextDictionary*) pMod->createNative(DUST_BOOT_AGENT_DICTIONARY);
                     modByType[DUST_BOOT_AGENT_DICTIONARY] = pMod;
                     pTextModule = pmm;
                     activeModules.insert(pmm);
@@ -238,8 +234,19 @@ public:
 
 DustMainApp DustMainApp::theApp;
 
-extern "C" void bootDust(int moduleCount, char **moduleNames)
+
+extern "C" void dustBoot(int moduleCount, char **moduleNames)
 {
     DustMainApp::theApp.boot(moduleCount, moduleNames);
+}
+
+extern "C" void dustLaunch()
+{
+      cout << "Dust launching... " << endl;
+}
+
+extern "C" void dustShutdown()
+{
+      cout << "Dust graceful shutdown... " << endl;
 }
 

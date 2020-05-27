@@ -8,6 +8,9 @@
 
 using namespace std;
 
+DECLARE_FACTORY(DplStlRuntime, DUST_BOOT_AGENT_RUNTIME)
+
+
 DustModDplStl::~DustModDplStl()
 {
 }
@@ -25,31 +28,11 @@ DustResultType DustModDplStl::DustResourceRelease()
     return DUST_RESULT_ACCEPT;
 }
 
-void* DustModDplStl::createNative(int typeId) const
-{
-    if ( DUST_BOOT_AGENT_RUNTIME == typeId )
-    {
-        return new DplStlRuntime();
-    }
-    return 0;
-}
-
-DustResultType DustModDplStl::dispatchCommand(int logicId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param) const
-{
-    return DUST_RESULT_NOTIMPLEMENTED;
-}
-
-void DustModDplStl::releaseNative(int typeId, void* pNativeObject) const
-{
-    if ( DUST_BOOT_AGENT_RUNTIME == typeId )
-    {
-        delete (DplStlRuntime*) pNativeObject;
-    }
-}
-
 DustModDplStl module;
 
 extern "C" DustModule* getModule()
 {
+    module.registerFactory(&FactDplStlRuntime);
+
     return &module;
 }

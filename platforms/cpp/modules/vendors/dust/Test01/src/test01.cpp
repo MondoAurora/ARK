@@ -52,14 +52,19 @@ class T01 : public DustNativeLogic
     }
 };
 
-
-class FactTest01_ : public DustFactoryLogic
+class T02 : public DustNativeLogic
 {
-    virtual DustToken& DustFactoryGetToken() { return DustAgentTest01; };
+    virtual DustResultType DustActionExecute()
+    {
+//        test01();
+        test02();
 
-    virtual void* DustFactoryCreate() { return new T01(); };
-    virtual void DustFactoryDestroy(void* pObj ) { delete (T01*) pObj; }
-} FactTest01 ;
+        return DUST_RESULT_ACCEPT;
+    }
+};
+
+DECLARE_FACTORY(T01, DustAgentTest01)
+DECLARE_FACTORY(T02, DustAgentTest01)
 
 class TestModule : public DustModule
 {
@@ -71,32 +76,14 @@ public:
     virtual DustResultType DustResourceInit()
     {
         cout << "TestModule::DustResourceInit" << endl;
+        registerFactory(&FactT01);
+        registerFactory(&FactT02);
         return DUST_RESULT_ACCEPT;
     }
     virtual DustResultType DustResourceRelease()
     {
         cout << "TestModule::DustResourceRelease" << endl;
         return DUST_RESULT_ACCEPT;
-    }
-
-    virtual void* createNative(int typeId) const
-    {
-        if ( DustAgentTest01 == typeId )
-        {
-            return new T01();
-        }
-        return 0;
-    }
-    virtual DustResultType dispatchCommand(int logicId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param = DUST_ENTITY_INVALID) const
-    {
-        return DUST_RESULT_NOTIMPLEMENTED;
-    }
-    virtual void releaseNative(int typeId, void* pNativeObject) const
-    {
-        if ( DustAgentTest01 == typeId )
-        {
-            delete (T01*) pNativeObject;
-        }
     }
 };
 

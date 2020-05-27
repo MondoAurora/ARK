@@ -12,9 +12,11 @@ int main(int argc, char **argv) {
 
 	cout << "calling bootDust..." << endl;
 
-	bootDust(argc, argv);
+	dustBoot(argc, argv);
 
-	DustEntity e = DustData::createEntity(DustAgentTest01);
+    DustEntity e = DustData::createEntity(DustAgentTest01);
+
+    dustLaunch();
 
 	DustNativeLogic *pl = (DustNativeLogic*) DustData::getNative(e);
 
@@ -22,7 +24,10 @@ int main(int argc, char **argv) {
 	pl->DustActionExecute();
 	}
 
+
 	cout << "Success." << endl;
+
+	dustShutdown();
 
 	return 0;
 }

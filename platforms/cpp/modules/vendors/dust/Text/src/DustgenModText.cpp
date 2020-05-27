@@ -13,8 +13,16 @@ DustModText module;
 using namespace DustUnitMindText;
 using namespace DustUnitMindStream;
 
+DECLARE_FACTORY(TextDictionary, DUST_BOOT_AGENT_DICTIONARY)
+DECLARE_FACTORY(string, DUST_BOOT_TYPE_PLAINTEXT)
+DECLARE_FACTORY(TextLogicStreamReader, DustAgentReader)
+DECLARE_FACTORY(TextLogicStreamWriter, DustAgentWriter)
+
 extern "C" DustModule* getModule()
 {
+    module.registerFactory(&FactTextDictionary);
+    module.registerFactory(&Factstring);
+
     return &module;
 }
 
@@ -25,6 +33,8 @@ DustModText::~DustModText()
 DustResultType DustModText::DustResourceInit()
 {
     DustUtils::log() << "DustModText::DustResourceInit" << endl;
+    registerFactory(&FactTextLogicStreamReader);
+    registerFactory(&FactTextLogicStreamWriter);
 
     return DUST_RESULT_ACCEPT;
 }
@@ -35,50 +45,3 @@ DustResultType DustModText::DustResourceRelease()
     return DUST_RESULT_ACCEPT;
 }
 
-void* DustModText::createNative(int typeId) const
-{
-    if ( DUST_BOOT_AGENT_DICTIONARY == typeId )
-    {
-        return new TextDictionary();
-    }
-    else if ( DUST_BOOT_TYPE_PLAINTEXT == typeId )
-    {
-        return new string();
-    }
-/*
-    else if ( DustAgentReader == typeId )
-    {
-        return new TextLogicStreamReader();
-    }
-    else if ( DustAgentWriter == typeId )
-    {
-        return new TextLogicStreamWriter();
-    }
-    */
-    return 0;
-}
-
-DustResultType DustModText::dispatchCommand(int logicId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param) const
-{
-    return DUST_RESULT_NOTIMPLEMENTED;
-}
-
-void DustModText::releaseNative(int typeId, void* pNativeObject) const
-{
-    if ( DUST_BOOT_AGENT_DICTIONARY == typeId )
-    {
-        delete (TextDictionary*) pNativeObject;
-    }
-    else if ( DUST_BOOT_TYPE_PLAINTEXT == typeId )
-    {
-        delete (string*) pNativeObject;
-    }
-    else if ( DustAgentReader == typeId )
-    {
-        delete (TextLogicStreamReader*) pNativeObject;
-    }
-    else if ( DustAgentWriter == typeId )
-    {
-        delete (TextLogicStreamWriter*) pNativeObject;
-    }
-}
