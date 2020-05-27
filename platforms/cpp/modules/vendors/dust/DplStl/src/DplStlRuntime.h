@@ -21,6 +21,7 @@ extern "C" class DplStlRuntime: public DustRuntime
 	vector<DplStlLogicCore*> cores;
 	vector<DplStlLogicDialog*> dialogs;
 
+    DplStlDataEntity* createEntity(DustEntity primaryType);
 
     DustEntity optGetMetaEntity(DustEntity parent,  const char* name);
 
@@ -40,15 +41,14 @@ public:
     virtual DustEntity getMemberEntity(DustEntity type, const char* name, DustValType valType, DustCollType collType = DUST_COLL_SINGLE, DustEntity constId = DUST_ENTITY_APPEND);
 
     DplStlDataEntity* resolveEntity(DustEntity entity);
-    virtual DustEntity createEntity(DustEntity primaryType);
 
     virtual long getMemberCount(DustEntity entity, DustEntity token);
     virtual DustEntity getMemberKey(DustEntity entity, DustEntity token, long idx);
 
-   	virtual bool accessMember(DustAccessData &access);
+   	virtual bool access(DustAccessData &access);
 
 // Entity native content access
-    virtual void* getNative(DustEntity entity, DustEntity type = DUST_ENTITY_APPEND);
+    virtual void* getNative(DustEntity entity, DustEntity type, bool createIfMissing);
 
     virtual DustResultType DustResourceInit();
     virtual DustResultType DustResourceRelease();

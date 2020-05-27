@@ -10,6 +10,9 @@ using namespace std;
 
 DustModText module;
 
+using namespace DustUnitMindText;
+using namespace DustUnitMindStream;
+
 extern "C" DustModule* getModule()
 {
     return &module;
@@ -42,6 +45,16 @@ void* DustModText::createNative(int typeId) const
     {
         return new string();
     }
+/*
+    else if ( DustAgentReader == typeId )
+    {
+        return new TextLogicStreamReader();
+    }
+    else if ( DustAgentWriter == typeId )
+    {
+        return new TextLogicStreamWriter();
+    }
+    */
     return 0;
 }
 
@@ -59,5 +72,13 @@ void DustModText::releaseNative(int typeId, void* pNativeObject) const
     else if ( DUST_BOOT_TYPE_PLAINTEXT == typeId )
     {
         delete (string*) pNativeObject;
+    }
+    else if ( DustAgentReader == typeId )
+    {
+        delete (TextLogicStreamReader*) pNativeObject;
+    }
+    else if ( DustAgentWriter == typeId )
+    {
+        delete (TextLogicStreamWriter*) pNativeObject;
     }
 }

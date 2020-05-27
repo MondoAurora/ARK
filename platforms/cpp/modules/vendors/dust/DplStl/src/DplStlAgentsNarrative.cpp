@@ -41,7 +41,7 @@ DustResultType DplStlLogicControl::optRelayChild() {
 	bool rp = DUST_RESULT_ACCEPT_PASS == ret;
 
 	if (rp || (DUST_RESULT_ACCEPT == ret)) {
-		DustEntity ctx = DustData::getEntityByPath(DPL_CTX_SELF, DUST_ENTITY_INVALID);
+		DustRef ctx(DUST_CTX_SELF);
 
 		bool coll = isColl();
 		unsigned int limit = coll ? DustData::getMemberCount(ctx, DustRefCollectionMembers) : (unsigned) DustData::getInteger(ctx, DustIntLimitsMax, INT_MAX);
@@ -80,7 +80,7 @@ DustResultType DplStlLogicRepeat::DustActionExecute() {
 	DustResultType ret = optRelayChild();
 
 	if ( DUST_RESULT_REJECT == ret ) {
-		DustEntity ctx = DustData::getEntityByPath(DPL_CTX_SELF, DUST_ENTITY_INVALID);
+		DustRef ctx(DUST_CTX_SELF);
 		int min = DustData::getInteger(ctx, DustUnitMindGeneric::DustIntLimitsMin, 1);
 
 		if ( min <= (int) pos ) {
@@ -95,7 +95,7 @@ DustResultType DplStlLogicSelect::DustActionExecute() {
 	DustResultType ret = optGetChildResult(DUST_RESULT_REJECT);
 
 	if (DUST_RESULT_REJECT == ret) {
-		DustEntity ctx = DustData::getEntityByPath(DPL_CTX_SELF, DUST_ENTITY_INVALID);
+		DustRef ctx(DUST_CTX_SELF);
 		unsigned int count = DustData::getMemberCount(ctx, DustRefCollectionMembers);
 
 		if (pos < count) {

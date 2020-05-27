@@ -103,15 +103,13 @@ public:
 
     virtual void setConnector(DustRuntimeConnector* pConn) = 0;
 
-    virtual DustEntity createEntity(DustEntity primaryType) = 0;
-
     virtual long getMemberCount(DustEntity entity, DustEntity token) = 0;
     virtual DustEntity getMemberKey(DustEntity entity, DustEntity token, long idx) = 0;
 
-    virtual bool accessMember(DustAccessData &access) = 0;
+    virtual bool access(DustAccessData &access) = 0;
 
 // Entity native content access
-    virtual void* getNative(DustEntity entity, DustEntity type = DUST_ENTITY_APPEND) = 0;
+    virtual void* getNative(DustEntity entity, DustEntity type, bool createIfMissing) = 0;
 };
 
 typedef DustModule* (*getModule_t)();

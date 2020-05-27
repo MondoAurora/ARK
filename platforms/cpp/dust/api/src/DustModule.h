@@ -7,6 +7,17 @@
 
 class DustRuntime;
 
+extern "C" class DustFactoryLogic
+{
+    virtual DustToken& DustFactoryGetToken() = 0;
+    virtual void* DustFactoryCreate() = 0;
+    virtual void DustFactoryDestroy(void*) = 0;
+
+    virtual DustResultType DustFactoryCommand(DustNativeLogic* pLogic, DustEntity cmd, DustEntity param) {
+		return DUST_RESULT_NOTIMPLEMENTED;
+	}
+} ;
+
 extern "C" class DustModule: public DustNativeLogic {
 	static DustRuntime* apiRuntime;
 

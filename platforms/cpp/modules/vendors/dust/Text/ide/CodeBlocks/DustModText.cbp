@@ -52,6 +52,10 @@
 		<Unit filename="../../src/DustgenModText.cpp" />
 		<Unit filename="../../src/DustgenModText.h" />
 		<Unit filename="../../src/Text.h" />
+		<Unit filename="../../src/TextAgentsCore.cpp" />
+		<Unit filename="../../src/TextAgentsCore.h" />
+		<Unit filename="../../src/TextAgentsStream.cpp" />
+		<Unit filename="../../src/TextAgentsStream.h" />
 		<Unit filename="../../src/TextDictionary.cpp" />
 		<Extensions>
 			<code_completion />

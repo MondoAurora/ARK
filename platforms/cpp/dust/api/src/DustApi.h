@@ -3,7 +3,6 @@
 
 typedef long DustEntity;
 
-#define DPL_CTX_SELF -3
 #define DUST_ENTITY_NOCHANGE -2
 #define DUST_ENTITY_APPEND -1
 #define DUST_ENTITY_INVALID 0
@@ -37,13 +36,22 @@ enum DustEventType
     DUST_EVENT_
 };
 
+enum DustCtxType
+{
+    DUST_CTX_SELF = DUST_EVENT_,
+    DUST_CTX_DIALOG,
+    DUST_CTX_,
+};
+
 enum DustAccessType
 {
-    DUST_ACCESS_GET = DUST_EVENT_,
+    DUST_ACCESS_GET = DUST_CTX_,
     DUST_ACCESS_SET,
     DUST_ACCESS_MOVE,
     DUST_ACCESS_REMOVE,
     DUST_ACCESS_CLEAR,
+    DUST_ACCESS_CREATE,
+    DUST_ACCESS_DELETE,
     DUST_ACCESS_
 };
 
@@ -168,6 +176,19 @@ public:
     friend class DustRuntime;
 };
 
+class DustRef
+{
+private:
+    DustEntity entity;
+    DustToken *pToken;
+
+public:
+    DustRef(DustCtxType ctx);
+    operator DustEntity();
+    DustRef& operator >> (long key);
+    DustRef& operator >> (DustToken &token);
+};
+
 class DustData
 {
 private:
@@ -175,8 +196,9 @@ private:
 
 public:
 // Entity creation and access
-    static DustEntity getEntityByPath(DustEntity ctx, ...);
+//    static DustEntity getEntityByPath(DustEntity ctx, ...);
     static DustEntity createEntity(DustEntity primaryType);
+    static bool deleteEntity(DustEntity entity);
 
     static long getMemberCount(DustEntity entity, DustEntity token);
     static DustEntity getMemberKey(DustEntity entity, DustEntity token, long idx);
@@ -196,7 +218,7 @@ public:
     static bool removeRef(DustEntity entity, DustEntity token, DustEntity target, long key = DUST_ENTITY_APPEND);
 
 // Entity native content access
-    static void* getNative(DustEntity entity, DustEntity type = DUST_ENTITY_APPEND);
+    static void* getNative(DustEntity entity, DustEntity type = DUST_ENTITY_APPEND, bool createIfMissing = true);
 
     friend class DustToken;
     friend class DustRuntime;

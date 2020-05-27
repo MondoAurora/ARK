@@ -43,6 +43,10 @@ DustToken DustUnitMindNarrative::DustTagResultAcceptPass(DustTagResult, "AcceptP
 DustToken DustUnitMindNarrative::DustTagResultAccept(DustTagResult, "Accept", DUST_IDEA_TAG);
 DustToken DustUnitMindNarrative::DustTagResultAcceptRead(DustTagResult, "AcceptRead", DUST_IDEA_TAG);
 
+DustToken DustUnitMindNarrative::DustTagCtx(DustUnitNarrative, "Ctx", DUST_IDEA_TAG);
+DustToken DustUnitMindNarrative::DustTagCtxSelf(DustTagCtx, "Self", DUST_IDEA_TAG);
+DustToken DustUnitMindNarrative::DustTagCtxDialog(DustTagCtx, "Dialog", DUST_IDEA_TAG);
+
 DustToken DustUnitMindNarrative::DustAgentDialog(DustUnitNarrative, "Dialog", DUST_IDEA_AGENT);
 DustToken DustUnitMindNarrative::DustAgentSequence(DustUnitNarrative, "Sequence", DUST_IDEA_AGENT);
 DustToken DustUnitMindNarrative::DustAgentRepeat(DustUnitNarrative, "Repeat", DUST_IDEA_AGENT);

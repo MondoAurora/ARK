@@ -20,7 +20,40 @@ DustToken::operator DustEntity()
     return entity;
 }
 
-void DustRuntime::setBootToken(DustToken &token, DustEntity entity) {
+
+DustRef::DustRef(DustCtxType ctx)
+: entity(ctx), pToken(0)
+{}
+DustRef::operator DustEntity()
+{
+    return entity ? pToken ? DustData::getRef(entity, *pToken) : entity : DUST_ENTITY_INVALID;
+}
+DustRef& DustRef::operator >> (DustToken &token)
+{
+    if ( pToken ) {
+        entity = DUST_ENTITY_INVALID;
+        pToken = 0;
+    } else if ( token.getCollType() == DUST_COLL_SINGLE ) {
+        entity = DustData::getRef(entity, token);
+    } else {
+        pToken = &token;
+    }
+    return *this;
+}
+DustRef& DustRef::operator >> (long key) {
+    if ( pToken ) {
+        entity = DustData::getRef(entity, *pToken, DUST_ENTITY_INVALID, key);
+        pToken = 0;
+    } else {
+        entity = DUST_ENTITY_INVALID;
+    }
+        return *this;
+}
+
+
+
+void DustRuntime::setBootToken(DustToken &token, DustEntity entity)
+{
     DustEntity e = DustData::getTokenEntity(&token, entity);
     token.entity = e;
 }
@@ -38,55 +71,15 @@ DustEntity DustData::getTokenEntity(DustToken* pToken, DustEntity constId)
     }
 }
 
-DustEntity DustData::getEntityByPath(DustEntity ctx, ...)
-{
-    DustEntity e = ctx;
-//
-//	DustProdLightRef *pR = NULL;
-//
-//	va_list args;
-//	va_start(args, ctx);
-//
-//	while (e) {
-//		int p = va_arg(args, int);
-//
-//		if (!p) {
-//			break;
-//		}
-//
-//		pR = DustProdLightRuntime::pRuntime->getRef(e, p);
-//
-//		if (pR && pR->getCount()) {
-//			switch (pR->tokenType) {
-//			case DUST_TOKEN_REF_SINGLE:
-//				e = pR->getRef(0);
-//				break;
-//			case DUST_TOKEN_REF_SET:
-//			case DUST_TOKEN_REF_ARR:
-//				p = va_arg(args, int);
-//				e = pR->getRef(p);
-//				break;
-//			case DUST_TOKEN_REF_MAP:
-//				p = va_arg(args, int);
-//				p = pR->getTokenByIndex(p);
-//				e = pR->getRef(p);
-//				break;
-//			default:
-//				e = 0;
-//				break;
-//			}
-//		} else {
-//			e = 0;
-//		}
-//	}
-//
-//	va_end(args);
-
-    return e;
-}
 DustEntity DustData::createEntity(DustEntity primaryType)
 {
-    return apiRuntime->createEntity(primaryType);
+    DustAccessData ad(DUST_ACCESS_CREATE, DUST_ENTITY_INVALID, primaryType);
+    return apiRuntime->access(ad) ? ad.entity : DUST_ENTITY_INVALID;
+}
+
+bool DustData::deleteEntity(DustEntity entity) {
+    DustAccessData ad(DUST_ACCESS_DELETE, entity, DUST_ENTITY_INVALID);
+    return apiRuntime->access(ad);
 }
 
 
@@ -98,65 +91,67 @@ DustEntity DustData::getMemberKey(DustEntity entity, DustEntity token, long idx)
 {
     return apiRuntime->getMemberKey(entity, token, idx);
 }
-bool DustData::clearMember(DustEntity entity, DustEntity token) {
+bool DustData::clearMember(DustEntity entity, DustEntity token)
+{
     DustAccessData ad(DUST_ACCESS_CLEAR, entity, token);
-    return apiRuntime->accessMember(ad);
+    return apiRuntime->access(ad);
 }
-bool DustData::moveMember(DustEntity entity, DustEntity token, long keyFrom, long keyTo) {
+bool DustData::moveMember(DustEntity entity, DustEntity token, long keyFrom, long keyTo)
+{
     DustAccessData ad(DUST_ACCESS_MOVE, entity, token, keyFrom, keyTo);
-    return apiRuntime->accessMember(ad);
+    return apiRuntime->access(ad);
 }
 
 long DustData::getInteger(DustEntity entity, DustEntity token, long defValue, long key)
 {
     DustAccessData ad(DUST_ACCESS_GET, entity, token, key);
-    return apiRuntime->accessMember(ad) ? ad.valLong : defValue;
+    return apiRuntime->access(ad) ? ad.valLong : defValue;
 }
 double DustData::getReal(DustEntity entity, DustEntity token, double defValue, long key)
 {
     DustAccessData ad(DUST_ACCESS_GET, entity, token, key);
-    return apiRuntime->accessMember(ad) ? ad.valDouble : defValue;
+    return apiRuntime->access(ad) ? ad.valDouble : defValue;
 }
 DustEntity DustData::getRef(DustEntity entity, DustEntity token, DustEntity defValue, long key)
 {
     DustAccessData ad(DUST_ACCESS_GET, entity, token, key);
-    return apiRuntime->accessMember(ad) ? ad.valLong : defValue;
+    return apiRuntime->access(ad) ? ad.valLong : defValue;
 }
 
 
 bool DustData::setInteger(DustEntity entity, DustEntity token, long val, long key)
 {
     DustAccessData ad(entity, token, val, key);
-    return apiRuntime->accessMember(ad);
+    return apiRuntime->access(ad);
 }
 bool DustData::setReal(DustEntity entity, DustEntity token, double val, long key)
 {
     DustAccessData ad(entity, token, val, key);
-    return apiRuntime->accessMember(ad);
+    return apiRuntime->access(ad);
 }
 bool DustData::setRef(DustEntity entity, DustEntity token, DustEntity target, long key)
 {
     DustAccessData ad(entity, token, target, key);
-    return apiRuntime->accessMember(ad);
+    return apiRuntime->access(ad);
 }
 
 bool DustData::removeInteger(DustEntity entity, DustEntity token, long val, long key)
 {
     DustAccessData ad(DUST_ACCESS_REMOVE, entity, token, val, key);
-    return apiRuntime->accessMember(ad);
+    return apiRuntime->access(ad);
 }
 bool DustData::removeReal(DustEntity entity, DustEntity token, double val, long key)
 {
     DustAccessData ad(DUST_ACCESS_REMOVE, entity, token, val, key);
-    return apiRuntime->accessMember(ad);
+    return apiRuntime->access(ad);
 }
 bool DustData::removeRef(DustEntity entity, DustEntity token, DustEntity target, long key)
 {
     DustAccessData ad(DUST_ACCESS_REMOVE, entity, token, target, key);
-    return apiRuntime->accessMember(ad);
+    return apiRuntime->access(ad);
 }
 
-void* DustData::getNative(DustEntity entity, DustEntity type)
+void* DustData::getNative(DustEntity entity, DustEntity type, bool createIfMissing)
 {
-    return apiRuntime->getNative(entity, type);
+    return apiRuntime->getNative(entity, type, createIfMissing);
 }

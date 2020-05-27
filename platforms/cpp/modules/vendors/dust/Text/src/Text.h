@@ -7,17 +7,8 @@
 #include <map>
 #include <string>
 
-using namespace std;
+#include "TextAgentsCore.h"
+#include "TextAgentsStream.h"
 
-extern "C" class TextDictionary : public DustTextDictionary {
-    map<string, DustEntity> words;
-
-public:
-	virtual ~TextDictionary();
-
-	virtual DustEntity getTextToken(DustEntity txtParent, const char* name);
-	virtual DustResultType DustResourceInit();
-	virtual DustResultType DustResourceRelease();
-};
 
 #endif /* SRC_TEXT_H_ */

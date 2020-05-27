@@ -47,6 +47,10 @@ extern DustToken DustTagResultAccept;
 extern DustToken DustTagResultAcceptRead;
 extern DustToken DustTagResultRead;
 
+extern DustToken DustTagCtx;
+extern DustToken DustTagCtxSelf;
+extern DustToken DustTagCtxDialog;
+
 extern DustToken DustAgentDialog;
 extern DustToken DustAgentSequence;
 extern DustToken DustAgentSelect;

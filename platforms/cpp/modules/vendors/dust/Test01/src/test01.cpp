@@ -10,6 +10,7 @@
 using namespace std;
 using namespace DustUnitDustTest01;
 
+
 void test01()
 {
     cout << "T01 sees int value " << DustData::getInteger(0,0,0) << endl;
@@ -50,6 +51,15 @@ class T01 : public DustNativeLogic
         return DUST_RESULT_ACCEPT;
     }
 };
+
+
+class FactTest01_ : public DustFactoryLogic
+{
+    virtual DustToken& DustFactoryGetToken() { return DustAgentTest01; };
+
+    virtual void* DustFactoryCreate() { return new T01(); };
+    virtual void DustFactoryDestroy(void* pObj ) { delete (T01*) pObj; }
+} FactTest01 ;
 
 class TestModule : public DustModule
 {

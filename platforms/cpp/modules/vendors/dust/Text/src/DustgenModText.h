@@ -1,8 +1,6 @@
 
 #include <DustRuntime.h>
 
-#include "Text.h"
-
 class DustModText : public DustModule {
 public:
 	virtual ~DustModText();

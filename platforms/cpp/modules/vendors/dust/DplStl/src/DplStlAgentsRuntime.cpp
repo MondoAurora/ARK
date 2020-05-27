@@ -31,7 +31,7 @@ DustResultType DplStlLogicState::init(DplStlDataEntity *pTask, DplStlLogicState 
 		pSelf = pTask; // maybe shallow copy?
 //	}
 
-	emapRef[DPL_CTX_SELF] = pSelf;
+	emapRef[DUST_CTX_SELF] = pSelf;
 
     DplStlRuntime *pR = DplStlRuntime::getRuntime();
 
@@ -57,7 +57,7 @@ DustResultType DplStlLogicState::DustActionExecute() {
 
 DustResultType DplStlLogicState::DustResourceRelease() {
     /*
-	DplStlDataEntity *pSelf = emapRef[DPL_CTX_SELF];
+	DplStlDataEntity *pSelf = emapRef[DUST_CTX_SELF];
 
     pSelf->releaseActions();
 */

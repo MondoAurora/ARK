@@ -69,6 +69,9 @@ DustResultType DplStlRuntime::DustResourceInit()
     setBootInfo(DustUnitMindNarrative::DustTagResultAcceptPass, DUST_RESULT_ACCEPT_PASS);
     setBootInfo(DustUnitMindNarrative::DustTagResultAcceptRead, DUST_RESULT_ACCEPT_READ);
 
+    setBootInfo(DustUnitMindNarrative::DustTagCtxSelf, DUST_CTX_SELF);
+    setBootInfo(DustUnitMindNarrative::DustTagCtxDialog, DUST_CTX_DIALOG);
+
     setBootInfo(DustUnitMindDialog::DustTagAccessGet, DUST_ACCESS_GET);
     setBootInfo(DustUnitMindDialog::DustTagAccessSet, DUST_ACCESS_SET);
     setBootInfo(DustUnitMindDialog::DustTagAccessMove, DUST_ACCESS_MOVE);
@@ -196,9 +199,9 @@ DplStlDataEntity* DplStlRuntime::resolveEntity(DustEntity entity)
 }
 
 
-DustEntity DplStlRuntime::createEntity(DustEntity primaryType)
+DplStlDataEntity* DplStlRuntime::createEntity(DustEntity primaryType)
 {
-    return store.getEntity(DUST_ENTITY_APPEND, primaryType)->id;
+    return store.getEntity(DUST_ENTITY_APPEND, primaryType);
 }
 
 long DplStlRuntime::getMemberCount(DustEntity entity, DustEntity token)
@@ -238,20 +241,33 @@ DustEntity DplStlRuntime::getMemberKey(DustEntity entity, DustEntity token, long
     return key;
 }
 
-bool DplStlRuntime::accessMember(DustAccessData &ad)
+bool DplStlRuntime::access(DustAccessData &ad)
 {
-    DplStlDataEntity *pEntity = resolveEntity(ad.entity);
-    return pEntity ? pEntity->access(ad) : false;
+    DplStlDataEntity *pEntity = ( DUST_ACCESS_CREATE == ad.access ) ? createEntity(ad.token) : resolveEntity(ad.entity);
+
+    if ( !pEntity ) {
+        return false;
+    }
+    switch ( ad.access )
+    {
+    case DUST_ACCESS_CREATE:
+            ad.entity = pEntity->id;
+            return true;
+    default:
+        return pEntity->access(ad);
+    }
+
+    return false;
 }
 
 
 
-void* DplStlRuntime::getNative(DustEntity entity, DustEntity type)
+void* DplStlRuntime::getNative(DustEntity entity, DustEntity type, bool createIfMissing)
 {
     DplStlDataEntity *pEntity = resolveEntity(entity);
     void* ret = mapOptGet(pEntity->native, ( DUST_ENTITY_APPEND == type ) ? pEntity->primaryType : type);
 
-    if ( !ret )
+    if ( !ret && createIfMissing)
     {
         DustModule *pMod = pRTC->getModuleForType(type);
 
@@ -273,10 +289,12 @@ DustResultType DplStlRuntime::DustActionExecute()
     return DUST_RESULT_NOTIMPLEMENTED;
 }
 
-DplStlRuntime* DplStlRuntime::getRuntime() {
-return pRuntime;
+DplStlRuntime* DplStlRuntime::getRuntime()
+{
+    return pRuntime;
 }
 
-DplStlLogicCore* DplStlRuntime::getCurrentCore() {
+DplStlLogicCore* DplStlRuntime::getCurrentCore()
+{
     return pRuntime->cores[0];
 }
