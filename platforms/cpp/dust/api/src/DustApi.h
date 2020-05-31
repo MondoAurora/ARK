@@ -40,6 +40,8 @@ enum DustCtxType
 {
     DUST_CTX_SELF = DUST_EVENT_,
     DUST_CTX_DIALOG,
+    DUST_CTX_APP,
+    DUST_CTX_SYSTEM,
     DUST_CTX_,
 };
 
@@ -183,7 +185,7 @@ private:
     DustToken *pToken;
 
 public:
-    DustRef(DustCtxType ctx);
+    DustRef(DustCtxType ctx = DUST_CTX_SELF);
     operator DustEntity();
     DustRef& operator >> (long key);
     DustRef& operator >> (DustToken &token);

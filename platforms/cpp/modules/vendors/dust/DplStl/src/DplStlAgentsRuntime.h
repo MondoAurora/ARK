@@ -106,6 +106,7 @@ class DplStlLogicCore : public DustNativeLogic {
 	DustResultType lastResult;
 
 public:
+    DplStlLogicCore();
     DplStlLogicCore(DplStlRuntime *pRuntime);
 
 	DustResultType getLastResult () {

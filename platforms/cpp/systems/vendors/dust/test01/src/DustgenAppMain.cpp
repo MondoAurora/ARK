@@ -4,30 +4,30 @@
 #include <iostream>
 
 #include <vendors/dust/DustgenUnitTest01.h>
+#include <MiND/DustgenUnitMindCore.h>
 
 using namespace std;
 using namespace DustUnitDustTest01;
+using namespace DustUnitMindNarrative;
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
+    cout << "calling bootDust..." << endl;
 
-	cout << "calling bootDust..." << endl;
+    dustBoot(argc, argv);
 
-	dustBoot(argc, argv);
+    DustEntity wnd = DustData::createEntity(DustAgentTestWindow);
+    DustEntity gl = DustData::createEntity(DustAgentTestOpenGL);
 
-    DustEntity e = DustData::createEntity(DustAgentTest01);
+    DustData::setRef(wnd, DustRefPainter, gl);
+
+    DustData::setRef(DUST_CTX_APP, DustRefAppMain, wnd);
 
     dustLaunch();
 
-	DustNativeLogic *pl = (DustNativeLogic*) DustData::getNative(e);
+    cout << "Success." << endl;
 
-	if ( pl ) {
-	pl->DustActionExecute();
-	}
+    dustShutdown();
 
-
-	cout << "Success." << endl;
-
-	dustShutdown();
-
-	return 0;
+    return 0;
 }

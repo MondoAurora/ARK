@@ -1,17 +1,24 @@
 # depslib dependency file v1.0
-1590595187 source:a:\platforms\cpp\systems\vendors\dust\test01\src\dustgenappmain.cpp
+1590922990 source:a:\platforms\cpp\units\mind\dustgenunitmindcore.cpp
+	"DustgenUnitMindCore.h"
+
+1590922689 a:\platforms\cpp\units\mind\dustgenunitmindcore.h
+	<DustApi.h>
+
+1590922167 a:\platforms\cpp\dust\api\src\dustapi.h
+
+1590941474 source:a:\platforms\cpp\units\vendors\dust\dustgenunittest01.cpp
+	"DustgenUnitTest01.h"
+
+1590941443 a:\platforms\cpp\units\vendors\dust\dustgenunittest01.h
+	<DustApi.h>
+
+1590922666 source:a:\platforms\cpp\systems\vendors\dust\test01\src\dustgenappmain.cpp
 	<DustMain.h>
 	<DustApi.h>
 	<iostream>
 	<vendors/dust/DustgenUnitTest01.h>
+	<MiND/DustgenUnitMindCore.h>
 
 1590595150 a:\platforms\cpp\dust\main\src\dustmain.h
-
-1590577940 a:\platforms\cpp\dust\api\src\dustapi.h
-
-1590073794 source:a:\platforms\cpp\units\vendors\dust\dustgenunittest01.cpp
-	"DustgenUnitTest01.h"
-
-1590073794 a:\platforms\cpp\units\vendors\dust\dustgenunittest01.h
-	<DustApi.h>
 

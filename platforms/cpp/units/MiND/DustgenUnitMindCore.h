@@ -50,11 +50,18 @@ extern DustToken DustTagResultRead;
 extern DustToken DustTagCtx;
 extern DustToken DustTagCtxSelf;
 extern DustToken DustTagCtxDialog;
+extern DustToken DustTagCtxApp;
+extern DustToken DustTagCtxSystem;
 
-extern DustToken DustAgentDialog;
 extern DustToken DustAgentSequence;
 extern DustToken DustAgentSelect;
 extern DustToken DustAgentRepeat;
+
+extern DustToken DustAgentDialog;
+extern DustToken DustAgentApp;
+extern DustToken DustAgentSystem;
+
+extern DustToken DustRefAppMain;
 };
 
 namespace DustUnitMindDialog {

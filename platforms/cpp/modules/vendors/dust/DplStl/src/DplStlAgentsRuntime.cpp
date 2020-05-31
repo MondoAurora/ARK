@@ -160,6 +160,9 @@ DustResultType DplStlLogicDialog::DustResourceRelease() {
  *
  ****************************/
 
+DplStlLogicCore::DplStlLogicCore()
+: pRuntime(NULL), pDialog(NULL), lastResult(DUST_RESULT_READ) {}
+
 DplStlLogicCore::DplStlLogicCore(DplStlRuntime *pR)
 : pRuntime(pR), pDialog(NULL), lastResult(DUST_RESULT_READ) {}
 

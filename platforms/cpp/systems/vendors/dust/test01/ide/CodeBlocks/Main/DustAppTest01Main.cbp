@@ -11,7 +11,7 @@
 				<Option object_output="../obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="DustModText DustModDplStl DustModTest01" />
+				<Option parameters="DustModText DustModDplStl DustModTest01 DustModGraphOpenGl DustModWinGui " />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -40,6 +40,8 @@
 			<Add library="$(#ark_debug.LIB)/libDustLibApi.a" />
 			<Add library="$(#ark_debug.LIB)/libDustLibMain.a" />
 		</Linker>
+		<Unit filename="../../../../../../../units/MiND/DustgenUnitMindCore.cpp" />
+		<Unit filename="../../../../../../../units/MiND/DustgenUnitMindCore.h" />
 		<Unit filename="../../../../../../../units/vendors/dust/DustgenUnitTest01.cpp" />
 		<Unit filename="../../../../../../../units/vendors/dust/DustgenUnitTest01.h" />
 		<Unit filename="../../../src/DustgenAppMain.cpp" />

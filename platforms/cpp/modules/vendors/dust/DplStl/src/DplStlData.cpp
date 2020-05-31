@@ -171,7 +171,7 @@ DplStlDataValue* DplStlDataVariant::locateForOverride(DustAccessData &ad)
 bool DplStlDataVariant::setValue(DustValType vt, DustAccessData &ad, DplStlDataValue * pVal)
 {
     return ( DUST_VAL_REF == vt )
-                      ? pVal->setRef(ad.key, new DplStlDataRef(this, ad.token, ad.entity, ad.valLong))
+                      ? pVal->setRef(ad.key, new DplStlDataRef(this, ad.entity, ad.valLong))
                       : pVal->loadFrom(vt, ad);
 }
 
@@ -224,8 +224,8 @@ bool DplStlDataVariant::access(DustAccessData &ad)
     return ret;
 }
 
-DplStlDataRef::DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eToken_, DustEntity eSource_, DustEntity eTarget_)
-    :pVariant(pVariant_), eToken(eToken_), eSource(eSource_), eTarget(eTarget_)
+DplStlDataRef::DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eSource_, DustEntity eTarget_)
+    :pVariant(pVariant_), eSource(eSource_), eTarget(eTarget_)
 {}
 
 DplStlDataRef::~DplStlDataRef()

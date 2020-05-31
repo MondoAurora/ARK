@@ -7,6 +7,11 @@ namespace DustUnitDustTest01 {
 extern DustToken DustUnitTest01;
 
 extern DustToken DustAgentTest01;
+extern DustToken DustAgentTestWindow;
+extern DustToken DustAgentTestOpenGL;
+
+extern DustToken DustRefPainter;
+extern DustToken DustIntHDC;
 
 extern DustToken DustTypeColor;
 extern DustToken DustIntCode;

@@ -60,6 +60,8 @@ class DustMainModule
         hLib = MyLoadLib(name.c_str());
         getModule_t gm = (getModule_t) MyLoadProc(hLib, DUST_FNAME_GET_MODULE);
 
+        cout << "Loading module " << name << " with fn " << gm << endl;
+
         pModule = gm();
     }
 
@@ -186,7 +188,8 @@ public:
 
             if ( !pRuntime )
             {
-                if (pMod->isNativeProvided(DUST_BOOT_AGENT_RUNTIME)) {
+                if (pMod->isNativeProvided(DUST_BOOT_AGENT_RUNTIME))
+                {
                     pRuntime = (DustRuntime*) pMod->createNative(DUST_BOOT_AGENT_RUNTIME);
                     modByType[DUST_BOOT_AGENT_RUNTIME] = pMod;
                     pRuntime->setConnector(this);
@@ -196,7 +199,8 @@ public:
             }
             if ( !pMainDict)
             {
-                if (pMod->isNativeProvided(DUST_BOOT_AGENT_DICTIONARY)) {
+                if (pMod->isNativeProvided(DUST_BOOT_AGENT_DICTIONARY))
+                {
                     pMainDict = (DustTextDictionary*) pMod->createNative(DUST_BOOT_AGENT_DICTIONARY);
                     modByType[DUST_BOOT_AGENT_DICTIONARY] = pMod;
                     pTextModule = pmm;
@@ -208,9 +212,11 @@ public:
         ::initModule(pRuntime);
 
         pTextModule->initModule0(pRuntime);
-        pRuntimeModule->initModule(pRuntime);
+        pRuntimeModule->initModule0(pRuntime);
 
         pRuntime->DustResourceInit();
+
+        pRuntimeModule->pModule->DustResourceInit();
 
         for (ModuleIterator it = modByName.begin(); it != modByName.end(); ++it)
         {
@@ -230,6 +236,16 @@ public:
             }
         }
     }
+
+    void launch()
+    {
+        pRuntime->DustActionExecute();
+    }
+
+    void shutdown()
+    {
+        pRuntime->DustResourceRelease();
+    }
 };
 
 DustMainApp DustMainApp::theApp;
@@ -242,11 +258,14 @@ extern "C" void dustBoot(int moduleCount, char **moduleNames)
 
 extern "C" void dustLaunch()
 {
-      cout << "Dust launching... " << endl;
+    cout << "Dust launching... " << endl;
+    DustMainApp::theApp.launch();
+
 }
 
 extern "C" void dustShutdown()
 {
-      cout << "Dust graceful shutdown... " << endl;
+    cout << "Dust graceful shutdown... " << endl;
+    DustMainApp::theApp.shutdown();
 }
 

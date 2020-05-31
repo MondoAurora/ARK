@@ -52,19 +52,7 @@ class T01 : public DustNativeLogic
     }
 };
 
-class T02 : public DustNativeLogic
-{
-    virtual DustResultType DustActionExecute()
-    {
-//        test01();
-        test02();
-
-        return DUST_RESULT_ACCEPT;
-    }
-};
-
 DECLARE_FACTORY(T01, DustAgentTest01)
-DECLARE_FACTORY(T02, DustAgentTest01)
 
 class TestModule : public DustModule
 {
@@ -77,7 +65,6 @@ public:
     {
         cout << "TestModule::DustResourceInit" << endl;
         registerFactory(&FactT01);
-        registerFactory(&FactT02);
         return DUST_RESULT_ACCEPT;
     }
     virtual DustResultType DustResourceRelease()

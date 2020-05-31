@@ -74,12 +74,11 @@ class DplStlDataRef
 {
     DplStlDataVariant *pVariant;
 
-    DustEntity eToken;
     DustEntity eSource;
     DustEntity eTarget;
 
 public:
-    DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eToken_, DustEntity eSource_, DustEntity eTarget_);
+    DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eSource_, DustEntity eTarget_);
     ~DplStlDataRef();
 
     friend class DplStlRuntime;

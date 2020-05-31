@@ -36,10 +36,10 @@ namespace DustUnitMindDust
 {
 extern DustToken DustUnitDust;
 extern DustToken DustAgentRuntime;
-extern DustToken DustRefRuntimeMain;
-extern DustToken DustAgentSystem;
+
 extern DustToken DustAgentCore;
-extern DustToken DustAgentBlock;
+extern DustToken DustAgentPda;
+extern DustToken DustAgentState;
 }
 
 #endif // DUSTGENUNITMINDDUST_H_INCLUDED

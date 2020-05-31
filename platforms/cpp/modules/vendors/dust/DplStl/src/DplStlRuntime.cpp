@@ -71,6 +71,8 @@ DustResultType DplStlRuntime::DustResourceInit()
 
     setBootInfo(DustUnitMindNarrative::DustTagCtxSelf, DUST_CTX_SELF);
     setBootInfo(DustUnitMindNarrative::DustTagCtxDialog, DUST_CTX_DIALOG);
+    setBootInfo(DustUnitMindNarrative::DustTagCtxApp, DUST_CTX_APP);
+    setBootInfo(DustUnitMindNarrative::DustTagCtxSystem, DUST_CTX_SYSTEM);
 
     setBootInfo(DustUnitMindDialog::DustTagAccessGet, DUST_ACCESS_GET);
     setBootInfo(DustUnitMindDialog::DustTagAccessSet, DUST_ACCESS_SET);
@@ -265,7 +267,10 @@ bool DplStlRuntime::access(DustAccessData &ad)
 void* DplStlRuntime::getNative(DustEntity entity, DustEntity type, bool createIfMissing)
 {
     DplStlDataEntity *pEntity = resolveEntity(entity);
-    void* ret = mapOptGet(pEntity->native, ( DUST_ENTITY_APPEND == type ) ? pEntity->primaryType : type);
+    if ( DUST_ENTITY_APPEND == type ) {
+        type = pEntity->primaryType;
+    }
+    void* ret = mapOptGet(pEntity->native, type);
 
     if ( !ret && createIfMissing)
     {
@@ -286,6 +291,15 @@ void* DplStlRuntime::getNative(DustEntity entity, DustEntity type, bool createIf
 
 DustResultType DplStlRuntime::DustActionExecute()
 {
+    DustEntity eMain = DustData::getRef(DUST_CTX_APP, DustUnitMindNarrative::DustRefAppMain);
+
+    store.entities[DUST_CTX_SELF] = store.entities[eMain];
+    DustNativeLogic *pl = (DustNativeLogic*) DustData::getNative(eMain);
+    if ( pl )
+    {
+        pl->DustActionExecute();
+    }
+
     return DUST_RESULT_NOTIMPLEMENTED;
 }
 

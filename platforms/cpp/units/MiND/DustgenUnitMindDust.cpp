@@ -35,7 +35,7 @@ using namespace DustUnitMindDust;
 DustToken DustUnitMindDust::DustUnitDust("Dust");
 
 DustToken DustUnitMindDust::DustAgentRuntime(DustUnitDust, "Runtime", DUST_IDEA_AGENT);
-DustToken DustUnitMindDust::DustRefRuntimeMain(DustAgentRuntime, "Main", DUST_VAL_REF, DUST_COLL_SINGLE);
-DustToken DustUnitMindDust::DustAgentSystem(DustUnitDust, "System", DUST_IDEA_AGENT);
+
 DustToken DustUnitMindDust::DustAgentCore(DustUnitDust, "Core", DUST_IDEA_AGENT);
-DustToken DustUnitMindDust::DustAgentBlock(DustUnitDust, "Block", DUST_IDEA_AGENT);
+DustToken DustUnitMindDust::DustAgentPda(DustUnitDust, "Pda", DUST_IDEA_AGENT);
+DustToken DustUnitMindDust::DustAgentState(DustUnitDust, "State", DUST_IDEA_AGENT);
