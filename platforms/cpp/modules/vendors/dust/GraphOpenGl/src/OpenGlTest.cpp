@@ -16,6 +16,13 @@
 
 float theta = 0.0f;
 
+GLAPI void APIENTRY glVertex2fX( GLfloat x, GLfloat y ){
+    glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex2f(x,y);
+    glColor3f(1.0f, 0.0f, 0.0f);
+}
+
+
 void updateGraphics()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -24,14 +31,17 @@ void updateGraphics()
     glPushMatrix();
     glRotatef(theta, 0.0f, 0.5f, 1.0f);
 
-    glBegin(GL_TRIANGLES);
+    glBegin(GL_LINE_LOOP);
 
     glColor3f(1.0f, 0.0f, 0.0f);
-    glVertex2f(0.0f,   1.0f);
-    glColor3f(0.0f, 1.0f, 0.0f);
-    glVertex2f(0.87f,  -0.5f);
-    glColor3f(0.0f, 0.0f, 1.0f);
-    glVertex2f(-0.87f, -0.5f);
+
+    glVertex2fX(0.0, 1.0);
+    glVertex2f(0.5, 0.0);
+    glVertex2fX(0.5, 0.2);
+    glVertex2f(0.2, -0.2);
+    glVertex2f(-0.2, -0.2);
+    glVertex2fX(-0.5, 0.2);
+    glVertex2f(-0.5, 0.0);
 
     glEnd();
 

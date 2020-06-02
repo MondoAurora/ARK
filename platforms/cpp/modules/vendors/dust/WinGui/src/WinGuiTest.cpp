@@ -13,8 +13,8 @@ using namespace std;
 using namespace DustUnitDustTest01;
 
 LRESULT CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
-void EnableOpenGL(HWND hwnd, HDC*, HGLRC*);
-void DisableOpenGL(HWND, HDC, HGLRC);
+void MyInitWindow(HWND hwnd, HDC*);
+void MyReleaseWindow(HWND, HDC);
 
 HDC hDC;
 
@@ -44,7 +44,6 @@ int WINAPI sw()
     HINSTANCE hInstance = GetModuleHandle(0);
     WNDCLASSEX wcex;
     HWND hwnd;
-    HGLRC hRC;
     MSG msg;
     BOOL bQuit = FALSE;
 
@@ -69,7 +68,7 @@ int WINAPI sw()
     /* create main window */
     hwnd = CreateWindowEx(0,
                           "GLSample",
-                          "OpenGL Sample",
+                          "FleetMan",
                           WS_OVERLAPPEDWINDOW,
                           CW_USEDEFAULT,
                           CW_USEDEFAULT,
@@ -80,10 +79,7 @@ int WINAPI sw()
                           hInstance,
                           NULL);
 
-    ShowWindow(hwnd, SW_SHOWDEFAULT);
-
-    /* enable OpenGL for the window */
-    EnableOpenGL(hwnd, &hDC, &hRC);
+    MyInitWindow(hwnd, &hDC);
 
     /* program main loop */
     while (!bQuit)
@@ -106,11 +102,7 @@ int WINAPI sw()
         updateGraphics(bQuit);
     }
 
-    /* shutdown OpenGL */
-    DisableOpenGL(hwnd, hDC, hRC);
-
-    /* destroy the window explicitly */
-    DestroyWindow(hwnd);
+    MyReleaseWindow(hwnd, hDC);
 
     return msg.wParam;
 }
@@ -144,8 +136,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-void EnableOpenGL(HWND hwnd, HDC* hDC, HGLRC* hRC)
+void MyInitWindow(HWND hwnd, HDC* hDC)
 {
+    ShowWindow(hwnd, SW_SHOWDEFAULT);
+
     PIXELFORMATDESCRIPTOR pfd;
 
     int iFormat;
@@ -168,17 +162,12 @@ void EnableOpenGL(HWND hwnd, HDC* hDC, HGLRC* hRC)
     iFormat = ChoosePixelFormat(*hDC, &pfd);
 
     SetPixelFormat(*hDC, iFormat, &pfd);
-
-    /* create and enable the render context (RC) */
-    *hRC = wglCreateContext(*hDC);
-    wglMakeCurrent(*hDC, *hRC);
 }
 
-void DisableOpenGL (HWND hwnd, HDC hDC, HGLRC hRC)
+void MyReleaseWindow (HWND hwnd, HDC hDC)
 {
-    wglMakeCurrent(NULL, NULL);
-    wglDeleteContext(hRC);
     ReleaseDC(hwnd, hDC);
+    DestroyWindow(hwnd);
 }
 
 DustResultType AgentWindow::DustActionExecute()
