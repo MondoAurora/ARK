@@ -14,17 +14,46 @@
 
 #include <gl/gl.h>
 
-float theta = 0.0f;
+#include <MiND/DustMindUtils.h>
 
-GLAPI void APIENTRY glVertex2fX( GLfloat x, GLfloat y ){
+using namespace DustUnitMindGeneric;
+using namespace std;
+
+float theta = 0.0f;
+DustEntity path = DUST_ENTITY_INVALID;
+DustEntity col1 = DUST_ENTITY_INVALID;
+DustEntity col2 = DUST_ENTITY_INVALID;
+
+GLAPI void APIENTRY glVertex2fX( GLfloat x, GLfloat y )
+{
     glColor3f(0.0f, 1.0f, 0.0f);
-	glVertex2f(x,y);
+    glVertex2f(x,y);
     glColor3f(1.0f, 0.0f, 0.0f);
 }
 
 
 void updateGraphics()
 {
+    if ( !path )
+    {
+        col1 = DustMindUtils::setColor(1.0f, 0.0f, 0.0f);
+        col2 = DustMindUtils::setColor(0.0f, 1.0f, 0.0f);
+
+        path = DustMindUtils::geoPath(path, col2, 0.0, 1.0);
+        DustMindUtils::geoPath(path, col1, 0.5, 0.0);
+        DustMindUtils::geoPath(path, col2, 0.5, 0.2);
+        DustMindUtils::geoPath(path, col1, 0.2, -0.2);
+        DustMindUtils::geoPath(path, col1, -0.2, -0.2);
+        DustMindUtils::geoPath(path, col2, -0.5, 0.2);
+        DustMindUtils::geoPath(path, col1, -0.5, 0.0);
+
+        DustUtils::tag(path, DUST_ACCESS_SET, DustGenTagClosed);
+
+        int len = DustData::getMemberCount(path, DustRefCollectionMembers);
+
+        cout << "path len: " << len << endl;
+    }
+
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 

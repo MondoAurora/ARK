@@ -2,7 +2,7 @@
 
 #include <string>
 
-using namespace DustUnitMindStream;
+using namespace DustUnitMindBinary;
 using namespace DustUnitMindText;
 
 using namespace std;
@@ -64,7 +64,7 @@ DustResultType TextLogicStreamReader::DustActionExecute()
     {
         DustRef eSelf(DUST_CTX_SELF);
         pos = 0;
-        string *psName = (string *) DustData::getNative(DustData::getRef(eSelf, DustRefStreamUrl));
+        string *psName = (string *) DustData::getNative(DustData::getRef(eSelf, DustRefBinaryUrl));
         inStream.open(psName->c_str());
 
         if ( !inStream.is_open() )

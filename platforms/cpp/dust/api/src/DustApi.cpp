@@ -111,6 +111,11 @@ DustEntity DustData::createEntity(DustEntity primaryType)
     return apiRuntime->access(ad) ? ad.entity : DUST_ENTITY_INVALID;
 }
 
+void DustData::setType(DustEntity target, DustEntity type, DustEntity source) {
+    DustAccessData ad(DUST_ACCESS_SETTYPE, target, type, source);
+    apiRuntime->access(ad);
+}
+
 bool DustData::deleteEntity(DustEntity entity) {
     DustAccessData ad(DUST_ACCESS_DELETE, entity, DUST_ENTITY_INVALID);
     return apiRuntime->access(ad);

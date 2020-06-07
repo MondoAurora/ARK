@@ -11,6 +11,7 @@ class DustUtils
 public:
     static std::ostream& log(DustEventType level = DUST_EVENT_INFO);
     static DustEntity getSingleTag(DustEntity e, DustEntity tagType, DustEntity defVal);
+    static bool tag(DustEntity e, DustAccessType cmd, DustEntity tag);
     inline static bool isReading(DustResultType result)
     {
         return (DUST_RESULT_ACCEPT_READ == result) || (DUST_RESULT_READ == result);

@@ -11,12 +11,12 @@ using namespace std;
 DustModText module;
 
 using namespace DustUnitMindText;
-using namespace DustUnitMindStream;
+using namespace DustUnitMindBinary;
 
 DECLARE_FACTORY(TextDictionary, DUST_BOOT_AGENT_DICTIONARY)
 DECLARE_FACTORY(string, DUST_BOOT_TYPE_PLAINTEXT)
-DECLARE_FACTORY(TextLogicStreamReader, DustAgentReader)
-DECLARE_FACTORY(TextLogicStreamWriter, DustAgentWriter)
+DECLARE_FACTORY(TextLogicStreamReader, DustAgentStreamReader)
+DECLARE_FACTORY(TextLogicStreamWriter, DustAgentStreamWriter)
 
 extern "C" DustModule* getModule()
 {

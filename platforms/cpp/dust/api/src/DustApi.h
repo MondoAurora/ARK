@@ -52,8 +52,10 @@ enum DustAccessType
     DUST_ACCESS_MOVE,
     DUST_ACCESS_REMOVE,
     DUST_ACCESS_CLEAR,
+
     DUST_ACCESS_CREATE,
     DUST_ACCESS_DELETE,
+    DUST_ACCESS_SETTYPE,
     DUST_ACCESS_
 };
 
@@ -200,6 +202,7 @@ public:
 // Entity creation and access
 //    static DustEntity getEntityByPath(DustEntity ctx, ...);
     static DustEntity createEntity(DustEntity primaryType);
+    static void setType(DustEntity target, DustEntity type, DustEntity source = DUST_ENTITY_APPEND);
     static bool deleteEntity(DustEntity entity);
 
     static long getMemberCount(DustEntity entity, DustEntity token);

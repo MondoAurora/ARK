@@ -12,6 +12,12 @@ DustToken DustUnitMindModel::DustRefGlobalId(DustTypeEntity, "GlobalId", DUST_VA
 DustToken DustUnitMindModel::DustRefOwner(DustTypeEntity, "Owner", DUST_VAL_REF, DUST_COLL_SINGLE);
 DustToken DustUnitMindModel::DustRefTags(DustTypeEntity, "Tags", DUST_VAL_REF, DUST_COLL_SET);
 
+DustToken DustUnitMindModel::DustTypeValue(DustUnitModel, "Value", DUST_IDEA_TYPE);
+DustToken DustUnitMindModel::DustIntValueKey(DustTypeValue, "Key", DUST_VAL_INTEGER, DUST_COLL_SINGLE);
+DustToken DustUnitMindModel::DustIntValue(DustTypeValue, "Int", DUST_VAL_INTEGER, DUST_COLL_SINGLE);
+DustToken DustUnitMindModel::DustRealValue(DustTypeValue, "Real", DUST_VAL_REAL, DUST_COLL_SINGLE);
+DustToken DustUnitMindModel::DustRefValue(DustTypeValue, "Ref", DUST_VAL_REF, DUST_COLL_SINGLE);
+
 DustToken DustUnitMindModel::DustTypeUnit(DustUnitModel, "Unit", DUST_IDEA_TYPE);
 
 using namespace DustUnitMindIdea;
@@ -67,4 +73,6 @@ DustToken DustUnitMindDialog::DustTagAccessSet(DustTagAccess, "Set", DUST_IDEA_T
 DustToken DustUnitMindDialog::DustTagAccessMove(DustTagAccess, "Move", DUST_IDEA_TAG);
 DustToken DustUnitMindDialog::DustTagAccessRemove(DustTagAccess, "Remove", DUST_IDEA_TAG);
 DustToken DustUnitMindDialog::DustTagAccessClear(DustTagAccess, "Clear", DUST_IDEA_TAG);
-
+DustToken DustUnitMindDialog::DustTagAccessCreate(DustTagAccess, "Create", DUST_IDEA_TAG);
+DustToken DustUnitMindDialog::DustTagAccessDelete(DustTagAccess, "Delete", DUST_IDEA_TAG);
+DustToken DustUnitMindDialog::DustTagAccessSetType(DustTagAccess, "SetType", DUST_IDEA_TAG);

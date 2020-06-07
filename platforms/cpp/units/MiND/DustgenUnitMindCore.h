@@ -14,6 +14,12 @@ extern DustToken DustRefGlobalId;
 extern DustToken DustRefOwner;
 extern DustToken DustRefTags;
 
+extern DustToken DustTypeValue;
+extern DustToken DustIntValueKey;
+extern DustToken DustIntValue;
+extern DustToken DustRealValue;
+extern DustToken DustRefValue;
+
 extern DustToken DustTypeUnit;
 };
 
@@ -73,6 +79,9 @@ extern DustToken DustTagAccessSet;
 extern DustToken DustTagAccessMove;
 extern DustToken DustTagAccessRemove;
 extern DustToken DustTagAccessClear;
+extern DustToken DustTagAccessCreate;
+extern DustToken DustTagAccessDelete;
+extern DustToken DustTagAccessSetType;
 };
 
 #endif // DUSTGENUNITMINDCORE_H_INCLUDED

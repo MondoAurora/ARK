@@ -79,6 +79,16 @@ DustResultType DplStlRuntime::DustResourceInit()
     setBootInfo(DustUnitMindDialog::DustTagAccessMove, DUST_ACCESS_MOVE);
     setBootInfo(DustUnitMindDialog::DustTagAccessRemove, DUST_ACCESS_REMOVE);
     setBootInfo(DustUnitMindDialog::DustTagAccessClear, DUST_ACCESS_CLEAR);
+    setBootInfo(DustUnitMindDialog::DustTagAccessCreate, DUST_ACCESS_CREATE);
+    setBootInfo(DustUnitMindDialog::DustTagAccessDelete, DUST_ACCESS_DELETE);
+    setBootInfo(DustUnitMindDialog::DustTagAccessSetType, DUST_ACCESS_SETTYPE);
+
+    setBootInfo(DustUnitMindEvent::DustTagEventLevelCritical, DUST_EVENT_CRITICAL);
+    setBootInfo(DustUnitMindEvent::DustTagEventLevelError, DUST_EVENT_ERROR);
+    setBootInfo(DustUnitMindEvent::DustTagEventLevelWarning, DUST_EVENT_WARNING);
+    setBootInfo(DustUnitMindEvent::DustTagEventLevelnfo, DUST_EVENT_INFO);
+    setBootInfo(DustUnitMindEvent::DustTagEventLevelTrace, DUST_EVENT_TRACE);
+    setBootInfo(DustUnitMindEvent::DustTagEventLevelDebug, DUST_EVENT_DEBUG);
 
     for (BootIterator it = bootEntites.begin(); it != bootEntites.end(); ++it)
     {
@@ -189,6 +199,9 @@ DustEntity DplStlRuntime::getMemberEntity(DustEntity type, const char* name, Dus
 
         ad.updateLong(collType);
         pEntity->access(ad);
+
+        cout << "Token def " << name << ", vT " << valType << ", cT " << collType << endl;
+
     }
 
     return member;
@@ -247,14 +260,22 @@ bool DplStlRuntime::access(DustAccessData &ad)
 {
     DplStlDataEntity *pEntity = ( DUST_ACCESS_CREATE == ad.access ) ? createEntity(ad.token) : resolveEntity(ad.entity);
 
-    if ( !pEntity ) {
+    if ( !pEntity )
+    {
         return false;
     }
+
     switch ( ad.access )
     {
     case DUST_ACCESS_CREATE:
-            ad.entity = pEntity->id;
-            return true;
+        ad.entity = pEntity->id;
+        return true;
+    case DUST_ACCESS_SETTYPE:
+        {
+        DplStlDataEntity *pSrc = ( DUST_ENTITY_APPEND == ad.valLong ) ? 0 : resolveEntity(ad.valLong);
+        pEntity->setType(ad, pSrc);
+        }
+        return true;
     default:
         return pEntity->access(ad);
     }
@@ -267,7 +288,8 @@ bool DplStlRuntime::access(DustAccessData &ad)
 void* DplStlRuntime::getNative(DustEntity entity, DustEntity type, bool createIfMissing)
 {
     DplStlDataEntity *pEntity = resolveEntity(entity);
-    if ( DUST_ENTITY_APPEND == type ) {
+    if ( DUST_ENTITY_APPEND == type )
+    {
         type = pEntity->primaryType;
     }
     void* ret = mapOptGet(pEntity->native, type);

@@ -304,6 +304,11 @@ bool DplStlDataEntity::access(DustAccessData &ad)
     return ret;
 }
 
+void DplStlDataEntity::setType(DustAccessData &ad, DplStlDataEntity *pSrc) {
+    // copy type content
+}
+
+
 DplStlDataStore::DplStlDataStore(long nextId_)
     :nextId(nextId_)
 {

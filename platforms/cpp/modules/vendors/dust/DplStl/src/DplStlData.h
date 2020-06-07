@@ -105,6 +105,8 @@ public:
     ~DplStlDataEntity();
 
     bool access(DustAccessData &ad);
+    void setType(DustAccessData &ad, DplStlDataEntity *pSrc);
+
 
     friend class DplStlRuntime;
     friend class DplStlLogicState;

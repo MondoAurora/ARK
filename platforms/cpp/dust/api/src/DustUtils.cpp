@@ -20,6 +20,17 @@ DustEntity DustUtils::getSingleTag(DustEntity e, DustEntity parent, DustEntity d
     return defVal;
 }
 
+bool DustUtils::tag(DustEntity e, DustAccessType cmd, DustEntity tag) {
+    switch ( cmd ) {
+    case DUST_ACCESS_SET:
+        return DustData::setRef(e, DUST_BOOT_REF_TAGS, tag);
+    default:
+        break;
+    }
+
+    return false;
+}
+
 
 class dev0_buffer : public std::streambuf
 {
