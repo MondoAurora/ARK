@@ -1,5 +1,6 @@
 #include "DplStl.h"
 
+#include <DustUtilsDev.h>
 #include <iostream>
 
 using namespace std;
@@ -7,7 +8,7 @@ using namespace std;
 DplStlRuntime* DplStlRuntime::pRuntime = NULL;
 
 DplStlRuntime::DplStlRuntime()
-    :store(DUST_LAST_CONST_RUNTIME)
+    :accCount(0), accUSec(0), store(DUST_LAST_CONST_RUNTIME)
 {
     pRuntime = this;
     cores.push_back(new DplStlLogicCore(this));
@@ -111,6 +112,7 @@ DustResultType DplStlRuntime::DustResourceInit()
 
 DustResultType DplStlRuntime::DustResourceRelease()
 {
+    cout << "Runtime access called " << accCount << ", time " << ((double) accUSec) / 1000000 << " seconds." << endl;
     return DUST_RESULT_ACCEPT;
 }
 
@@ -226,7 +228,7 @@ long DplStlRuntime::getMemberCount(DustEntity entity, DustEntity token)
     DplStlDataEntity *pEntity = resolveEntity(entity);
     if ( pEntity )
     {
-        DplStlDataVariant *pVar = pEntity->getVariant(token, false);
+        DplStlDataVariant *pVar = pEntity->getVariant(token);
         if ( pVar )
         {
             c = pVar->pColl ? pVar->pColl->size() : 1;
@@ -245,7 +247,7 @@ DustEntity DplStlRuntime::getMemberKey(DustEntity entity, DustEntity token, long
         DplStlDataEntity *pEntity = resolveEntity(entity);
         if ( pEntity )
         {
-            DplStlDataVariant *pVar = pEntity->getVariant(token, false);
+            DplStlDataVariant *pVar = pEntity->getVariant(token);
             if ( pVar && pVar->pColl && ( (unsigned) idx < pVar->pColl->size()))
             {
                 key = (DUST_COLL_MAP == pVar->pTokenInfo->collType) ? pVar->pColl->at(idx)->key : idx;
@@ -258,29 +260,37 @@ DustEntity DplStlRuntime::getMemberKey(DustEntity entity, DustEntity token, long
 
 bool DplStlRuntime::access(DustAccessData &ad)
 {
+    bool ret = false;
+
+    struct timeval b;
+    DustUtilsDev::timeBegin(b);
+
     DplStlDataEntity *pEntity = ( DUST_ACCESS_CREATE == ad.access ) ? createEntity(ad.token) : resolveEntity(ad.entity);
 
-    if ( !pEntity )
+    if ( pEntity )
     {
-        return false;
-    }
-
-    switch ( ad.access )
-    {
-    case DUST_ACCESS_CREATE:
-        ad.entity = pEntity->id;
-        return true;
-    case DUST_ACCESS_SETTYPE:
+        switch ( ad.access )
         {
-        DplStlDataEntity *pSrc = ( DUST_ENTITY_APPEND == ad.valLong ) ? 0 : resolveEntity(ad.valLong);
-        pEntity->setType(ad, pSrc);
+        case DUST_ACCESS_CREATE:
+            ad.entity = pEntity->id;
+            ret = true;
+            break;
+        case DUST_ACCESS_SETTYPE:
+        {
+            DplStlDataEntity *pSrc = ( DUST_ENTITY_APPEND == ad.valLong ) ? 0 : resolveEntity(ad.valLong);
+            pEntity->setType(ad, pSrc);
         }
-        return true;
-    default:
-        return pEntity->access(ad);
+        ret = true;
+        break;
+        default:
+            ret = pEntity->access(ad);
+        }
     }
 
-    return false;
+    ++accCount;
+    accUSec += DustUtilsDev::timeElapse(b);
+
+    return ret;
 }
 
 

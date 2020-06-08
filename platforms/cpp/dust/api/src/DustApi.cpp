@@ -14,7 +14,8 @@ extern "C" void initModule(DustRuntime *pRuntime)
     }
 }
 
-void DustModule::registerFactory(DustFactoryLogic *pFactory) {
+void DustModule::registerFactory(DustFactoryLogic *pFactory)
+{
     DustEntity typeId = pFactory->DustFactoryGetType();
     logicFactories[typeId] = pFactory;
 
@@ -22,24 +23,29 @@ void DustModule::registerFactory(DustFactoryLogic *pFactory) {
 
 }
 
-void DustModule::registerAlgorithm(DustEntity agent, DustEntity implRoot) {
+void DustModule::registerAlgorithm(DustEntity agent, DustEntity implRoot)
+{
     algorithms[agent] = implRoot;
 }
 
-bool DustModule::isNativeProvided(DustEntity typeId) {
+bool DustModule::isNativeProvided(DustEntity typeId)
+{
     cout << "isNativeProvided " << typeId << " id: " << &logicFactories << " count: " << logicFactories.size() << endl;
 
     return mapContains(logicFactories, typeId);
 }
-void* DustModule::createNative(DustEntity typeId) {
+void* DustModule::createNative(DustEntity typeId)
+{
     DustFactoryLogic *pf = mapOptGet(logicFactories, typeId);
     return pf->DustFactoryCreate();
 }
-void DustModule::releaseNative(DustEntity typeId, void* pNativeObject) {
+void DustModule::releaseNative(DustEntity typeId, void* pNativeObject)
+{
     DustFactoryLogic *pf = mapOptGet(logicFactories, typeId);
     return pf->DustFactoryDestroy(pNativeObject);
 }
-DustResultType DustModule::dispatchCommand(DustEntity typeId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param ){
+DustResultType DustModule::dispatchCommand(DustEntity typeId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param )
+{
     DustFactoryLogic *pf = mapOptGet(logicFactories, typeId);
     return pf->DustFactoryDispatch(pLogic, cmd, param);
 }
@@ -55,33 +61,50 @@ DustToken::operator DustEntity()
 }
 
 
-DustRef::DustRef(DustCtxType ctx)
-: entity(ctx), pToken(0)
+DustRef::DustRef(DustEntity e)
+    : entity(e), pToken(0)
 {}
 DustRef::operator DustEntity()
 {
     return entity ? pToken ? DustData::getRef(entity, *pToken) : entity : DUST_ENTITY_INVALID;
 }
-DustRef& DustRef::operator >> (DustToken &token)
+DustRef& DustRef::step(DustToken &token)
 {
-    if ( pToken ) {
-        entity = DUST_ENTITY_INVALID;
-        pToken = 0;
-    } else if ( token.getCollType() == DUST_COLL_SINGLE ) {
-        entity = DustData::getRef(entity, token);
-    } else {
-        pToken = &token;
+    if ( entity )
+    {
+        if ( pToken )
+        {
+            entity = DUST_ENTITY_INVALID;
+            pToken = 0;
+        }
+        else if ( token.getCollType() == DUST_COLL_SINGLE )
+        {
+            entity = DustData::getRef(entity, token);
+        }
+        else
+        {
+            pToken = &token;
+        }
     }
+
     return *this;
 }
-DustRef& DustRef::operator >> (long key) {
-    if ( pToken ) {
-        entity = DustData::getRef(entity, *pToken, DUST_ENTITY_INVALID, key);
-        pToken = 0;
-    } else {
-        entity = DUST_ENTITY_INVALID;
+DustRef& DustRef::step(long key)
+{
+    if ( entity )
+    {
+        if ( pToken )
+        {
+            entity = DustData::getRef(entity, *pToken, DUST_ENTITY_INVALID, key);
+            pToken = 0;
+        }
+        else
+        {
+            entity = DUST_ENTITY_INVALID;
+        }
     }
-        return *this;
+
+    return *this;
 }
 
 
@@ -111,12 +134,14 @@ DustEntity DustData::createEntity(DustEntity primaryType)
     return apiRuntime->access(ad) ? ad.entity : DUST_ENTITY_INVALID;
 }
 
-void DustData::setType(DustEntity target, DustEntity type, DustEntity source) {
+void DustData::setType(DustEntity target, DustEntity type, DustEntity source)
+{
     DustAccessData ad(DUST_ACCESS_SETTYPE, target, type, source);
     apiRuntime->access(ad);
 }
 
-bool DustData::deleteEntity(DustEntity entity) {
+bool DustData::deleteEntity(DustEntity entity)
+{
     DustAccessData ad(DUST_ACCESS_DELETE, entity, DUST_ENTITY_INVALID);
     return apiRuntime->access(ad);
 }

@@ -22,7 +22,7 @@ DustEntity DustMindUtils::geoCreateData(DustEntity role, double x, double y, dou
 {
     DustEntity gd = DustData::createEntity(DustTypeGeoInfo);
 
-    DustUtils::tag(gd, DUST_ACCESS_SET, DustTagGeoRolePlace);
+    DustUtils::tag(gd, DUST_ACCESS_SET, role);
 
     DustData::setReal(gd, DustRefGeoInfoData, x, DustTagCartesianX);
     DustData::setReal(gd, DustRefGeoInfoData, y, DustTagCartesianY);
@@ -39,6 +39,11 @@ DustEntity DustMindUtils::geoPath(DustEntity path, DustEntity color, double x, d
     }
     DustEntity pt = geoCreateData(DustTagGeoRolePlace, x, y, z);
     DustData::setRef(path, DustRefCollectionMembers, pt);
+
+    if ( color )
+    {
+        DustData::setRef(pt, DustRefColoredColor, color);
+    }
 
     return path;
 }

@@ -41,7 +41,11 @@ bool DplStlDataValue::match(DustValType vT, DustAccessData &ad)
     case DUST_VAL_REAL:
         return ad.valDouble == valDouble;
     case DUST_VAL_REF:
-        return valRef ? ad.valLong == valRef->eTarget : false;
+        if ( valRef ) {
+            return ad.valLong == valRef->eTarget;
+        } else {
+            return false;
+        }
     default:
         return false;
     }
@@ -151,6 +155,7 @@ DplStlDataValue* DplStlDataVariant::locateForOverride(DustAccessData &ad)
                         return pv;
                     }
                 }
+                ret = NULL;
                 break;
             default:
                 break;
@@ -158,6 +163,10 @@ DplStlDataValue* DplStlDataVariant::locateForOverride(DustAccessData &ad)
         }
         else
         {
+            if ( (0 == ad.key) && ((DUST_COLL_ARR == ct) || (DUST_COLL_SET == ct)) ) {
+                return ret;
+            }
+
             if ( !matchValue(vt, ct, ad, ret))
             {
                 ret = NULL;
@@ -246,16 +255,9 @@ DplStlDataEntity::~DplStlDataEntity()
 {
 };
 
-DplStlDataVariant *DplStlDataEntity::getVariant(DustEntity token, bool createIfMissing)
+DplStlDataVariant *DplStlDataEntity::getVariant(DustEntity token)
 {
     DplStlDataVariant *pVar = mapOptGet(model, token);
-
-    if ( !pVar && createIfMissing)
-    {
-        pVar = new DplStlDataVariant(pStore->getTokenInfo(token));
-        model[token] = pVar;
-    }
-
     return pVar;
 }
 
@@ -270,11 +272,11 @@ bool DplStlDataEntity::access(DustAccessData &ad)
 {
     bool ret = false;
 
-    DplStlDataVariant *pVar = getVariant(ad.token, DUST_ACCESS_SET == ad.access);
-    bool single = ( DUST_COLL_SINGLE == pVar->pTokenInfo->collType );
+    DplStlDataVariant *pVar = getVariant(ad.token);
 
     if ( pVar )
     {
+        bool single = ( DUST_COLL_SINGLE == pVar->pTokenInfo->collType );
         switch ( ad.access )
         {
         case DUST_ACCESS_CLEAR:
@@ -300,7 +302,13 @@ bool DplStlDataEntity::access(DustAccessData &ad)
             ret = pVar->access(ad);
         }
     }
-
+    else if ( DUST_ACCESS_SET == ad.access )
+    {
+        DplStlTokenInfo *pTI = pStore->getTokenInfo(ad.token);
+        pVar = new DplStlDataVariant(pTI);
+        model[ad.token] = pVar;
+        ret = pVar->setValue(pTI->valType, ad, &pVar->value);
+    }
     return ret;
 }
 

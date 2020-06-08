@@ -24,6 +24,13 @@ bool DustUtils::tag(DustEntity e, DustAccessType cmd, DustEntity tag) {
     switch ( cmd ) {
     case DUST_ACCESS_SET:
         return DustData::setRef(e, DUST_BOOT_REF_TAGS, tag);
+    case DUST_ACCESS_GET:
+        for ( int i = DustData::getMemberCount(e, DUST_BOOT_REF_TAGS); i-->0; ) {
+            if ( tag == DustData::getRef(e, DUST_BOOT_REF_TAGS, DUST_ENTITY_INVALID, i)) {
+                return true;
+            }
+        }
+        return false;
     default:
         break;
     }

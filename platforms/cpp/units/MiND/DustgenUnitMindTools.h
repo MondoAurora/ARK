@@ -109,6 +109,9 @@ extern DustToken DustTagColorRed;
 extern DustToken DustTagColorGreen;
 extern DustToken DustTagColorBlue;
 
+extern DustToken DustTypeColored;
+extern DustToken DustRefColoredColor;
+
 extern DustToken DustGenTag;
 extern DustToken DustGenTagClosed;
 };

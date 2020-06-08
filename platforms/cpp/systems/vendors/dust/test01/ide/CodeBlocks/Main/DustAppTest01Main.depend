@@ -5,7 +5,7 @@
 1591546787 a:\platforms\cpp\units\mind\dustgenunitmindcore.h
 	<DustApi.h>
 
-1591546584 a:\platforms\cpp\dust\api\src\dustapi.h
+1591615852 a:\platforms\cpp\dust\api\src\dustapi.h
 
 1590941474 source:a:\platforms\cpp\units\vendors\dust\dustgenunittest01.cpp
 	"DustgenUnitTest01.h"
@@ -13,12 +13,32 @@
 1590941443 a:\platforms\cpp\units\vendors\dust\dustgenunittest01.h
 	<DustApi.h>
 
-1590922666 source:a:\platforms\cpp\systems\vendors\dust\test01\src\dustgenappmain.cpp
+1591619199 source:a:\platforms\cpp\systems\vendors\dust\test01\src\dustgenappmain.cpp
 	<DustMain.h>
 	<DustApi.h>
 	<iostream>
 	<vendors/dust/DustgenUnitTest01.h>
 	<MiND/DustgenUnitMindCore.h>
+	<MiND/DustgenUnitMindTools.h>
+	<MiND/DustMindUtils.h>
 
 1590595150 a:\platforms\cpp\dust\main\src\dustmain.h
+
+1591607347 source:a:\platforms\cpp\units\mind\dustgenunitmindtools.cpp
+	"DustgenUnitMindTools.h"
+
+1591607348 a:\platforms\cpp\units\mind\dustgenunitmindtools.h
+	<DustApi.h>
+
+1591619090 source:a:\platforms\cpp\units\mind\dustmindutils.cpp
+	"DustMindUtils.h"
+
+1591548094 a:\platforms\cpp\units\mind\dustmindutils.h
+	<DustUtils.h>
+	"DustgenUnitMindTools.h"
+
+1591621011 a:\platforms\cpp\dust\api\src\dustutils.h
+	"DustApi.h"
+	<iostream>
+	<string>
 

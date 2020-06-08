@@ -17,64 +17,93 @@
 #include <MiND/DustMindUtils.h>
 
 using namespace DustUnitMindGeneric;
+using namespace DustUnitMindGeometry;
 using namespace std;
 
 float theta = 0.0f;
-DustEntity path = DUST_ENTITY_INVALID;
-DustEntity col1 = DUST_ENTITY_INVALID;
-DustEntity col2 = DUST_ENTITY_INVALID;
 
-GLAPI void APIENTRY glVertex2fX( GLfloat x, GLfloat y )
+void setColor(DustEntity col)
 {
-    glColor3f(0.0f, 1.0f, 0.0f);
-    glVertex2f(x,y);
-    glColor3f(1.0f, 0.0f, 0.0f);
+    if ( col )
+    {
+        glColor3f(
+            DustData::getReal(col, DustRefColorComp,  0.0f, DustTagColorRed),
+            DustData::getReal(col, DustRefColorComp,  0.0f, DustTagColorGreen),
+            DustData::getReal(col, DustRefColorComp,  0.0f, DustTagColorBlue)
+        );
+    }
 }
 
+void drawPoint(DustEntity e)
+{
+    DustEntity col = DustData::getRef(e, DustRefColoredColor);
+    setColor(col);
+
+    glVertex2f(
+        DustData::getReal(e, DustRefGeoInfoData, 0.0f, DustTagCartesianX),
+        DustData::getReal(e, DustRefGeoInfoData, 0.0f, DustTagCartesianY)
+    );
+}
+
+void enterInclusion(DustEntity incl)
+{
+    glPushMatrix();
+
+    int ic = DustData::getMemberCount(incl, DustRefCollectionMembers);
+    for ( int ii = 0; ii < ic; ++ii)
+    {
+        DustEntity eAction = DustData::getRef(incl, DustRefCollectionMembers, DUST_ENTITY_INVALID, ii);
+
+        DustEntity eCmd = DustUtils::getSingleTag(eAction, DustTagGeoRole, DUST_ENTITY_INVALID);
+
+        if ( eCmd ) {
+            double x = DustData::getReal(eAction, DustRefGeoInfoData, 0.0f, DustTagCartesianX);
+            double y = DustData::getReal(eAction, DustRefGeoInfoData, 0.0f, DustTagCartesianY);
+            double z = DustData::getReal(eAction, DustRefGeoInfoData, 0.0f, DustTagCartesianZ);
+
+           if ( DustTagGeoRolePlace == eCmd ) {
+                glTranslated(x, y, z);
+           } else if ( DustTagGeoRoleRotate == eCmd ) {
+                glRotated(theta, x, y, z);
+           } else if ( DustTagGeoRoleScale == eCmd ) {
+                glScaled(x, y, z);
+           }
+        }
+    }
+}
+
+void leaveInclusion(DustEntity incl)
+{
+    glPopMatrix();
+}
 
 void updateGraphics()
 {
-    if ( !path )
-    {
-        col1 = DustMindUtils::setColor(1.0f, 0.0f, 0.0f);
-        col2 = DustMindUtils::setColor(0.0f, 1.0f, 0.0f);
-
-        path = DustMindUtils::geoPath(path, col2, 0.0, 1.0);
-        DustMindUtils::geoPath(path, col1, 0.5, 0.0);
-        DustMindUtils::geoPath(path, col2, 0.5, 0.2);
-        DustMindUtils::geoPath(path, col1, 0.2, -0.2);
-        DustMindUtils::geoPath(path, col1, -0.2, -0.2);
-        DustMindUtils::geoPath(path, col2, -0.5, 0.2);
-        DustMindUtils::geoPath(path, col1, -0.5, 0.0);
-
-        DustUtils::tag(path, DUST_ACCESS_SET, DustGenTagClosed);
-
-        int len = DustData::getMemberCount(path, DustRefCollectionMembers);
-
-        cout << "path len: " << len << endl;
-    }
-
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glPushMatrix();
-    glRotatef(theta, 0.0f, 0.5f, 1.0f);
+    DustRef r;
+    DustEntity self = r;
 
-    glBegin(GL_LINE_LOOP);
+    int ic = DustData::getMemberCount(self, DustRefCollectionMembers);
 
-    glColor3f(1.0f, 0.0f, 0.0f);
+    for ( int ii = 0; ii < ic; ++ii)
+    {
+        DustEntity eInc = DustData::getRef(self, DustRefCollectionMembers, DUST_ENTITY_INVALID, ii);
+        enterInclusion(eInc);
 
-    glVertex2fX(0.0, 1.0);
-    glVertex2f(0.5, 0.0);
-    glVertex2fX(0.5, 0.2);
-    glVertex2f(0.2, -0.2);
-    glVertex2f(-0.2, -0.2);
-    glVertex2fX(-0.5, 0.2);
-    glVertex2f(-0.5, 0.0);
+        DustEntity path = DustData::getRef(eInc, DustRefLinkTarget);
 
-    glEnd();
+        glBegin(DustUtils::tag(path, DUST_ACCESS_GET, DustGenTagClosed) ? GL_LINE_LOOP : GL_LINE_STRIP);
+        int len = DustData::getMemberCount(path, DustRefCollectionMembers);
+        for ( int i = 0; i < len; ++i )
+        {
+            drawPoint(DustData::getRef(path, DustRefCollectionMembers, DUST_ENTITY_INVALID, i));
+        }
+        glEnd();
 
-    glPopMatrix();
+        leaveInclusion(eInc);
+    }
 
     theta += 1.0f;
 }
@@ -94,7 +123,7 @@ public:
     {
         DustRef self;
 
-        HDC hDC = (HDC) DustData::getRef(self, DustIntHDC);
+        HDC hDC = (HDC) DustData::getInteger(self, DustIntHDC);
 
         if ( ! hDC )
         {

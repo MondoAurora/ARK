@@ -110,6 +110,9 @@ DustToken DustUnitMindGeneric::DustTagColorRed(DustTagColor, "Red", DUST_IDEA_TA
 DustToken DustUnitMindGeneric::DustTagColorGreen(DustTagColor, "Green", DUST_IDEA_TAG);
 DustToken DustUnitMindGeneric::DustTagColorBlue(DustTagColor, "Blue", DUST_IDEA_TAG);
 
+DustToken DustUnitMindGeneric::DustTypeColored(DustUnitGeneric, "Colored", DUST_IDEA_TYPE);
+DustToken DustUnitMindGeneric::DustRefColoredColor(DustTypeColored, "Color", DUST_VAL_REF, DUST_COLL_SINGLE);
+
 DustToken DustUnitMindGeneric::DustGenTag(DustUnitGeneric, "GenericTag", DUST_IDEA_TAG);
 DustToken DustUnitMindGeneric::DustGenTagClosed(DustGenTag, "Closed", DUST_IDEA_TAG);
 

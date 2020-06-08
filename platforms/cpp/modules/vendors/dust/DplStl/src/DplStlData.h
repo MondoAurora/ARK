@@ -96,7 +96,7 @@ class DplStlDataEntity
     map<DustEntity, DplStlDataVariant*> model;
     map<DustEntity, void*> native;
 
-    DplStlDataVariant *getVariant(DustEntity token, bool createIfMissing);
+    DplStlDataVariant *getVariant(DustEntity token);
 
     void deleteVariant(DustEntity token, DplStlDataVariant *var);
 

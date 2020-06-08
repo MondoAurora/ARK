@@ -187,10 +187,10 @@ private:
     DustToken *pToken;
 
 public:
-    DustRef(DustCtxType ctx = DUST_CTX_SELF);
+    DustRef(DustEntity e = DUST_CTX_SELF);
     operator DustEntity();
-    DustRef& operator >> (long key);
-    DustRef& operator >> (DustToken &token);
+    DustRef& step(const long key);
+    DustRef& step(DustToken &token);
 };
 
 class DustData

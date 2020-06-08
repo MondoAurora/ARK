@@ -10,6 +10,9 @@ extern "C" class DplStlRuntime: public DustRuntime
 {
     DustRuntimeConnector* pRTC;
 
+    long accCount;
+    long accUSec;
+
     static DplStlRuntime* pRuntime;
 
     DplStlDataStore store;
