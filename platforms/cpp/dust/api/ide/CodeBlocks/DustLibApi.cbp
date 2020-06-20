@@ -38,8 +38,8 @@
 		</Build>
 		<Unit filename="../../src/DustApi.cpp" />
 		<Unit filename="../../src/DustApi.h" />
+		<Unit filename="../../src/DustKernel.h" />
 		<Unit filename="../../src/DustModule.h" />
-		<Unit filename="../../src/DustRuntime.h" />
 		<Unit filename="../../src/DustUtils.cpp" />
 		<Unit filename="../../src/DustUtils.h" />
 		<Unit filename="../../src/DustUtilsDev.cpp" />

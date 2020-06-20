@@ -5,11 +5,11 @@
 
 #include <map>
 
-class DplStlLogicState;
+class DplStlRuntimeState;
 
 class DplStlLogicControl: public DustNativeLogic {
 private:
-	std::map<DustEntity, DplStlLogicState*> mapChildBlocks;
+	std::map<DustEntity, DplStlRuntimeState*> mapChildBlocks;
 	bool firstCall;
 
 protected:
@@ -59,5 +59,6 @@ public:
 	}
 	virtual DustResultType DustActionExecute();
 };
+
 
 #endif // DPLSTLAGENTSNARRATIVE_H

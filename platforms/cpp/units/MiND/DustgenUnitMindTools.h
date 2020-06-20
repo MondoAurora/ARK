@@ -33,8 +33,16 @@ extern DustToken DustAgentNumberSci;
 extern DustToken DustAgentNumberRad;
 };
 
-namespace DustUnitMindEvent {
-extern DustToken DustUnitEvent;
+namespace DustUnitMindTime {
+extern DustToken DustUnitTime;
+
+extern DustToken DustRefTimeText;
+
+extern DustToken DustTagTimeType;
+extern DustToken DustTagTimeTypeDate;
+extern DustToken DustTagTimeTypeTime;
+extern DustToken DustTagTimeTypeDateTime;
+extern DustToken DustTagTimeTypeDuration;
 
 extern DustToken DustTypeEvent;
 

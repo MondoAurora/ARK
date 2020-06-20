@@ -7,7 +7,7 @@ void DustUtilsDev::timeBegin(struct timeval &b)
     gettimeofday(&b, NULL);
 }
 
-long DustUtilsDev::timeElapse(struct timeval &b)
+long DustUtilsDev::timeElapseUSec(struct timeval &b)
 {
     struct timeval e;
     gettimeofday(&e, NULL);

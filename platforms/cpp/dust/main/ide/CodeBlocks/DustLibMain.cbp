@@ -37,9 +37,11 @@
 		</Build>
 		<Compiler>
 			<Add directory="$(#ark_debug.INCLUDE)" />
+			<Add directory="$(#ark_debug.BASE)/dust/runtime/src" />
 		</Compiler>
 		<Linker>
 			<Add library="$(#ark_debug.LIB)/libDustLibApi.a" />
+			<Add library="$(#ark_debug.LIB)/libDustLibRuntime.a" />
 		</Linker>
 		<Unit filename="../../src/DustMain.cpp" />
 		<Unit filename="../../src/DustMain.h" />

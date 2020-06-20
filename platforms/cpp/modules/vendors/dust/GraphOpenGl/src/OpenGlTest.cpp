@@ -49,6 +49,8 @@ void enterInclusion(DustEntity incl)
 {
     glPushMatrix();
 
+    glRotated(45.0f, 1.0f, 0.0f, 1.0f);
+
     int ic = DustData::getMemberCount(incl, DustRefCollectionMembers);
     for ( int ii = 0; ii < ic; ++ii)
     {
@@ -105,7 +107,7 @@ void updateGraphics()
         leaveInclusion(eInc);
     }
 
-    theta += 1.0f;
+    theta += 0.1f;
 }
 
 

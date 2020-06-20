@@ -19,6 +19,7 @@ DustToken DustUnitMindModel::DustRealValue(DustTypeValue, "Real", DUST_VAL_REAL,
 DustToken DustUnitMindModel::DustRefValue(DustTypeValue, "Ref", DUST_VAL_REF, DUST_COLL_SINGLE);
 
 DustToken DustUnitMindModel::DustTypeUnit(DustUnitModel, "Unit", DUST_IDEA_TYPE);
+DustToken DustUnitMindModel::DustTypeSystem(DustUnitModel, "System", DUST_IDEA_TYPE);
 
 using namespace DustUnitMindIdea;
 
@@ -27,6 +28,11 @@ DustToken DustUnitMindIdea::DustTypeType(DustUnitIdea, "Type", DUST_IDEA_TYPE);
 DustToken DustUnitMindIdea::DustTypeMember(DustUnitIdea, "Member", DUST_IDEA_TYPE);
 DustToken DustUnitMindIdea::DustTypeAgent(DustUnitIdea, "Agent", DUST_IDEA_TYPE);
 DustToken DustUnitMindIdea::DustTypeTag(DustUnitIdea, "Tag", DUST_IDEA_TYPE);
+
+DustToken DustUnitMindIdea::DustTypeConstant(DustUnitIdea, "Constant", DUST_IDEA_TYPE);
+DustToken DustUnitMindIdea::DustConstantNull(DustUnitIdea, "Null", DUST_IDEA_CONSTANT);
+DustToken DustUnitMindIdea::DustConstantTrue(DustUnitIdea, "True", DUST_IDEA_CONSTANT);
+DustToken DustUnitMindIdea::DustConstantFalse(DustUnitIdea, "False", DUST_IDEA_CONSTANT);
 
 DustToken DustUnitMindIdea::DustTagVal(DustUnitIdea, "ValueType", DUST_IDEA_TAG);
 DustToken DustUnitMindIdea::DustTagValInteger(DustTagVal, "Integer", DUST_IDEA_TAG);
@@ -49,23 +55,25 @@ DustToken DustUnitMindNarrative::DustTagResultAcceptPass(DustTagResult, "AcceptP
 DustToken DustUnitMindNarrative::DustTagResultAccept(DustTagResult, "Accept", DUST_IDEA_TAG);
 DustToken DustUnitMindNarrative::DustTagResultAcceptRead(DustTagResult, "AcceptRead", DUST_IDEA_TAG);
 
-DustToken DustUnitMindNarrative::DustTagCtx(DustUnitNarrative, "Ctx", DUST_IDEA_TAG);
-DustToken DustUnitMindNarrative::DustTagCtxSelf(DustTagCtx, "Self", DUST_IDEA_TAG);
-DustToken DustUnitMindNarrative::DustTagCtxDialog(DustTagCtx, "Dialog", DUST_IDEA_TAG);
-DustToken DustUnitMindNarrative::DustTagCtxApp(DustTagCtx, "App", DUST_IDEA_TAG);
-DustToken DustUnitMindNarrative::DustTagCtxSystem(DustTagCtx, "System", DUST_IDEA_TAG);
-
 DustToken DustUnitMindNarrative::DustAgentSequence(DustUnitNarrative, "Sequence", DUST_IDEA_AGENT);
 DustToken DustUnitMindNarrative::DustAgentRepeat(DustUnitNarrative, "Repeat", DUST_IDEA_AGENT);
 DustToken DustUnitMindNarrative::DustAgentSelect(DustUnitNarrative, "Select", DUST_IDEA_AGENT);
 
-DustToken DustUnitMindNarrative::DustAgentDialog(DustUnitNarrative, "Dialog", DUST_IDEA_AGENT);
-DustToken DustUnitMindNarrative::DustAgentApp(DustUnitNarrative, "App", DUST_IDEA_AGENT);
-DustToken DustUnitMindNarrative::DustRefAppMain(DustAgentApp, "Main", DUST_VAL_REF, DUST_COLL_SINGLE);
-DustToken DustUnitMindNarrative::DustAgentSystem(DustUnitNarrative, "System", DUST_IDEA_AGENT);
-
 using namespace DustUnitMindDialog;
 DustToken DustUnitMindDialog::DustUnitDialog("Dialog");
+
+DustToken DustUnitMindDialog::DustTagCtx(DustUnitDialog, "Ctx", DUST_IDEA_TAG);
+DustToken DustUnitMindDialog::DustTagCtxSelf(DustTagCtx, "Self", DUST_IDEA_TAG);
+DustToken DustUnitMindDialog::DustTagCtxDialog(DustTagCtx, "Dialog", DUST_IDEA_TAG);
+DustToken DustUnitMindDialog::DustTagCtxApp(DustTagCtx, "App", DUST_IDEA_TAG);
+DustToken DustUnitMindDialog::DustTagCtxSystem(DustTagCtx, "System", DUST_IDEA_TAG);
+
+DustToken DustUnitMindDialog::DustAgentDialog(DustUnitDialog, "Dialog", DUST_IDEA_AGENT);
+DustToken DustUnitMindDialog::DustAgentApp(DustUnitDialog, "App", DUST_IDEA_AGENT);
+
+DustToken DustUnitMindDialog::DustRefAppSystem(DustAgentApp, "System", DUST_VAL_REF, DUST_COLL_SINGLE);
+DustToken DustUnitMindDialog::DustRefAppMain(DustAgentApp, "Main", DUST_VAL_REF, DUST_COLL_SINGLE);
+DustToken DustUnitMindDialog::DustRefAppDialogs(DustAgentApp, "Dialogs", DUST_VAL_REF, DUST_COLL_SET);
 
 DustToken DustUnitMindDialog::DustTagAccess(DustUnitDialog, "AccessType", DUST_IDEA_TAG);
 DustToken DustUnitMindDialog::DustTagAccessGet(DustTagAccess, "Get", DUST_IDEA_TAG);

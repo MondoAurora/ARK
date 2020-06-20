@@ -12,13 +12,10 @@ class DustRuntime;
 extern "C" class DustFactoryLogic
 {
 public:
+    virtual bool isSingleton() { return false; };
     virtual DustEntity DustFactoryGetType() = 0;
     virtual void* DustFactoryCreate() = 0;
     virtual void DustFactoryDestroy(void*) = 0;
-
-    virtual DustResultType DustFactoryDispatch(DustNativeLogic* pLogic, DustEntity cmd, DustEntity param) {
-		return DUST_RESULT_NOTIMPLEMENTED;
-	}
 } ;
 
 #ifndef DECLARE_FACTORY
@@ -30,23 +27,58 @@ public:
 } Fact##className ;
 #endif // DECLARE_FACTORY
 
-extern "C" class DustModule: public DustNativeLogic {
+#ifndef DECLARE_SINGLETON
+#define DECLARE_SINGLETON(className, typeKey) class Fact_##className : public DustFactoryLogic \
+{\
+    virtual bool isSingleton() { return true; }; \
+    virtual DustEntity DustFactoryGetType() { return typeKey ; };\
+    virtual void* DustFactoryCreate() { return new className (); };\
+    virtual void DustFactoryDestroy(void* pObj ) { delete ( className * ) pObj; }\
+} Fact##className ;
+#endif // DECLARE_SINGLETON
+
+
+extern "C" class DustModuleApi
+{
+public:
+	virtual ~DustModuleApi() {
+	}
+
+    virtual bool isNativeProvided(DustEntity typeId) = 0;
+    virtual void* createNative(DustEntity typeId) = 0;
+    virtual DustResultType dispatchCommand(DustEntity typeId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param = DUST_ENTITY_INVALID) = 0;
+    virtual void releaseNative(DustEntity typeId, void* pNativeObject) = 0;
+} ;
+
+extern "C" class DustModule: public DustNativeLogic, public DustModuleApi {
 private:
-	static DustRuntime* apiRuntime;
+    static DustRuntime *apiRuntime;
+
     std::map<DustEntity, DustFactoryLogic*> logicFactories;
     std::map<DustEntity, DustEntity> algorithms;
+
+protected:
+    void registerFactory(DustFactoryLogic *pFactory);
+    void registerAlgorithm(DustEntity agent, DustEntity implRoot);
 
 public:
 	virtual ~DustModule() {
 	}
 
-    void registerFactory(DustFactoryLogic *pFactory);
-    void registerAlgorithm(DustEntity agent, DustEntity implRoot);
+	void initModule(DustRuntime *pRuntime);
 
-	bool isNativeProvided(DustEntity typeId);
-	void* createNative(DustEntity typeId) ;
-	DustResultType dispatchCommand(DustEntity typeId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param = DUST_ENTITY_INVALID);
-	void releaseNative(DustEntity typeId, void* pNativeObject);
+	virtual bool isNativeProvided(DustEntity typeId);
+
+    /**
+	 alg relay executes inside, allows recursion!!!
+	 the final creation clones the last entity into the current context and creates the native object
+	 resolution calls out back to DustData::getNative
+	 this even allows singleton instances on module level
+     */
+	virtual void* createNative(DustEntity typeId) ;
+
+	virtual DustResultType dispatchCommand(DustEntity typeId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param = DUST_ENTITY_INVALID);
+	virtual void releaseNative(DustEntity typeId, void* pNativeObject);
 
     friend class DustData;
 };

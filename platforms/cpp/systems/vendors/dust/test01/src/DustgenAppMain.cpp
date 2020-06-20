@@ -11,6 +11,7 @@
 using namespace std;
 using namespace DustUnitDustTest01;
 using namespace DustUnitMindNarrative;
+using namespace DustUnitMindDialog;
 using namespace DustUnitMindGeometry;
 using namespace DustUnitMindGeneric;
 
@@ -18,12 +19,17 @@ int main(int argc, char **argv)
 {
     cout << "calling bootDust..." << endl;
 
-    dustBoot(argc, argv);
+    DustModular::init("DustModDplStl", "DustModText");
+
+    DustModular::addModule("DustModWinGui");
+    DustModular::addModule("DustModGraphOpenGl");
+    DustModular::addModule("DustModTest01");
 
     DustEntity wnd = DustData::createEntity(DustAgentTestWindow);
 
-    DustEntity gl = DustData::createEntity(DustAgentTestOpenGL);
-    DustData::setRef(wnd, DustRefPainter, gl);
+//    DustEntity gl = DustData::createEntity(DustAgentTestOpenGL);
+//    DustData::setRef(wnd, DustRefPainter, gl);
+    DustEntity gl = wnd;
 
     DustEntity col1 = DustMindUtils::setColor(1.0f, 0.0f, 0.0f);
     DustEntity col2 = DustMindUtils::setColor(0.0f, 1.0f, 0.0f);
@@ -44,25 +50,27 @@ int main(int argc, char **argv)
     DustEntity e1 = DustData::createEntity(DustTypeGeoInclude);
     DustData::setRef(e1, DustRefLinkTarget, path);
     DustData::setRef(e1, DustRefCollectionMembers, DustMindUtils::geoCreateData(DustTagGeoRoleRotate, 0.0f, 0.0f, 1.0f));
-    DustData::setRef(wnd, DustRefCollectionMembers, e1);
+    DustData::setRef(gl, DustRefCollectionMembers, e1);
 
     e1 = DustData::createEntity(DustTypeGeoInclude);
     DustData::setRef(e1, DustRefLinkTarget, path);
     DustData::setRef(e1, DustRefCollectionMembers, DustMindUtils::geoCreateData(DustTagGeoRoleRotate, 0.0f, 0.1f, 0.0f));
-    DustData::setRef(wnd, DustRefCollectionMembers, e1);
+    DustData::setRef(gl, DustRefCollectionMembers, e1);
 
     e1 = DustData::createEntity(DustTypeGeoInclude);
     DustData::setRef(e1, DustRefLinkTarget, path);
     DustData::setRef(e1, DustRefCollectionMembers, DustMindUtils::geoCreateData(DustTagGeoRoleRotate, 0.1f, 0.0f, 0.0f));
-    DustData::setRef(wnd, DustRefCollectionMembers, e1);
+    DustData::setRef(gl, DustRefCollectionMembers, e1);
 
-    DustData::setRef(DUST_CTX_APP, DustRefAppMain, wnd);
+    DustEntity eMain;
+    eMain = DustData::createEntity(DustAgentTest01);
+//    eMain = wnd;
 
-    dustLaunch();
+    DustData::setRef(DUST_CTX_APP, DustRefAppMain, eMain);
+
+    DustModular::launch();
 
     cout << "Success." << endl;
-
-    dustShutdown();
 
     return 0;
 }

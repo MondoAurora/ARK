@@ -12,7 +12,7 @@ class TextDictionary : public DustTextDictionary {
 public:
 	virtual ~TextDictionary();
 
-	virtual DustEntity getTextToken(DustEntity txtParent, const char* name);
+	virtual DustEntity getTextToken(const char* name, DustEntity txtParent = DUST_ENTITY_INVALID);
 	virtual DustResultType DustResourceInit();
 	virtual DustResultType DustResourceRelease();
 };

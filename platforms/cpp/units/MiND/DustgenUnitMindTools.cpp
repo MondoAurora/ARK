@@ -14,15 +14,15 @@ DustToken DustUnitMindText::DustTypeNumberText(DustUnitText, "NumberText", DUST_
 DustToken DustUnitMindText::DustRefNumberFormat(DustTypeNumberText, "Format", DUST_VAL_REF, DUST_COLL_SINGLE);
 DustToken DustUnitMindText::DustIntNumberRadix(DustTypeNumberText, "Radix", DUST_VAL_INTEGER, DUST_COLL_SINGLE);
 
-DustToken DustUnitMindText::DustConstantCharQuot(DustUnitText, "Quote", DUST_NATIVE_CONSTANT);
-DustToken DustUnitMindText::DustConstantCharSolidus(DustUnitText, "Solidus", DUST_NATIVE_CONSTANT);
-DustToken DustUnitMindText::DustConstantCharReverseSolidus(DustUnitText, "ReverseSolidus", DUST_NATIVE_CONSTANT);
+DustToken DustUnitMindText::DustConstantCharQuot(DustUnitText, "Quote", DUST_IDEA_CONSTANT);
+DustToken DustUnitMindText::DustConstantCharSolidus(DustUnitText, "Solidus", DUST_IDEA_CONSTANT);
+DustToken DustUnitMindText::DustConstantCharReverseSolidus(DustUnitText, "ReverseSolidus", DUST_IDEA_CONSTANT);
 
-DustToken DustUnitMindText::DustConstantCharCtrlTAB(DustUnitText, "Tab", DUST_NATIVE_CONSTANT);
-DustToken DustUnitMindText::DustConstantCharCtrlLF(DustUnitText, "LineFeed", DUST_NATIVE_CONSTANT);
-DustToken DustUnitMindText::DustConstantCharCtrlCR(DustUnitText, "CarriageReturn", DUST_NATIVE_CONSTANT);
-DustToken DustUnitMindText::DustConstantCharCtrlFF(DustUnitText, "FormFeed", DUST_NATIVE_CONSTANT);
-DustToken DustUnitMindText::DustConstantCharCtrlBS(DustUnitText, "Backspace", DUST_NATIVE_CONSTANT);
+DustToken DustUnitMindText::DustConstantCharCtrlTAB(DustUnitText, "Tab", DUST_IDEA_CONSTANT);
+DustToken DustUnitMindText::DustConstantCharCtrlLF(DustUnitText, "LineFeed", DUST_IDEA_CONSTANT);
+DustToken DustUnitMindText::DustConstantCharCtrlCR(DustUnitText, "CarriageReturn", DUST_IDEA_CONSTANT);
+DustToken DustUnitMindText::DustConstantCharCtrlFF(DustUnitText, "FormFeed", DUST_IDEA_CONSTANT);
+DustToken DustUnitMindText::DustConstantCharCtrlBS(DustUnitText, "Backspace", DUST_IDEA_CONSTANT);
 
 DustToken DustUnitMindText::DustAgentDictionary(DustUnitText, "Dictionary", DUST_IDEA_AGENT);
 
@@ -31,21 +31,29 @@ DustToken DustUnitMindText::DustAgentTokenMatcher(DustUnitText, "TokenMatcher", 
 DustToken DustUnitMindText::DustAgentNumberSci(DustUnitText, "NumberSci", DUST_IDEA_AGENT);
 DustToken DustUnitMindText::DustAgentNumberRad(DustUnitText, "NumberRad", DUST_IDEA_AGENT);
 
-using namespace DustUnitMindEvent;
+using namespace DustUnitMindTime;
 
-DustToken DustUnitMindEvent::DustUnitEvent("Event");
+DustToken DustUnitMindTime::DustUnitTime("Time");
 
-DustToken DustUnitMindEvent::DustTypeEvent(DustUnitEvent, "Event", DUST_IDEA_TYPE);
+DustToken DustUnitMindTime::DustAgentTime(DustUnitTime, "Time", DUST_IDEA_AGENT);
+DustToken DustUnitMindTime::DustRefTimeText(DustAgentTime, "TimeText", DUST_VAL_REF, DUST_COLL_SINGLE);
 
-DustToken DustUnitMindEvent::DustTagEventLevel(DustUnitEvent, "EventLevel", DUST_IDEA_TAG);
-DustToken DustUnitMindEvent::DustTagEventLevelCritical(DustTagEventLevel, "Critical", DUST_IDEA_TAG);
-DustToken DustUnitMindEvent::DustTagEventLevelError(DustTagEventLevel, "Error", DUST_IDEA_TAG);
-DustToken DustUnitMindEvent::DustTagEventLevelWarning(DustTagEventLevel, "Warning", DUST_IDEA_TAG);
-DustToken DustUnitMindEvent::DustTagEventLevelnfo(DustTagEventLevel, "lnfo", DUST_IDEA_TAG);
-DustToken DustUnitMindEvent::DustTagEventLevelTrace(DustTagEventLevel, "Trace", DUST_IDEA_TAG);
-DustToken DustUnitMindEvent::DustTagEventLevelDebug(DustTagEventLevel, "Debug", DUST_IDEA_TAG);
+DustToken DustUnitMindTime::DustTagTimeType(DustUnitTime, "TimeType", DUST_IDEA_TAG);
+DustToken DustUnitMindTime::DustTagTimeTypeDate(DustTagTimeType, "Date", DUST_IDEA_TAG);
+DustToken DustUnitMindTime::DustTagTimeTypeTime(DustTagTimeType, "Time", DUST_IDEA_TAG);
+DustToken DustUnitMindTime::DustTagTimeTypeDateTime(DustTagTimeType, "DateTime", DUST_IDEA_TAG);
+DustToken DustUnitMindTime::DustTagTimeTypeDuration(DustTagTimeType, "Duration", DUST_IDEA_TAG);
 
-DustToken DustUnitMindEvent::DustAgentTime(DustUnitEvent, "Time", DUST_IDEA_AGENT);
+DustToken DustUnitMindTime::DustTypeEvent(DustUnitTime, "Event", DUST_IDEA_TYPE);
+
+DustToken DustUnitMindTime::DustTagEventLevel(DustUnitTime, "EventLevel", DUST_IDEA_TAG);
+DustToken DustUnitMindTime::DustTagEventLevelCritical(DustTagEventLevel, "Critical", DUST_IDEA_TAG);
+DustToken DustUnitMindTime::DustTagEventLevelError(DustTagEventLevel, "Error", DUST_IDEA_TAG);
+DustToken DustUnitMindTime::DustTagEventLevelWarning(DustTagEventLevel, "Warning", DUST_IDEA_TAG);
+DustToken DustUnitMindTime::DustTagEventLevelnfo(DustTagEventLevel, "lnfo", DUST_IDEA_TAG);
+DustToken DustUnitMindTime::DustTagEventLevelTrace(DustTagEventLevel, "Trace", DUST_IDEA_TAG);
+DustToken DustUnitMindTime::DustTagEventLevelDebug(DustTagEventLevel, "Debug", DUST_IDEA_TAG);
+
 
 
 

@@ -11,11 +11,6 @@ extern DustToken DustTypeModule;
 extern DustToken DustRefModuleAgents;
 extern DustToken DustRefModuleAlgorithms;
 
-extern DustToken DustTypeConstant;
-extern DustToken DustConstantNull;
-extern DustToken DustConstantTrue;
-extern DustToken DustConstantFalse;
-
 extern DustToken DustTypeService;
 extern DustToken DustTypeCommand;
 
@@ -35,11 +30,13 @@ extern DustToken DustRefAgentCallParam;
 namespace DustUnitMindDust
 {
 extern DustToken DustUnitDust;
-extern DustToken DustAgentRuntime;
 
-extern DustToken DustAgentCore;
-extern DustToken DustAgentPda;
+extern DustToken DustAgentRuntime;
+extern DustToken DustAgentThread;
 extern DustToken DustAgentState;
+
+extern DustToken DustRefRuntimeApps;
+extern DustToken DustRefRuntimeThreads;
 }
 
 #endif // DUSTGENUNITMINDDUST_H_INCLUDED

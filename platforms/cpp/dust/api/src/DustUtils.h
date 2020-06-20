@@ -16,6 +16,10 @@ public:
     {
         return (DUST_RESULT_ACCEPT_READ == result) || (DUST_RESULT_READ == result);
     }
+    inline static bool isSuccess(DustResultType result)
+    {
+        return (DUST_RESULT_ACCEPT_READ == result) || (DUST_RESULT_ACCEPT == result);
+    }
 };
 
 #endif /* DUSTUTILS_H_ */

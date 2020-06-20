@@ -1,14 +1,10 @@
 #include <iostream>
 #include <string>
 
-#include <DustRuntime.h>
-
 #include "DustgenModText.h"
 #include "Text.h"
 
 using namespace std;
-
-DustModText module;
 
 using namespace DustUnitMindText;
 using namespace DustUnitMindBinary;
@@ -18,12 +14,12 @@ DECLARE_FACTORY(string, DUST_BOOT_TYPE_PLAINTEXT)
 DECLARE_FACTORY(TextLogicStreamReader, DustAgentStreamReader)
 DECLARE_FACTORY(TextLogicStreamWriter, DustAgentStreamWriter)
 
-extern "C" DustModule* getModule()
-{
-    module.registerFactory(&FactTextDictionary);
-    module.registerFactory(&Factstring);
+DustModText DustModText::module;
 
-    return &module;
+DustModText::DustModText()
+{
+    DustModText::module.registerFactory(&FactTextDictionary);
+    DustModText::module.registerFactory(&Factstring);
 }
 
 DustModText::~DustModText()
@@ -33,8 +29,6 @@ DustModText::~DustModText()
 DustResultType DustModText::DustResourceInit()
 {
     DustUtils::log() << "DustModText::DustResourceInit" << endl;
-    registerFactory(&FactTextLogicStreamReader);
-    registerFactory(&FactTextLogicStreamWriter);
 
     return DUST_RESULT_ACCEPT;
 }
@@ -45,3 +39,7 @@ DustResultType DustModText::DustResourceRelease()
     return DUST_RESULT_ACCEPT;
 }
 
+extern "C" DustModule* getModule()
+{
+    return &DustModText::module;
+}

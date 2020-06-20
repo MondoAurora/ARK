@@ -1,15 +1,16 @@
-#ifndef DUSTRUNTIME_H_
-#define DUSTRUNTIME_H_
+#ifndef DUSTKERNEL_H_
+#define DUSTKERNEL_H_
 
 #include "DustModule.h"
 
-#define DUST_FNAME_GET_MODULE "getModule"
-#define DUST_FNAME_INIT_MODULE "initModule"
-
 enum DustBoot
 {
-    DUST_BOOT_AGENT_RUNTIME = DUST_LAST_CONST_MODULE,
+    DUST_BOOT_MODNAME_KERNEL = DUST_LAST_CONST_MODULE,
+    DUST_BOOT_MODNAME_TEXT,
+
+    DUST_BOOT_AGENT_RUNTIME,
     DUST_BOOT_AGENT_DICTIONARY,
+    DUST_BOOT_AGENT_APP,
 
     DUST_BOOT_UNIT_TEXT,
     DUST_BOOT_TYPE_PLAINTEXT,
@@ -27,27 +28,12 @@ enum DustBoot
 
 #define DUST_LAST_CONST_RUNTIME DUST_BOOT_
 
-
 extern "C" class DustTextDictionary: public DustNativeLogic
 {
 public:
-    virtual ~DustTextDictionary()
-    {
-    }
+    virtual ~DustTextDictionary(){};
 
-    virtual DustEntity getTextToken(DustEntity txtParent, const char* name) = 0;
-};
-
-extern "C" class DustRuntimeConnector: public DustTextDictionary
-{
-public:
-    virtual ~DustRuntimeConnector()
-    {
-    }
-
-    virtual DustEntity getTextToken(DustEntity txtParent, const char* name) = 0;
-    virtual void loadModule(const char* name) = 0;
-    virtual DustModule* getModuleForType(DustEntity type) = 0;
+    virtual DustEntity getTextToken(const char* name, DustEntity txtParent = DUST_ENTITY_INVALID) = 0;
 };
 
 extern "C" class DustAccessData
@@ -90,7 +76,7 @@ public:
 extern "C" class DustRuntime: public DustNativeLogic
 {
 protected:
-    void setBootToken(DustToken &token, DustEntity entity);
+    void setBootToken(DustToken *pToken, DustEntity entity);
 
 public:
     virtual ~DustRuntime()
@@ -101,20 +87,21 @@ public:
     virtual DustEntity getTokenEntity(DustEntity unit, const char* name, DustEntity primaryType, DustEntity constId = DUST_ENTITY_APPEND) = 0;
     virtual DustEntity getMemberEntity(DustEntity type, const char* name, DustValType valType, DustCollType collType = DUST_COLL_SINGLE, DustEntity constId = DUST_ENTITY_APPEND) = 0;
 
-    virtual void setConnector(DustRuntimeConnector* pConn) = 0;
-
     virtual long getMemberCount(DustEntity entity, DustEntity token) = 0;
     virtual DustEntity getMemberKey(DustEntity entity, DustEntity token, long idx) = 0;
 
     virtual bool access(DustAccessData &access) = 0;
 
 // Entity native content access
-    virtual void* getNative(DustEntity entity, DustEntity type, bool createIfMissing) = 0;
+    virtual void* getNative(DustEntity entity, DustEntity type = DUST_ENTITY_APPEND, bool createIfMissing = true) = 0;
 };
+
+#define DUST_FNAME_GET_MODULE "getModule"
+#define DUST_FNAME_INIT_MODULE "initModule"
 
 typedef DustModule* (*getModule_t)();
 typedef void (*initModule_t)(DustRuntime*);
 
 extern "C" void initModule(DustRuntime *pRuntime);
 
-#endif /* DUSTRUNTIME_H_ */
+#endif /* DUSTKERNEL_H_ */

@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1591546787 source:a:\platforms\cpp\units\mind\dustgenunitmindcore.cpp
+1592646891 source:a:\platforms\cpp\units\mind\dustgenunitmindcore.cpp
 	"DustgenUnitMindCore.h"
 
-1591546787 a:\platforms\cpp\units\mind\dustgenunitmindcore.h
+1592646848 a:\platforms\cpp\units\mind\dustgenunitmindcore.h
 	<DustApi.h>
 
-1591615852 a:\platforms\cpp\dust\api\src\dustapi.h
+1592380329 a:\platforms\cpp\dust\api\src\dustapi.h
 
 1590941474 source:a:\platforms\cpp\units\vendors\dust\dustgenunittest01.cpp
 	"DustgenUnitTest01.h"
@@ -13,7 +13,7 @@
 1590941443 a:\platforms\cpp\units\vendors\dust\dustgenunittest01.h
 	<DustApi.h>
 
-1591619199 source:a:\platforms\cpp\systems\vendors\dust\test01\src\dustgenappmain.cpp
+1592659260 source:a:\platforms\cpp\systems\vendors\dust\test01\src\dustgenappmain.cpp
 	<DustMain.h>
 	<DustApi.h>
 	<iostream>
@@ -22,12 +22,13 @@
 	<MiND/DustgenUnitMindTools.h>
 	<MiND/DustMindUtils.h>
 
-1590595150 a:\platforms\cpp\dust\main\src\dustmain.h
+1592510609 a:\platforms\cpp\dust\main\src\dustmain.h
+	<DustModule.h>
 
-1591607347 source:a:\platforms\cpp\units\mind\dustgenunitmindtools.cpp
+1592380329 source:a:\platforms\cpp\units\mind\dustgenunitmindtools.cpp
 	"DustgenUnitMindTools.h"
 
-1591607348 a:\platforms\cpp\units\mind\dustgenunitmindtools.h
+1591777724 a:\platforms\cpp\units\mind\dustgenunitmindtools.h
 	<DustApi.h>
 
 1591619090 source:a:\platforms\cpp\units\mind\dustmindutils.cpp
@@ -37,8 +38,32 @@
 	<DustUtils.h>
 	"DustgenUnitMindTools.h"
 
-1591621011 a:\platforms\cpp\dust\api\src\dustutils.h
+1592288786 a:\platforms\cpp\dust\api\src\dustutils.h
 	"DustApi.h"
 	<iostream>
 	<string>
+
+1592485469 a:\platforms\cpp\dust\api\src\dustmodule.h
+	"DustUtils.h"
+	<map>
+
+1592486938 source:a:\platforms\cpp\dust\runtime\src\dustmoduleloaderlib.cpp
+	<iostream>
+	<string>
+	"DustModuleLoaderLib.h"
+
+1592486638 a:\platforms\cpp\dust\runtime\src\dustmoduleloaderlib.h
+	"DustRuntimeImpl.h"
+	<windows.h>
+	<dlfcn.h>
+	<map>
+
+1592508445 a:\platforms\cpp\dust\runtime\src\dustruntimeimpl.h
+	<DustKernel.h>
+
+1592510552 a:\platforms\cpp\dust\api\src\dustkernel.h
+	"DustModule.h"
+
+1592658362 source:a:\platforms\cpp\dust\runtime\src\dustruntimeimpl.cpp
+	"DustRuntimeImpl.h"
 

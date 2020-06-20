@@ -6,7 +6,7 @@ using namespace std;
 
 TextDictionary::~TextDictionary() {};
 
-DustEntity TextDictionary::getTextToken(DustEntity txtParent, const char* name)
+DustEntity TextDictionary::getTextToken(const char* name, DustEntity txtParent)
 {
     string key(name);
 

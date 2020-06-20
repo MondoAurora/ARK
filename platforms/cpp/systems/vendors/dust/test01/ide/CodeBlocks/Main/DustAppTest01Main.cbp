@@ -11,7 +11,6 @@
 				<Option object_output="../obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="DustModText DustModDplStl DustModTest01 DustModGraphOpenGl DustModWinGui " />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -21,6 +20,7 @@
 				<Option object_output="../obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="DustModText DustModDplStl DustModTest01 DustModGraphOpenGl DustModWinGui " />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
@@ -38,8 +38,13 @@
 		</Compiler>
 		<Linker>
 			<Add library="$(#ark_debug.LIB)/libDustLibApi.a" />
+			<Add library="$(#ark_debug.LIB)/libDustLibRuntime.a" />
 			<Add library="$(#ark_debug.LIB)/libDustLibMain.a" />
 		</Linker>
+		<Unit filename="../../../../../../../dust/runtime/src/DustModuleLoaderLib.cpp" />
+		<Unit filename="../../../../../../../dust/runtime/src/DustModuleLoaderLib.h" />
+		<Unit filename="../../../../../../../dust/runtime/src/DustRuntimeImpl.cpp" />
+		<Unit filename="../../../../../../../dust/runtime/src/DustRuntimeImpl.h" />
 		<Unit filename="../../../../../../../units/MiND/DustMindUtils.cpp" />
 		<Unit filename="../../../../../../../units/MiND/DustMindUtils.h" />
 		<Unit filename="../../../../../../../units/MiND/DustgenUnitMindCore.cpp" />

@@ -61,13 +61,14 @@ enum DustAccessType
 
 enum DustIdeaType
 {
-    DUST_IDEA_UNIT = DUST_ACCESS_,
+    DUST_MODEL_UNIT = DUST_ACCESS_,
+
     DUST_IDEA_TYPE,
     DUST_IDEA_MEMBER,
     DUST_IDEA_AGENT,
     DUST_IDEA_TAG,
+    DUST_IDEA_CONSTANT,
 
-    DUST_NATIVE_CONSTANT,
     DUST_NATIVE_SERVICE,
     DUST_NATIVE_COMMAND,
 
@@ -147,7 +148,7 @@ extern "C" class DustToken
 
 public:
     DustToken(const char* unitName)
-        : primaryType(DUST_IDEA_UNIT), name(unitName), parent(0),
+        : primaryType(DUST_MODEL_UNIT), name(unitName), parent(0),
           valType(DUST_VAL_), collType(DUST_COLL_),
           entity(DUST_ENTITY_APPEND) {}
 
@@ -200,10 +201,11 @@ private:
 
 public:
 // Entity creation and access
-//    static DustEntity getEntityByPath(DustEntity ctx, ...);
     static DustEntity createEntity(DustEntity primaryType);
-    static void setType(DustEntity target, DustEntity type, DustEntity source = DUST_ENTITY_APPEND);
+    static bool setType(DustEntity target, DustEntity type, DustEntity source = DUST_ENTITY_APPEND);
+    // source invalid means deleting the type if allowed; may fail anytime due to dependencies
     static bool deleteEntity(DustEntity entity);
+    // source invalid means deleting the type if allowed; may fail anytime due to dependencies
 
     static long getMemberCount(DustEntity entity, DustEntity token);
     static DustEntity getMemberKey(DustEntity entity, DustEntity token, long idx);
@@ -224,6 +226,7 @@ public:
 
 // Entity native content access
     static void* getNative(DustEntity entity, DustEntity type = DUST_ENTITY_APPEND, bool createIfMissing = true);
+    // needed INSIDE a module to connect local binary objects to the entities!!!
 
     friend class DustToken;
     friend class DustRuntime;

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="DustLibRuntime" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="$(#ark_debug.LIB)/DustLibRuntime" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option host_application="A:/platforms/cpp/bin/Debug/DustAppTest01Main.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="$(#ark_release.LIB)/DustLibRuntime" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../obj/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add directory="$(#ark_debug.INCLUDE)" />
+		</Compiler>
+		<Unit filename="../../src/DustModuleLoaderLib.cpp" />
+		<Unit filename="../../src/DustModuleLoaderLib.h" />
+		<Unit filename="../../src/DustRuntimeImpl.cpp" />
+		<Unit filename="../../src/DustRuntimeImpl.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

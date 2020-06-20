@@ -12,24 +12,24 @@
 			<Cursor1 position="266" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\..\..\..\..\..\units\MiND\DustgenUnitMindTools.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="80" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\..\..\..\..\units\vendors\dust\DustgenUnitTest01.cpp" open="1" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\..\..\..\..\units\vendors\dust\DustgenUnitTest01.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="694" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="..\..\src\test01.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="254" topLine="6" />
+			<Cursor1 position="504" topLine="6" />
 		</Cursor>
 	</File>
-	<File name="..\..\..\..\..\..\units\vendors\dust\DustgenUnitTest01.h" open="1" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\..\..\..\..\units\vendors\dust\DustgenUnitTest01.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="205" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\..\..\..\..\units\MiND\DustgenUnitMindTools.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="80" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

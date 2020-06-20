@@ -21,6 +21,7 @@ extern DustToken DustRealValue;
 extern DustToken DustRefValue;
 
 extern DustToken DustTypeUnit;
+extern DustToken DustTypeSystem;
 };
 
 namespace DustUnitMindIdea {
@@ -30,6 +31,11 @@ extern DustToken DustTypeType;
 extern DustToken DustTypeMember;
 extern DustToken DustTypeAgent;
 extern DustToken DustTypeTag;
+
+extern DustToken DustTypeConstant;
+extern DustToken DustConstantNull;
+extern DustToken DustConstantTrue;
+extern DustToken DustConstantFalse;
 
 extern DustToken DustTagVal;
 extern DustToken DustTagValInteger;
@@ -53,25 +59,26 @@ extern DustToken DustTagResultAccept;
 extern DustToken DustTagResultAcceptRead;
 extern DustToken DustTagResultRead;
 
+extern DustToken DustAgentSequence;
+extern DustToken DustAgentSelect;
+extern DustToken DustAgentRepeat;
+};
+
+namespace DustUnitMindDialog {
+extern DustToken DustUnitDialog;
+
 extern DustToken DustTagCtx;
 extern DustToken DustTagCtxSelf;
 extern DustToken DustTagCtxDialog;
 extern DustToken DustTagCtxApp;
 extern DustToken DustTagCtxSystem;
 
-extern DustToken DustAgentSequence;
-extern DustToken DustAgentSelect;
-extern DustToken DustAgentRepeat;
-
-extern DustToken DustAgentDialog;
 extern DustToken DustAgentApp;
-extern DustToken DustAgentSystem;
+extern DustToken DustAgentDialog;
 
+extern DustToken DustRefAppSystem;
 extern DustToken DustRefAppMain;
-};
-
-namespace DustUnitMindDialog {
-extern DustToken DustUnitDialog;
+extern DustToken DustRefAppDialogs;
 
 extern DustToken DustTagAccess;
 extern DustToken DustTagAccessGet;

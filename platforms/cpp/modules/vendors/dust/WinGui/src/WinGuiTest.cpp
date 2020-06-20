@@ -22,11 +22,11 @@ void updateGraphics(BOOL bQuit)
 {
     DustRef self;
 
-    DustEntity painter = DustData::getRef(self, DustRefPainter);
-
     DustData::setInteger(self, DustIntHDC, bQuit ? 0 : (long) hDC);
 
-    DustNativeLogic *pl = (DustNativeLogic*) DustData::getNative(painter);
+//    DustEntity painter = DustData::getRef(self, DustRefPainter);
+//    DustNativeLogic *pl = (DustNativeLogic*) DustData::getNative(painter);
+    DustNativeLogic *pl = (DustNativeLogic*) DustData::getNative(self, DustAgentTestOpenGL);
 
     if ( pl )
     {
@@ -36,7 +36,7 @@ void updateGraphics(BOOL bQuit)
         }
     }
 
-    Sleep (1.0f);
+    Sleep (0.1f);
 }
 
 int WINAPI sw()

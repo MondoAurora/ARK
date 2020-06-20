@@ -1,7 +1,7 @@
 #ifndef SRC_TEXT_H_
 #define SRC_TEXT_H_
 
-#include <DustRuntime.h>
+#include <DustKernel.h>
 #include <MiND/DustgenUnitMindTools.h>
 
 #include <map>

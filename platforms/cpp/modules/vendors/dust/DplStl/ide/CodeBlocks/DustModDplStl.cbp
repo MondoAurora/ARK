@@ -42,10 +42,12 @@
 		</Build>
 		<Compiler>
 			<Add directory="$(#ark_debug.INCLUDE)" />
+			<Add directory="$(#ark_debug.BASE)/dust/runtime/src" />
 			<Add directory="$(#ark_debug.BASE)/units" />
 		</Compiler>
 		<Linker>
 			<Add library="$(#ark_debug.LIB)/libDustLibApi.a" />
+			<Add library="$(#ark_debug.LIB)/libDustLibRuntime.a" />
 		</Linker>
 		<Unit filename="../../../../../../units/MiND/DustgenUnitMindCore.cpp" />
 		<Unit filename="../../../../../../units/MiND/DustgenUnitMindCore.h" />

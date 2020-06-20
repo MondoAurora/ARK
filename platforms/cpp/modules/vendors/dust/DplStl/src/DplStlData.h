@@ -1,7 +1,7 @@
 #ifndef DPLSTLDATA_H_INCLUDED
 #define DPLSTLDATA_H_INCLUDED
 
-#include <DustRuntime.h>
+#include <DustKernel.h>
 
 #include <vector>
 #include <map>
@@ -9,6 +9,7 @@
 using namespace std;
 
 class DplStlDataRef;
+class DplStlDataVariant;
 class DplStlDataStore;
 
 class DplStlTokenInfo
@@ -30,12 +31,14 @@ class DplStlDataValue
     {
         long valLong;
         double valDouble;
-        DplStlDataRef *valRef;
+        DplStlDataRef *valPtrRef;
     };
+
 
 public:
     DplStlDataValue();
-    DplStlDataValue(DustValType vT, const DplStlDataValue &src);
+    DplStlDataValue(const DplStlDataValue &src, DplStlDataVariant *pVariant);
+    ~DplStlDataValue();
 
     bool match(DustValType vT, DustAccessData &ad);
     bool loadFrom(DustValType vT, DustAccessData &ad);
@@ -62,12 +65,14 @@ class DplStlDataVariant
 
 public:
     DplStlDataVariant(DplStlTokenInfo *pTI);
+    DplStlDataVariant(const DplStlDataVariant &src);
     ~DplStlDataVariant();
 
     bool access(DustAccessData &ad);
 
     friend class DplStlRuntime;
     friend class DplStlDataEntity;
+    friend class DplStlDataValue;
 };
 
 class DplStlDataRef
@@ -87,49 +92,69 @@ public:
     friend class DplStlDataValue;
 };
 
+typedef map<DustEntity, DplStlDataVariant*>::iterator VarPtrIterator;
+typedef map<DustEntity, void*>::iterator PtrIterator;
+
 class DplStlDataEntity
 {
-    DplStlDataStore *pStore;
+public:
     const long id;
     const DustEntity primaryType;
 
+private:
     map<DustEntity, DplStlDataVariant*> model;
-    map<DustEntity, void*> native;
-
-    DplStlDataVariant *getVariant(DustEntity token);
+    map<DustEntity, void*> *pNative;
 
     void deleteVariant(DustEntity token, DplStlDataVariant *var);
 
 public:
-    DplStlDataEntity(DplStlDataStore *pStore_, long id_, DustEntity primaryType_);
+    DplStlDataEntity(DplStlDataEntity &src);
+    DplStlDataEntity(long id_, DustEntity primaryType_);
     ~DplStlDataEntity();
+
+    DplStlDataVariant *getVariant(DustEntity token);
+
+    void *getNative(DustEntity token);
+    void *setNative(DustEntity token, void *ptr);
 
     bool access(DustAccessData &ad);
     void setType(DustAccessData &ad, DplStlDataEntity *pSrc);
 
-
     friend class DplStlRuntime;
-    friend class DplStlLogicState;
 };
 
-class DplStlDataStore
+typedef map<DustEntity, DplStlDataEntity*>::iterator EntityPtrIterator;
+
+/**
+class DplStlContext {
+public:
+    virtual ~DplStlContext();
+    virtual DplStlDataEntity* getEntity(long id = DUST_ENTITY_APPEND, DustEntity primaryType = DUST_ENTITY_INVALID) = 0;
+};
+*/
+
+class DplStlDataStore // : public DplStlContext
 {
     DplStlDataStore *pParent;
 
     long nextId;
     map<DustEntity, DplStlDataEntity*> entities;
-    map<DustEntity, DplStlTokenInfo*> tokenInfo;
+
+     void overwrite(DustEntity, DplStlDataEntity*);
 
 public:
-    DplStlDataStore(long nextId_);
-    ~DplStlDataStore();
+    DplStlDataStore(DplStlDataStore *pParent_ = NULL);
+    virtual ~DplStlDataStore();
 
-    DplStlTokenInfo* getTokenInfo(DustEntity token);
+    virtual DplStlDataEntity* getEntity(long id = DUST_ENTITY_APPEND, DustEntity primaryType = DUST_ENTITY_INVALID);
 
-    DplStlDataEntity* getEntity(long id = DUST_ENTITY_APPEND, DustEntity primaryType = DUST_ENTITY_INVALID);
+    void init(DplStlDataStore *pParent);
+
+    void commit();
+    void rollback();
 
     friend class DplStlDataEntity;
-    friend class DplStlLogicState;
+    friend class DplStlRuntimeState;
     friend class DplStlRuntime;
 };
 

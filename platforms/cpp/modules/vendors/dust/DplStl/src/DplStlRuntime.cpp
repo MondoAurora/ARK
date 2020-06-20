@@ -5,26 +5,9 @@
 
 using namespace std;
 
-DplStlRuntime* DplStlRuntime::pRuntime = NULL;
-
-DplStlRuntime::DplStlRuntime()
-    :accCount(0), accUSec(0), store(DUST_LAST_CONST_RUNTIME)
-{
-    pRuntime = this;
-    cores.push_back(new DplStlLogicCore(this));
-}
-
-DplStlRuntime::~DplStlRuntime()
-{
-}
-
-void DplStlRuntime::setConnector(DustRuntimeConnector* pConn)
-{
-    pRTC = pConn;
-}
-
 map<long, DustToken*> bootEntites;
-typedef map<long, DustToken*>::iterator BootIterator;
+DplStlRuntimeApp *pBootApp;
+DplStlRuntimeThread *pBootThread;
 
 void setBootInfo(DustToken &token, long id)
 {
@@ -32,8 +15,25 @@ void setBootInfo(DustToken &token, long id)
 }
 
 
-DustResultType DplStlRuntime::DustResourceInit()
+DplStlRuntime* DplStlRuntime::pRuntime = NULL;
+
+DplStlRuntime::DplStlRuntime()
+    :accCount(0), accUSec(0)
 {
+    pRuntime = this;
+}
+
+DplStlRuntime::~DplStlRuntime()
+{
+}
+
+void DplStlRuntime::initRuntime(DustAppImpl* pApp, DustTextDictionary *pTokenDicionary_)
+{
+    pBootApp = (DplStlRuntimeApp *) pApp;
+    pBootApp->pTokenDictionary = pTokenDicionary_;
+
+    pBootThread = launch(pBootApp, DUST_ENTITY_INVALID);
+
     cout << "Booting runtime" << endl;
 
     setBootInfo(DustUnitMindText::DustTypePlainText, DUST_BOOT_TYPE_PLAINTEXT);
@@ -50,10 +50,7 @@ DustResultType DplStlRuntime::DustResourceInit()
     setBootInfo(DustUnitMindIdea::DustTypeMember, DUST_IDEA_MEMBER);
     setBootInfo(DustUnitMindIdea::DustTypeAgent, DUST_IDEA_AGENT);
     setBootInfo(DustUnitMindIdea::DustTypeTag, DUST_IDEA_TAG);
-
-    setBootInfo(DustUnitMindNative::DustTypeConstant, DUST_NATIVE_CONSTANT);
-    setBootInfo(DustUnitMindNative::DustTypeService, DUST_NATIVE_SERVICE);
-    setBootInfo(DustUnitMindNative::DustTypeCommand, DUST_NATIVE_COMMAND);
+    setBootInfo(DustUnitMindIdea::DustTypeConstant, DUST_IDEA_CONSTANT);
 
     setBootInfo(DustUnitMindIdea::DustTagValInteger, DUST_VAL_INTEGER);
     setBootInfo(DustUnitMindIdea::DustTagValReal, DUST_VAL_REAL);
@@ -70,10 +67,10 @@ DustResultType DplStlRuntime::DustResourceInit()
     setBootInfo(DustUnitMindNarrative::DustTagResultAcceptPass, DUST_RESULT_ACCEPT_PASS);
     setBootInfo(DustUnitMindNarrative::DustTagResultAcceptRead, DUST_RESULT_ACCEPT_READ);
 
-    setBootInfo(DustUnitMindNarrative::DustTagCtxSelf, DUST_CTX_SELF);
-    setBootInfo(DustUnitMindNarrative::DustTagCtxDialog, DUST_CTX_DIALOG);
-    setBootInfo(DustUnitMindNarrative::DustTagCtxApp, DUST_CTX_APP);
-    setBootInfo(DustUnitMindNarrative::DustTagCtxSystem, DUST_CTX_SYSTEM);
+    setBootInfo(DustUnitMindDialog::DustTagCtxSelf, DUST_CTX_SELF);
+    setBootInfo(DustUnitMindDialog::DustTagCtxDialog, DUST_CTX_DIALOG);
+    setBootInfo(DustUnitMindDialog::DustTagCtxApp, DUST_CTX_APP);
+    setBootInfo(DustUnitMindDialog::DustTagCtxSystem, DUST_CTX_SYSTEM);
 
     setBootInfo(DustUnitMindDialog::DustTagAccessGet, DUST_ACCESS_GET);
     setBootInfo(DustUnitMindDialog::DustTagAccessSet, DUST_ACCESS_SET);
@@ -84,25 +81,29 @@ DustResultType DplStlRuntime::DustResourceInit()
     setBootInfo(DustUnitMindDialog::DustTagAccessDelete, DUST_ACCESS_DELETE);
     setBootInfo(DustUnitMindDialog::DustTagAccessSetType, DUST_ACCESS_SETTYPE);
 
-    setBootInfo(DustUnitMindEvent::DustTagEventLevelCritical, DUST_EVENT_CRITICAL);
-    setBootInfo(DustUnitMindEvent::DustTagEventLevelError, DUST_EVENT_ERROR);
-    setBootInfo(DustUnitMindEvent::DustTagEventLevelWarning, DUST_EVENT_WARNING);
-    setBootInfo(DustUnitMindEvent::DustTagEventLevelnfo, DUST_EVENT_INFO);
-    setBootInfo(DustUnitMindEvent::DustTagEventLevelTrace, DUST_EVENT_TRACE);
-    setBootInfo(DustUnitMindEvent::DustTagEventLevelDebug, DUST_EVENT_DEBUG);
+    setBootInfo(DustUnitMindNative::DustTypeService, DUST_NATIVE_SERVICE);
+    setBootInfo(DustUnitMindNative::DustTypeCommand, DUST_NATIVE_COMMAND);
 
+    setBootInfo(DustUnitMindTime::DustTagEventLevelCritical, DUST_EVENT_CRITICAL);
+    setBootInfo(DustUnitMindTime::DustTagEventLevelError, DUST_EVENT_ERROR);
+    setBootInfo(DustUnitMindTime::DustTagEventLevelWarning, DUST_EVENT_WARNING);
+    setBootInfo(DustUnitMindTime::DustTagEventLevelnfo, DUST_EVENT_INFO);
+    setBootInfo(DustUnitMindTime::DustTagEventLevelTrace, DUST_EVENT_TRACE);
+    setBootInfo(DustUnitMindTime::DustTagEventLevelDebug, DUST_EVENT_DEBUG);
+
+    pBootApp->initBootMembers(bootEntites);
+
+    DplStlDataEntity *pE = createEntity(DUST_BOOT_AGENT_APP);
+    pE->setNative(DUST_BOOT_AGENT_APP, pBootApp);
+
+    pBootThread->getDialog()->store.entities[DUST_CTX_APP] = pE;
+}
+
+DustResultType DplStlRuntime::DustResourceInit()
+{
     for (BootIterator it = bootEntites.begin(); it != bootEntites.end(); ++it)
     {
-        DustToken* pT = it->second;
-        if ( DUST_IDEA_MEMBER == pT->getPrimaryType() )
-        {
-            store.tokenInfo[it->first] = new DplStlTokenInfo(pT->getValType(), pT->getCollType());
-        }
-    }
-
-    for (BootIterator it = bootEntites.begin(); it != bootEntites.end(); ++it)
-    {
-        setBootToken( *(it->second), it->first);
+        setBootToken( it->second, it->first);
     }
 
     bootEntites.clear();
@@ -116,109 +117,33 @@ DustResultType DplStlRuntime::DustResourceRelease()
     return DUST_RESULT_ACCEPT;
 }
 
-DustEntity DplStlRuntime::getTextToken(DustEntity parent,  const char* name)
-{
-    DustEntity txtParent = parent ? DustData::getRef(parent, DUST_BOOT_REF_GLOBALID) : DUST_ENTITY_INVALID;
-    return pRTC->getTextToken(txtParent, name);
-}
 
-void DplStlRuntime::optSetParent(DustAccessData &ad, DplStlDataEntity* pEntity, DustEntity parent)
-{
-    if ( parent )
-    {
-        ad.updateLong(parent, DUST_BOOT_REF_OWNER);
-        pEntity->access(ad);
-
-        for ( DustEntity p = parent; p; p = DustData::getRef(p, DUST_BOOT_REF_OWNER) )
-        {
-            DustEntity unit = DustData::getRef(p, DUST_BOOT_REF_UNIT);
-            if ( unit )
-            {
-                ad.updateLong(unit, DUST_BOOT_REF_UNIT);
-                pEntity->access(ad);
-                break;
-            }
-        }
-    }
-}
-
-DplStlDataEntity* DplStlRuntime::registerGlobalEntity(DustEntity txtToken, DustEntity primaryType, DustEntity parent, DustEntity constId)
-{
-    DplStlDataEntity* pEntity = store.getEntity(constId, primaryType);
-    DustEntity entity = pEntity->id;
-
-    globalEntites[txtToken] = entity;
-    DustAccessData ad(entity, DUST_BOOT_REF_GLOBALID, txtToken);
-    pEntity->access(ad);
-
-    optSetParent(ad, pEntity, parent);
-
-    return pEntity;
-}
 
 DustEntity DplStlRuntime::getUnit(const char* name, DustEntity constId)
 {
-    DustEntity txtToken = getTextToken(0, name);
-    DustEntity unit = findEntity(globalEntites, txtToken);
-
-    if ( !unit )
-    {
-        DplStlDataEntity* pEntity = registerGlobalEntity(txtToken, DUST_IDEA_UNIT, DUST_ENTITY_INVALID, constId);
-        unit = pEntity->id;
-        DustAccessData ad(unit, DUST_BOOT_REF_UNIT, unit);
-        pEntity->access(ad);
-    }
-
-    return unit;
+    return getCurrentThread()->getApp()->getUnit(name, constId);
 }
 
 DustEntity DplStlRuntime::getTokenEntity(DustEntity parent, const char* name, DustEntity primaryType, DustEntity constId)
 {
-    DustEntity txtToken = getTextToken(parent, name);
-    DustEntity idea = findEntity(globalEntites, txtToken);
-
-    if ( !idea )
-    {
-        DplStlDataEntity* pEntity = registerGlobalEntity(txtToken, primaryType, parent, constId);
-        idea = pEntity->id;
-    }
-
-    return idea;
+    return getCurrentThread()->getApp()->getTokenEntity(parent, name, primaryType, constId);
 }
 
 DustEntity DplStlRuntime::getMemberEntity(DustEntity type, const char* name, DustValType valType, DustCollType collType, DustEntity constId)
 {
-    DustEntity txtToken = getTextToken(type, name);
-    DustEntity member = findEntity(globalEntites, txtToken);
-
-    if ( !member )
-    {
-        DplStlDataEntity* pEntity = registerGlobalEntity(txtToken, DUST_IDEA_MEMBER, type, constId);
-        member = pEntity->id;
-
-        DustAccessData ad(member, DUST_BOOT_REF_TAGS, (long) valType);
-        pEntity->access(ad);
-
-        ad.updateLong(collType);
-        pEntity->access(ad);
-
-        cout << "Token def " << name << ", vT " << valType << ", cT " << collType << endl;
-
-    }
-
-    return member;
+    return getCurrentThread()->getApp()->getMemberEntity(type, name, valType, collType, constId);
 }
 
 
 DplStlDataEntity* DplStlRuntime::resolveEntity(DustEntity entity)
 {
-    return store.getEntity(entity);
+    return getCurrentThread()->getDialog()->getEntity(entity);
 }
 
 
 DplStlDataEntity* DplStlRuntime::createEntity(DustEntity primaryType)
 {
-    return store.getEntity(DUST_ENTITY_APPEND, primaryType);
+    return getCurrentThread()->getDialog()->getEntity(DUST_ENTITY_APPEND, primaryType);
 }
 
 long DplStlRuntime::getMemberCount(DustEntity entity, DustEntity token)
@@ -288,7 +213,7 @@ bool DplStlRuntime::access(DustAccessData &ad)
     }
 
     ++accCount;
-    accUSec += DustUtilsDev::timeElapse(b);
+    accUSec += DustUtilsDev::timeElapseUSec(b);
 
     return ret;
 }
@@ -302,45 +227,61 @@ void* DplStlRuntime::getNative(DustEntity entity, DustEntity type, bool createIf
     {
         type = pEntity->primaryType;
     }
-    void* ret = mapOptGet(pEntity->native, type);
+    void* ret = pEntity->getNative(type);
 
     if ( !ret && createIfMissing)
     {
-        DustModule *pMod = pRTC->getModuleForType(type);
-
-        if ( pMod )
+        ret = getCurrentThread()->getApp()->createNative(type);
+        if ( ret )
         {
-            ret = pMod->createNative(type);
-            if ( ret )
-            {
-                pEntity->native[type] = ret;
-            }
+            pEntity->setNative(type, ret);
         }
     }
 
     return ret;
 }
 
-DustResultType DplStlRuntime::DustActionExecute()
+void DplStlRuntime::deleteNative(DustEntity type, void* pNative)
 {
-    DustEntity eMain = DustData::getRef(DUST_CTX_APP, DustUnitMindNarrative::DustRefAppMain);
-
-    store.entities[DUST_CTX_SELF] = store.entities[eMain];
-    DustNativeLogic *pl = (DustNativeLogic*) DustData::getNative(eMain);
-    if ( pl )
-    {
-        pl->DustActionExecute();
-    }
-
-    return DUST_RESULT_NOTIMPLEMENTED;
+    getCurrentThread()->getApp()->releaseNative(type, pNative);
 }
 
-DplStlRuntime* DplStlRuntime::getRuntime()
+DustResultType DplStlRuntime::DustActionExecute()
 {
+    pBootThread->getDialog()->commit();
+
+    DustEntity eMain = DustData::getRef(DUST_CTX_APP, DustUnitMindDialog::DustRefAppMain);
+
+    delete pBootThread;
+    threads.clear();
+
+    DplStlRuntimeThread *pMainThread = launch(pBootApp, eMain);
+
+    return pMainThread->run();
+}
+
+DplStlRuntime* DplStlRuntime::getRuntime() {
     return pRuntime;
 }
 
-DplStlLogicCore* DplStlRuntime::getCurrentCore()
+DplStlRuntimeThread* DplStlRuntime::getCurrentThread()
 {
-    return pRuntime->cores[0];
+    return pRuntime->threads[0];
+}
+
+DplStlRuntimeThread *DplStlRuntime::launch(DplStlRuntimeApp *pApp, DustEntity agent)
+{
+    DplStlRuntimeThread *pThread = new DplStlRuntimeThread();
+
+    pThread->pRuntime = this;
+    threads.push_back(pThread);
+    DplStlRuntimeDialog *pDialog = new DplStlRuntimeDialog();
+    pThread->pDialog = pDialog;
+    pDialog->init(pApp, agent);
+
+    return pThread;
+}
+
+void DplStlRuntime::rescheduleThread(DplStlRuntimeThread* pThread)
+{
 }

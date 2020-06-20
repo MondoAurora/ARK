@@ -5,6 +5,7 @@ using namespace DustUnitMindGeneric;
 DplStlLogicControl::DplStlLogicControl() :firstCall(true), pos(0), inSep(false) {}
 
 void DplStlLogicControl::requestRelay(DustEntity relay) {
+/**
 	DplStlLogicPDA *pAgent = DplStlRuntime::getCurrentCore()->getDialog()->getCurrentPda();
 	DplStlLogicState *pBlockCurrent = pAgent->getCurrentState();
 
@@ -17,6 +18,7 @@ void DplStlLogicControl::requestRelay(DustEntity relay) {
 	}
 
 	pAgent->relayEntry(pBlockRelay);
+*/
 }
 
 DustResultType DplStlLogicControl::optGetChildResult(DustResultType defRet ) {
@@ -24,13 +26,13 @@ DustResultType DplStlLogicControl::optGetChildResult(DustResultType defRet ) {
 		firstCall = false;
 		return defRet;
 	} else {
-		return DplStlRuntime::getCurrentCore()->lastResult;
+		return DplStlRuntime::getCurrentThread()->getDialog()->getLastResult();
 	}
 }
 
 DplStlLogicControl::~DplStlLogicControl() {
 	for (StateIterator iter = mapChildBlocks.begin(); iter != mapChildBlocks.end(); ++iter) {
-		DplStlLogicState *pb = iter->second;
+		DplStlRuntimeState *pb = iter->second;
 		delete pb;
 	}
 }

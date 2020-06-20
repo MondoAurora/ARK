@@ -1,271 +1,92 @@
-#include <DustRuntime.h>
 #include "DustMain.h"
+
+#include <DustRuntimeImpl.h>
+#include <DustModuleLoaderLib.h>
 
 #include <iostream>
 
-#include <map>
-#include <set>
-#include <string>
+DustModuleLoaderLib *pLibLoader = NULL;
+DustTextDictionary *pDict = NULL;
+DustRuntimeImpl *pRuntime = NULL;
+DustAppImpl *pApp = NULL;
 
-using namespace std;
-
-#ifdef _WIN32
-#include <windows.h>
-typedef HMODULE my_lib_t;
-#define MODULE_EXT ".dll"
-#else
-#include <dlfcn.h>
-typedef void* my_lib_t;
-#define MODULE_EXT ".o"
-#endif
-
-my_lib_t MyLoadLib(const char* szMyLib)
+void DustMonolith::init(DustModule *pModKernel, DustModule *pModText)
 {
-# ifdef _WIN32
-    return ::LoadLibraryA(szMyLib);
-# else //_WIN32
-    return ::dlopen(szMyLib, RTLD_LAZY);
-# endif //_WIN32
+    if ( pRuntime || pDict || pApp )
+    {
+        DustUtils::log(DUST_EVENT_CRITICAL) << "Multiple DustMonolith::dustInit call, exiting." << endl;
+        exit(-1);
+    }
+
+    pRuntime = (DustRuntimeImpl*) pModKernel->createNative(DUST_BOOT_AGENT_RUNTIME);
+    ::initModule(pRuntime);
+
+    if ( pLibLoader ) {
+        pLibLoader->initModule(pModKernel, pRuntime);
+        if ( pModText )
+        {
+            pLibLoader->initModule(pModText, pRuntime);
+        }
+    }
+
+    pApp = (DustAppImpl*) pModKernel->createNative(DUST_BOOT_AGENT_APP);
+    pDict = (DustTextDictionary*) (pModText
+                                   ? pModText->createNative(DUST_BOOT_AGENT_DICTIONARY)
+                                   : pModKernel->createNative(DUST_BOOT_AGENT_DICTIONARY));
+
+    pApp->initApp(pRuntime, pLibLoader);
+    pRuntime->initRuntime(pApp, pDict);
+
+    if ( pModText )
+    {
+        DustMonolith::addModule(DUST_BOOT_MODNAME_TEXT, pModText);
+    }
+    DustMonolith::addModule(DUST_BOOT_MODNAME_KERNEL, pModKernel);
+
+//    pRuntime->DustResourceInit();
 }
 
-int MyUnloadLib(my_lib_t hMyLib)
+void DustMonolith::addModule(DustEntity token, DustModule *pMod)
 {
-# ifdef _WIN32
-    return ::FreeLibrary(hMyLib);
-# else //_WIN32
-    return ::dlclose(hMyLib);
-# endif //_WIN32
+    pApp->addModule(token, pMod);
 }
 
-void* MyLoadProc(my_lib_t hMyLib, const char* szMyProc)
+DustResultType DustMonolith::launch()
 {
-# ifdef _WIN32
-    return (void*) GetProcAddress(hMyLib, szMyProc);
-# else //_WIN32
-    return ::dlsym(hMyLib, szMyProc);
-# endif //_WIN32
+    DustRuntimeImpl *pR = pRuntime;
+
+    pRuntime = NULL;
+    pLibLoader = NULL;
+    pApp = NULL;
+    pDict = NULL;
+
+    return pR->DustActionExecute();
 }
 
-class DustMainModule
+void DustModular::init(const char *nameKernel, const char *nameText)
 {
-    string name;
-    my_lib_t hLib;
-    DustModule *pModule;
-
-    DustMainModule(const char* n)
-        : name(n)
+    if ( pLibLoader )
     {
-//		name.append(MODULE_EXT).insert(0, "lib");
-        name.append(MODULE_EXT);
-        hLib = MyLoadLib(name.c_str());
-        getModule_t gm = (getModule_t) MyLoadProc(hLib, DUST_FNAME_GET_MODULE);
-
-        cout << "Loading module " << name << " with fn " << gm << endl;
-
-        pModule = gm();
+        DustUtils::log(DUST_EVENT_CRITICAL) << "Multiple DustModular::dustInit call, exiting." << endl;
+        exit(-1);
     }
 
-    ~DustMainModule()
-    {
-        pModule->DustResourceRelease();
-        MyUnloadLib(hLib);
-    }
+    pLibLoader = new DustModuleLoaderLib();
 
-    void initModule0(DustRuntime* pR)
-    {
-        initModule_t im = (initModule_t) MyLoadProc(hLib, DUST_FNAME_INIT_MODULE);
+    DustModule *pModKernel = pLibLoader->loadModule(nameKernel);
+    DustModule *pModText = nameText ? pLibLoader->loadModule(nameText) : NULL;
 
-        if ( im )
-        {
-            im(pR);
-            cout << DUST_FNAME_INIT_MODULE << " called in module " << name << endl;
-        }
-        else
-        {
-            cout << "ERROR missing " << DUST_FNAME_INIT_MODULE << " in module " << name << endl;
-        }
-    }
-
-    void initModule(DustRuntime* pR)
-    {
-        initModule0(pR);
-        pModule->DustResourceInit();
-    }
-
-    friend class DustMainApp;
-};
-
-typedef map<string, DustMainModule*>::iterator ModuleIterator;
-typedef set<DustMainModule*>::iterator ActiveModuleIterator;
-
-
-extern "C" class DustMainApp : public DustRuntimeConnector
-{
-    map<DustEntity, DustModule*> modByType;
-
-    map<string, DustMainModule*> modByName;
-    set<DustMainModule*> activeModules;
-
-    DustTextDictionary *pMainDict;
-    DustRuntime *pRuntime;
-
-    DustMainModule* pRuntimeModule;
-    DustMainModule* pTextModule;
-
-    DustMainApp() : pMainDict(0), pRuntime(0) {}
-
-    ~DustMainApp()
-    {
-        for (ModuleIterator it = modByName.begin(); it != modByName.end(); ++it)
-        {
-            delete it->second;
-        }
-    }
-
-    virtual void loadModule(const char* name)
-    {
-        loadModule(name, false);
-    }
-
-    virtual DustMainModule* loadModule(const char* name, bool boot)
-    {
-        string n = name;
-        DustMainModule *pmm = mapOptGet(modByName, n);
-
-        if ( !pmm )
-        {
-            pmm = new DustMainModule(name);
-            modByName[n] = pmm;
-
-            if ( !boot )
-            {
-                pmm->initModule(pRuntime);
-            }
-        }
-
-        return pmm;
-    }
-
-    virtual DustEntity getTextToken(DustEntity parent, const char* name)
-    {
-        return pMainDict->getTextToken(parent, name);
-    }
-
-    virtual DustModule* getModuleForType(DustEntity type)
-    {
-        DustModule *pm = mapOptGet(modByType, type);
-
-        if ( !pm )
-        {
-            for (ActiveModuleIterator it = activeModules.begin(); it != activeModules.end(); ++it)
-            {
-                DustModule *pTmpMod = (*it)->pModule;
-                if ( pTmpMod->isNativeProvided(type))
-                {
-                    pm = pTmpMod;
-                    break;
-                }
-            }
-
-            if ( pm )
-            {
-                modByType[type] = pm;
-            }
-        }
-
-        return pm;
-    }
-
-public:
-    static DustMainApp theApp;
-
-    void boot(int argc, char **argv)
-    {
-        for ( int i = 1; i < argc; ++i )
-        {
-            DustMainModule *pmm = loadModule(argv[i], true);
-            DustModule *pMod = pmm->pModule;
-
-            if ( !pRuntime )
-            {
-                if (pMod->isNativeProvided(DUST_BOOT_AGENT_RUNTIME))
-                {
-                    pRuntime = (DustRuntime*) pMod->createNative(DUST_BOOT_AGENT_RUNTIME);
-                    modByType[DUST_BOOT_AGENT_RUNTIME] = pMod;
-                    pRuntime->setConnector(this);
-                    pRuntimeModule = pmm;
-                    activeModules.insert(pmm);
-                }
-            }
-            if ( !pMainDict)
-            {
-                if (pMod->isNativeProvided(DUST_BOOT_AGENT_DICTIONARY))
-                {
-                    pMainDict = (DustTextDictionary*) pMod->createNative(DUST_BOOT_AGENT_DICTIONARY);
-                    modByType[DUST_BOOT_AGENT_DICTIONARY] = pMod;
-                    pTextModule = pmm;
-                    activeModules.insert(pmm);
-                }
-            }
-        }
-
-        ::initModule(pRuntime);
-
-        pTextModule->initModule0(pRuntime);
-        pRuntimeModule->initModule0(pRuntime);
-
-        pRuntime->DustResourceInit();
-
-        pRuntimeModule->pModule->DustResourceInit();
-
-        for (ModuleIterator it = modByName.begin(); it != modByName.end(); ++it)
-        {
-            DustMainModule *pmm = it->second;
-            activeModules.insert(pmm);
-
-            if ( pmm != pRuntimeModule )
-            {
-                if ( pmm != pTextModule )
-                {
-                    pmm->initModule(pRuntime);
-                }
-                else
-                {
-                    pmm->pModule->DustResourceInit();
-                }
-            }
-        }
-    }
-
-    void launch()
-    {
-        pRuntime->DustActionExecute();
-    }
-
-    void shutdown()
-    {
-        pRuntime->DustResourceRelease();
-    }
-};
-
-DustMainApp DustMainApp::theApp;
-
-
-extern "C" void dustBoot(int moduleCount, char **moduleNames)
-{
-    DustMainApp::theApp.boot(moduleCount, moduleNames);
+    DustMonolith::init(pModKernel, pModText);
 }
 
-extern "C" void dustLaunch()
+void DustModular::addModule(const char *name)
 {
-    cout << "Dust launching... " << endl;
-    DustMainApp::theApp.launch();
-
+    DustModule *pMod = pLibLoader->loadModule(name);
+    pLibLoader->initModule(pMod, pRuntime);
+    DustMonolith::addModule(pDict->getTextToken(name), pMod);
 }
 
-extern "C" void dustShutdown()
+DustResultType DustModular::launch()
 {
-    cout << "Dust graceful shutdown... " << endl;
-    DustMainApp::theApp.shutdown();
+    return DustMonolith::launch();
 }
-

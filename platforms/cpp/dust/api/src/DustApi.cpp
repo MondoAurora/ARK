@@ -1,4 +1,4 @@
-#include "DustRuntime.h"
+#include "DustKernel.h"
 
 #include <iostream>
 
@@ -14,12 +14,17 @@ extern "C" void initModule(DustRuntime *pRuntime)
     }
 }
 
+void DustModule::initModule(DustRuntime *pRuntime)
+{
+    ::initModule(pRuntime);
+}
+
 void DustModule::registerFactory(DustFactoryLogic *pFactory)
 {
     DustEntity typeId = pFactory->DustFactoryGetType();
     logicFactories[typeId] = pFactory;
 
-    cout << "registerFactory " << typeId << " id: " << &logicFactories << " count: " << logicFactories.size() << endl;
+//    cout << "registerFactory " << typeId << " id: " << &logicFactories << " count: " << logicFactories.size() << endl;
 
 }
 
@@ -30,7 +35,7 @@ void DustModule::registerAlgorithm(DustEntity agent, DustEntity implRoot)
 
 bool DustModule::isNativeProvided(DustEntity typeId)
 {
-    cout << "isNativeProvided " << typeId << " id: " << &logicFactories << " count: " << logicFactories.size() << endl;
+//    cout << "isNativeProvided " << typeId << " id: " << &logicFactories << " count: " << logicFactories.size() << endl;
 
     return mapContains(logicFactories, typeId);
 }
@@ -46,8 +51,9 @@ void DustModule::releaseNative(DustEntity typeId, void* pNativeObject)
 }
 DustResultType DustModule::dispatchCommand(DustEntity typeId, DustNativeLogic* pLogic, DustEntity cmd, DustEntity param )
 {
-    DustFactoryLogic *pf = mapOptGet(logicFactories, typeId);
-    return pf->DustFactoryDispatch(pLogic, cmd, param);
+    return DUST_RESULT_NOTIMPLEMENTED;
+//    DustFactoryLogic *pf = mapOptGet(logicFactories, typeId);
+//    return pf->DustFactoryDispatch(pLogic, cmd, param);
 }
 
 
@@ -109,17 +115,17 @@ DustRef& DustRef::step(long key)
 
 
 
-void DustRuntime::setBootToken(DustToken &token, DustEntity entity)
+void DustRuntime::setBootToken(DustToken *pToken, DustEntity entity)
 {
-    DustEntity e = DustData::getTokenEntity(&token, entity);
-    token.entity = e;
+    DustEntity e = DustData::getTokenEntity(pToken, entity);
+    pToken->entity = e;
 }
 
 DustEntity DustData::getTokenEntity(DustToken* pToken, DustEntity constId)
 {
     switch ( pToken->primaryType )
     {
-    case DUST_IDEA_UNIT:
+    case DUST_MODEL_UNIT:
         return apiRuntime->getUnit(pToken->name, constId);
     case DUST_IDEA_MEMBER:
         return apiRuntime->getMemberEntity(*(pToken->parent), pToken->name, pToken->valType, pToken->collType, constId);
@@ -134,10 +140,10 @@ DustEntity DustData::createEntity(DustEntity primaryType)
     return apiRuntime->access(ad) ? ad.entity : DUST_ENTITY_INVALID;
 }
 
-void DustData::setType(DustEntity target, DustEntity type, DustEntity source)
+bool DustData::setType(DustEntity target, DustEntity type, DustEntity source)
 {
     DustAccessData ad(DUST_ACCESS_SETTYPE, target, type, source);
-    apiRuntime->access(ad);
+    return apiRuntime->access(ad);
 }
 
 bool DustData::deleteEntity(DustEntity entity)

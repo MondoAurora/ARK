@@ -9,7 +9,7 @@ class DustUtilsDev
 {
 public:
     static void timeBegin(struct timeval &b);
-    static long timeElapse(struct timeval &b);
+    static long timeElapseUSec(struct timeval &b);
 };
 
 #endif /* DUSTUTILSDEV_H_ */

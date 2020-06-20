@@ -2,7 +2,7 @@
 #define SRC_MODGEN_WINGUI_H_
 
 
-#include <DustRuntime.h>
+#include "WinGui.h"
 
 class WinGuiModule : public DustModule {
 public:

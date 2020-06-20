@@ -9,11 +9,6 @@ DustToken DustUnitMindNative::DustTypeModule(DustUnitNative, "Module", DUST_IDEA
 DustToken DustUnitMindNative::DustRefModuleAgents(DustTypeModule, "Agents", DUST_VAL_REF, DUST_COLL_SET);
 DustToken DustUnitMindNative::DustRefModuleAlgorithms(DustTypeModule, "Algorithms", DUST_VAL_REF, DUST_COLL_SET);
 
-DustToken DustUnitMindNative::DustTypeConstant(DustUnitNative, "Constant", DUST_IDEA_TYPE);
-DustToken DustUnitMindNative::DustConstantNull(DustUnitNative, "Null", DUST_NATIVE_CONSTANT);
-DustToken DustUnitMindNative::DustConstantTrue(DustUnitNative, "True", DUST_NATIVE_CONSTANT);
-DustToken DustUnitMindNative::DustConstantFalse(DustUnitNative, "False", DUST_NATIVE_CONSTANT);
-
 DustToken DustUnitMindNative::DustTypeService(DustUnitNative, "Service", DUST_IDEA_TYPE);
 DustToken DustUnitMindNative::DustTypeCommand(DustUnitNative, "Command", DUST_IDEA_TYPE);
 
@@ -35,7 +30,8 @@ using namespace DustUnitMindDust;
 DustToken DustUnitMindDust::DustUnitDust("Dust");
 
 DustToken DustUnitMindDust::DustAgentRuntime(DustUnitDust, "Runtime", DUST_IDEA_AGENT);
+DustToken DustUnitMindDust::DustRefRuntimeApps(DustAgentRuntime, "Apps", DUST_VAL_REF, DUST_COLL_SET);
+DustToken DustUnitMindDust::DustRefRuntimeThreads(DustAgentRuntime, "Threads", DUST_VAL_REF, DUST_COLL_SET);
 
-DustToken DustUnitMindDust::DustAgentCore(DustUnitDust, "Core", DUST_IDEA_AGENT);
-DustToken DustUnitMindDust::DustAgentPda(DustUnitDust, "Pda", DUST_IDEA_AGENT);
+DustToken DustUnitMindDust::DustAgentThread(DustUnitDust, "Thread", DUST_IDEA_AGENT);
 DustToken DustUnitMindDust::DustAgentState(DustUnitDust, "State", DUST_IDEA_AGENT);
