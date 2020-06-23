@@ -5,14 +5,10 @@
 
 using namespace std;
 
+vector<long> bootOrder;
 map<long, DustToken*> bootEntites;
 DplStlRuntimeApp *pBootApp;
 DplStlRuntimeThread *pBootThread;
-
-void setBootInfo(DustToken &token, long id)
-{
-    bootEntites[id] = &token;
-}
 
 
 DplStlRuntime* DplStlRuntime::pRuntime = NULL;
@@ -27,6 +23,14 @@ DplStlRuntime::~DplStlRuntime()
 {
 }
 
+void DplStlRuntime::setBootInfo(DustToken &token, long id)
+{
+    pBootApp->initBootMember(id, &token);
+    setBootToken( &token, id);
+//    bootEntites[id] = &token;
+//    bootOrder.push_back(id);
+}
+
 void DplStlRuntime::initRuntime(DustAppImpl* pApp, DustTextDictionary *pTokenDicionary_)
 {
     pBootApp = (DplStlRuntimeApp *) pApp;
@@ -36,8 +40,24 @@ void DplStlRuntime::initRuntime(DustAppImpl* pApp, DustTextDictionary *pTokenDic
 
     cout << "Booting runtime" << endl;
 
-    setBootInfo(DustUnitMindText::DustTypePlainText, DUST_BOOT_TYPE_PLAINTEXT);
+    pBootApp->initBootMember(DUST_BOOT_INT_ID, &DustUnitMindModel::DustIntId);
+    pBootApp->initBootMember(DUST_BOOT_REF_GLOBALID, &DustUnitMindModel::DustRefGlobalId);
+    pBootApp->initBootMember(DUST_BOOT_REF_PRIMARYTYPE, &DustUnitMindModel::DustRefPrimaryType);
+    pBootApp->initBootMember(DUST_BOOT_REF_TAGS, &DustUnitMindModel::DustRefTags);
+    pBootApp->initBootMember(DUST_BOOT_REF_OWNER, &DustUnitMindModel::DustRefOwner);
+    pBootApp->initBootMember(DUST_BOOT_REF_UNIT, &DustUnitMindModel::DustRefUnit);
 
+    setBootInfo(DustUnitMindText::DustUnitText, DUST_BOOT_UNIT_TEXT);
+    setBootInfo(DustUnitMindText::DustTypePlainText, DUST_BOOT_TYPE_PLAINTEXT);
+    setBootInfo(DustUnitMindText::DustAgentDictionary, DUST_BOOT_AGENT_DICTIONARY);
+
+    setBootInfo(DustUnitMindDialog::DustUnitDialog, DUST_BOOT_UNIT_DIALOG);
+    setBootInfo(DustUnitMindDialog::DustAgentApp, DUST_BOOT_AGENT_APP);
+
+    setBootInfo(DustUnitMindDust::DustUnitDust, DUST_BOOT_UNIT_DUST);
+    setBootInfo(DustUnitMindDust::DustAgentRuntime, DUST_BOOT_AGENT_RUNTIME);
+
+    setBootInfo(DustUnitMindModel::DustUnitModel, DUST_BOOT_UNIT_MODEL);
     setBootInfo(DustUnitMindModel::DustTypeEntity, DUST_BOOT_TYPE_ENTITY);
     setBootInfo(DustUnitMindModel::DustRefUnit, DUST_BOOT_REF_UNIT);
     setBootInfo(DustUnitMindModel::DustIntId, DUST_BOOT_INT_ID);
@@ -46,6 +66,7 @@ void DplStlRuntime::initRuntime(DustAppImpl* pApp, DustTextDictionary *pTokenDic
     setBootInfo(DustUnitMindModel::DustRefOwner, DUST_BOOT_REF_OWNER);
     setBootInfo(DustUnitMindModel::DustRefTags, DUST_BOOT_REF_TAGS);
 
+    setBootInfo(DustUnitMindIdea::DustUnitIdea, DUST_IDEA_TYPE);
     setBootInfo(DustUnitMindIdea::DustTypeType, DUST_IDEA_TYPE);
     setBootInfo(DustUnitMindIdea::DustTypeMember, DUST_IDEA_MEMBER);
     setBootInfo(DustUnitMindIdea::DustTypeAgent, DUST_IDEA_AGENT);
@@ -91,23 +112,28 @@ void DplStlRuntime::initRuntime(DustAppImpl* pApp, DustTextDictionary *pTokenDic
     setBootInfo(DustUnitMindTime::DustTagEventLevelTrace, DUST_EVENT_TRACE);
     setBootInfo(DustUnitMindTime::DustTagEventLevelDebug, DUST_EVENT_DEBUG);
 
-    pBootApp->initBootMembers(bootEntites);
+//    pBootApp->initBootMembers(bootEntites);
 
     DplStlDataEntity *pE = createEntity(DUST_BOOT_AGENT_APP);
     pE->setNative(DUST_BOOT_AGENT_APP, pBootApp);
 
     pBootThread->getDialog()->store.entities[DUST_CTX_APP] = pE;
+
+//    for (int i = 0; i < bootOrder.size(); ++i)
+//    {
+//        long id = bootOrder[i];
+//        setBootToken( bootEntites[id], id);
+//    }
+//    for (BootIterator it = bootEntites.begin(); it != bootEntites.end(); ++it)
+//    {
+//        setBootToken( it->second, it->first);
+//    }
+
+    bootEntites.clear();
 }
 
 DustResultType DplStlRuntime::DustResourceInit()
 {
-    for (BootIterator it = bootEntites.begin(); it != bootEntites.end(); ++it)
-    {
-        setBootToken( it->second, it->first);
-    }
-
-    bootEntites.clear();
-
     return DUST_RESULT_ACCEPT;
 }
 

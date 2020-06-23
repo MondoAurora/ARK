@@ -14,12 +14,20 @@ void DplStlRuntimeApp::initBootMembers(map<long, DustToken*> &bootEntites)
 {
     for (BootIterator it = bootEntites.begin(); it != bootEntites.end(); ++it)
     {
-        DustToken* pT = it->second;
+        initBootMember(it->first, it->second);
+//        DustToken* pT = it->second;
+//        if ( DUST_IDEA_MEMBER == pT->getPrimaryType() )
+//        {
+//            tokenInfo[it->first] = new DplStlTokenInfo(pT->getValType(), pT->getCollType());
+//        }
+    }
+}
+void DplStlRuntimeApp::initBootMember(long id, DustToken* pT)
+{
         if ( DUST_IDEA_MEMBER == pT->getPrimaryType() )
         {
-            tokenInfo[it->first] = new DplStlTokenInfo(pT->getValType(), pT->getCollType());
+            tokenInfo[id] = new DplStlTokenInfo(pT->getValType(), pT->getCollType());
         }
-    }
 }
 
 DplStlTokenInfo* DplStlRuntimeApp::getTokenInfo(DustEntity token)
@@ -67,7 +75,8 @@ void DplStlRuntimeApp::optSetParent(DustAccessData &ad, DplStlDataEntity* pEntit
 
 DplStlDataEntity* DplStlRuntimeApp::registerGlobalEntity(DustEntity txtToken, DustEntity primaryType, DustEntity parent, DustEntity constId)
 {
-    DplStlDataEntity* pEntity = store.getEntity(constId, primaryType);
+//    DplStlDataEntity* pEntity = store.getEntity(constId, primaryType);
+    DplStlDataEntity* pEntity = DplStlRuntime::getCurrentThread()->getDialog()->getEntity(constId, primaryType);
     DustEntity entity = pEntity->id;
 
     globalEntites[txtToken] = entity;

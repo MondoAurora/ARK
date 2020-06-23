@@ -35,12 +35,12 @@ void DustMonolith::init(DustModule *pModKernel, DustModule *pModText)
                                    : pModKernel->createNative(DUST_BOOT_AGENT_DICTIONARY));
 
     pApp->initApp(pRuntime, pLibLoader);
-    pRuntime->initRuntime(pApp, pDict);
 
     if ( pModText )
     {
         DustMonolith::addModule(DUST_BOOT_MODNAME_TEXT, pModText);
     }
+    pRuntime->initRuntime(pApp, pDict);
     DustMonolith::addModule(DUST_BOOT_MODNAME_KERNEL, pModKernel);
 
 //    pRuntime->DustResourceInit();
@@ -60,7 +60,11 @@ DustResultType DustMonolith::launch()
     pApp = NULL;
     pDict = NULL;
 
-    return pR->DustActionExecute();
+    DustResultType ret = pR->DustActionExecute();
+
+    pR->DustResourceRelease();
+
+    return ret;
 }
 
 void DustModular::init(const char *nameKernel, const char *nameText)

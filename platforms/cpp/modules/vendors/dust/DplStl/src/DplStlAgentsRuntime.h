@@ -74,7 +74,7 @@ public:
 
     virtual DplStlDataEntity* getEntity(long id = DUST_ENTITY_APPEND, DustEntity primaryType = DUST_ENTITY_INVALID)
     {
-        return (DUST_CTX_SELF == id) ? pState->pSelf : store.getEntity(id, primaryType);
+        return ((DUST_CTX_SELF == id) && pState && pState->pSelf) ? pState->pSelf : store.getEntity(id, primaryType);
     }
 
     void init(DplStlRuntimeApp *pApp, DustEntity eRoot);
@@ -115,6 +115,7 @@ class DplStlRuntimeApp : public DustAppImpl
 
 public:
     void initBootMembers(map<long, DustToken*> &bootEntites);
+    void initBootMember(long id, DustToken* pT);
 
     DustEntity getTextToken(const char* name, DustEntity parent = DUST_ENTITY_INVALID);
 

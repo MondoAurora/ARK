@@ -6,6 +6,7 @@ using namespace DustUnitMindText;
 DustToken DustUnitMindText::DustUnitText("MindText");
 
 DustToken DustUnitMindText::DustTypePlainText(DustUnitText, "PlainText", DUST_IDEA_TYPE);
+DustToken DustUnitMindText::DustAgentDictionary(DustUnitText, "Dictionary", DUST_IDEA_AGENT);
 
 DustToken DustUnitMindText::DustTypeChar(DustUnitText, "Char", DUST_IDEA_TYPE);
 DustToken DustUnitMindText::DustIntCharCode(DustTypeChar, "Code", DUST_VAL_INTEGER, DUST_COLL_SINGLE);
@@ -23,8 +24,6 @@ DustToken DustUnitMindText::DustConstantCharCtrlLF(DustUnitText, "LineFeed", DUS
 DustToken DustUnitMindText::DustConstantCharCtrlCR(DustUnitText, "CarriageReturn", DUST_IDEA_CONSTANT);
 DustToken DustUnitMindText::DustConstantCharCtrlFF(DustUnitText, "FormFeed", DUST_IDEA_CONSTANT);
 DustToken DustUnitMindText::DustConstantCharCtrlBS(DustUnitText, "Backspace", DUST_IDEA_CONSTANT);
-
-DustToken DustUnitMindText::DustAgentDictionary(DustUnitText, "Dictionary", DUST_IDEA_AGENT);
 
 DustToken DustUnitMindText::DustAgentCharMatcher(DustUnitText, "CharMatcher", DUST_IDEA_AGENT);
 DustToken DustUnitMindText::DustAgentTokenMatcher(DustUnitText, "TokenMatcher", DUST_IDEA_AGENT);

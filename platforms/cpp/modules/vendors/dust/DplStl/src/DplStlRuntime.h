@@ -24,6 +24,8 @@ extern "C" class DplStlRuntime: public DustRuntimeImpl
     void reschedule(DplStlRuntimeThread *pThread);
     DplStlRuntimeThread *launch(DplStlRuntimeApp *pApp, DustEntity agent);
 
+    void setBootInfo(DustToken &token, long id);
+
 public:
     DplStlRuntime();
     virtual ~DplStlRuntime();

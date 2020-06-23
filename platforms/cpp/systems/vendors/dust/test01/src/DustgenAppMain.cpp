@@ -63,8 +63,8 @@ int main(int argc, char **argv)
     DustData::setRef(gl, DustRefCollectionMembers, e1);
 
     DustEntity eMain;
-    eMain = DustData::createEntity(DustAgentTest01);
-//    eMain = wnd;
+//    eMain = DustData::createEntity(DustAgentTest01);
+    eMain = wnd;
 
     DustData::setRef(DUST_CTX_APP, DustRefAppMain, eMain);
 

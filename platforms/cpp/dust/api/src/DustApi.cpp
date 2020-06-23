@@ -42,6 +42,10 @@ bool DustModule::isNativeProvided(DustEntity typeId)
 void* DustModule::createNative(DustEntity typeId)
 {
     DustFactoryLogic *pf = mapOptGet(logicFactories, typeId);
+
+    if ( !pf ) {
+        cout << "No factory provided for " << typeId << endl;
+    }
     return pf->DustFactoryCreate();
 }
 void DustModule::releaseNative(DustEntity typeId, void* pNativeObject)
