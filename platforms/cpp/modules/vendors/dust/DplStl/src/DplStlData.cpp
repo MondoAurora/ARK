@@ -5,7 +5,8 @@
 using namespace std;
 
 DplStlDataValue::DplStlDataValue()
-    :key(DUST_ENTITY_APPEND), valPtrRef(NULL) {}
+    :key(DUST_ENTITY_APPEND), valTarget(DUST_ENTITY_INVALID) // valPtrRef(NULL)
+    {}
 
 DplStlDataValue::DplStlDataValue(const DplStlDataValue &src, DplStlDataVariant *pVar)
 {
@@ -20,23 +21,24 @@ DplStlDataValue::DplStlDataValue(const DplStlDataValue &src, DplStlDataVariant *
         valDouble = src.valDouble;
         break;
     case DUST_VAL_REF:
-        valPtrRef = (src.valPtrRef->pVariant == pVar)
-                    ? src.valPtrRef
-                    : new DplStlDataRef(pVar, src.valPtrRef->eSource, src.valPtrRef->eTarget);
+        valTarget = src.valTarget;
+//        valPtrRef = (src.valPtrRef->pVariant == pVar)
+//                    ? src.valPtrRef
+//                    : new DplStlDataRef(pVar, src.valPtrRef->eSource, src.valPtrRef->eTarget);
         break;
     default:
-        valPtrRef = NULL;
+//        valPtrRef = NULL;
         break;
     }
 }
 
 DplStlDataValue::~DplStlDataValue()
 {
-    if ( valPtrRef )
-    {
-        delete valPtrRef;
-        valPtrRef = NULL;
-    }
+//    if ( valPtrRef )
+//    {
+//        delete valPtrRef;
+//        valPtrRef = NULL;
+//    }
 }
 
 bool DplStlDataValue::match(DustValType vT, DustAccessData &ad)
@@ -53,14 +55,15 @@ bool DplStlDataValue::match(DustValType vT, DustAccessData &ad)
     case DUST_VAL_REAL:
         return ad.valDouble == valDouble;
     case DUST_VAL_REF:
-        if ( valPtrRef )
-        {
-            return ad.valLong == valPtrRef->eTarget;
-        }
-        else
-        {
-            return false;
-        }
+        return ad.valLong == valTarget;
+//        if ( valPtrRef )
+//        {
+//            return ad.valLong == valPtrRef->eTarget;
+//        }
+//        else
+//        {
+//            return false;
+//        }
     default:
         return false;
     }
@@ -77,6 +80,9 @@ bool DplStlDataValue::loadFrom(DustValType vT, DustAccessData &ad)
         return true;
     case DUST_VAL_REAL:
         valDouble = ad.valDouble;
+        return true;
+    case DUST_VAL_REF:
+        valTarget = ad.valLong;
         return true;
     default:
         DustUtils::log(DUST_EVENT_ERROR) << "Improper valType ";
@@ -97,29 +103,30 @@ bool DplStlDataValue::writeTo(DustValType vT, DustAccessData &ad)
         ad.valDouble = valDouble;
         return true;
     case DUST_VAL_REF:
-        ad.valLong = valPtrRef ? valPtrRef->eTarget : DUST_ENTITY_INVALID;
+        ad.valLong = valTarget;
+//        ad.valLong = valPtrRef ? valPtrRef->eTarget : DUST_ENTITY_INVALID;
         return true;
     default:
         return false;
     }
 }
 
-bool DplStlDataValue::setRef(DustEntity k, DplStlDataRef *pR)
-{
-    if ( valPtrRef )
-    {
-        delete valPtrRef;
-    }
-    key = k;
-    valPtrRef = pR;
-
-    return true;
-}
+//bool DplStlDataValue::setRef(DustEntity k, DplStlDataRef *pR)
+//{
+//    if ( valPtrRef )
+//    {
+//        delete valPtrRef;
+//    }
+//    key = k;
+//    valPtrRef = pR;
+//
+//    return true;
+//}
 
 DplStlDataVariant::DplStlDataVariant(DplStlTokenInfo *pTI)
     :pTokenInfo(pTI), pColl(0)
 {
-    value.valPtrRef = 0;
+//    value.valPtrRef = 0;
 }
 
 DplStlDataVariant::DplStlDataVariant(const DplStlDataVariant &src)
@@ -142,7 +149,7 @@ DplStlDataVariant::~DplStlDataVariant()
 {
     if ( pColl )
     {
-        value.valPtrRef = NULL;
+//        value.valPtrRef = NULL;
 
         for ( int i = pColl->size(); i-->0; )
         {
@@ -153,10 +160,10 @@ DplStlDataVariant::~DplStlDataVariant()
     }
     else
     {
-        if (DUST_VAL_REF != pTokenInfo->valType )
-        {
-            value.valPtrRef = NULL;
-        }
+//        if (DUST_VAL_REF != pTokenInfo->valType )
+//        {
+//            value.valPtrRef = NULL;
+//        }
     }
 };
 
@@ -230,9 +237,10 @@ DplStlDataValue* DplStlDataVariant::locateForOverride(DustAccessData &ad)
 
 bool DplStlDataVariant::setValue(DustValType vt, DustAccessData &ad, DplStlDataValue * pVal)
 {
-    return ( DUST_VAL_REF == vt )
-           ? pVal->setRef(ad.key, new DplStlDataRef(this, ad.entity, ad.valLong))
-           : pVal->loadFrom(vt, ad);
+    return pVal->loadFrom(vt, ad);
+//    return ( DUST_VAL_REF == vt )
+//           ? pVal->setRef(ad.key, new DplStlDataRef(this, ad.entity, ad.valLong))
+//           : pVal->loadFrom(vt, ad);
 }
 
 DplStlDataValue * DplStlDataVariant::add(DustValType vt, DustAccessData &ad)
@@ -284,13 +292,13 @@ bool DplStlDataVariant::access(DustAccessData &ad)
     return ret;
 }
 
-DplStlDataRef::DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eSource_, DustEntity eTarget_)
-    :pVariant(pVariant_), eSource(eSource_), eTarget(eTarget_)
-{}
-
-DplStlDataRef::~DplStlDataRef()
-{
-};
+//DplStlDataRef::DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eSource_, DustEntity eTarget_)
+//    :pVariant(pVariant_), eSource(eSource_), eTarget(eTarget_)
+//{}
+//
+//DplStlDataRef::~DplStlDataRef()
+//{
+//};
 
 DplStlDataEntity::DplStlDataEntity(long id_, DustEntity primaryType_)
     :id(id_), primaryType(primaryType_), pNative(NULL)

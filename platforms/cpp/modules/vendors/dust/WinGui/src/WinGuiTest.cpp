@@ -36,7 +36,7 @@ void updateGraphics(BOOL bQuit)
         }
     }
 
-    Sleep (0.1f);
+//    Sleep (0.1f);
 }
 
 int WINAPI sw()

@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class DplStlDataRef;
+//class DplStlDataRef;
 class DplStlDataVariant;
 class DplStlDataStore;
 
@@ -31,7 +31,8 @@ class DplStlDataValue
     {
         long valLong;
         double valDouble;
-        DplStlDataRef *valPtrRef;
+        DustEntity valTarget;
+//        DplStlDataRef *valPtrRef;
     };
 
 
@@ -44,7 +45,7 @@ public:
     bool loadFrom(DustValType vT, DustAccessData &ad);
     bool writeTo(DustValType vT, DustAccessData &ad);
 
-    bool setRef(DustEntity key, DplStlDataRef *pRef);
+//    bool setRef(DustEntity key, DplStlDataRef *pRef);
 
     friend class DplStlDataVariant;
     friend class DplStlRuntime;
@@ -75,6 +76,10 @@ public:
     friend class DplStlDataValue;
 };
 
+/** Not needed? All stuff moved over to Variant and Value already.
+Later the Refs may be stored in parallel with the Entities in the Store,
+using from/to Variant and Value.
+
 class DplStlDataRef
 {
     DplStlDataVariant *pVariant;
@@ -91,6 +96,7 @@ public:
     friend class DplStlDataVariant;
     friend class DplStlDataValue;
 };
+*/
 
 typedef map<DustEntity, DplStlDataVariant*>::iterator VarPtrIterator;
 typedef map<DustEntity, void*>::iterator PtrIterator;
