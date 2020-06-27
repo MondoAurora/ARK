@@ -9,7 +9,8 @@
 using namespace std;
 using namespace DustUnitDustTest01;
 
-DECLARE_FACTORY(AgentWindow, DustAgentTestWindow)
+DECLARE_FACTORY(WinGuiWindow, DustAgentTestWindow)
+//DECLARE_FACTORY(AgentWindow, DustAgentTestWindow)
 
 WinGuiModule::~WinGuiModule()
 {
@@ -18,7 +19,7 @@ WinGuiModule::~WinGuiModule()
 DustResultType WinGuiModule::DustResourceInit()
 {
     cout << "WinGuiModule::DustResourceInit" << endl;
-    registerFactory(&FactAgentWindow);
+    registerFactory(&FactWinGuiWindow);
     return DUST_RESULT_ACCEPT;
 }
 DustResultType WinGuiModule::DustResourceRelease()

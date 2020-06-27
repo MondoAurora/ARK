@@ -27,9 +27,7 @@ int main(int argc, char **argv)
 
     DustEntity wnd = DustData::createEntity(DustAgentTestWindow);
 
-//    DustEntity gl = DustData::createEntity(DustAgentTestOpenGL);
-//    DustData::setRef(wnd, DustRefPainter, gl);
-    DustEntity gl = wnd;
+    DustEntity gl = DustData::createEntity(DustAgentTestOpenGL);
 
     DustEntity col1 = DustMindUtils::setColor(1.0f, 0.0f, 0.0f);
     DustEntity col2 = DustMindUtils::setColor(0.0f, 1.0f, 0.0f);
@@ -44,27 +42,34 @@ int main(int argc, char **argv)
 
     DustUtils::tag(path, DUST_ACCESS_SET, DustGenTagClosed);
 
-    int len = DustData::getMemberCount(path, DustRefCollectionMembers);
-    cout << "Path members " << len << endl;
+//    int len = DustData::getMemberCount(path, DustRefCollectionMembers);
+//    cout << "Path members " << len << endl;
+
+    DustEntity glDraw = DustData::createEntity(DustTypeCollection);
 
     DustEntity e1 = DustData::createEntity(DustTypeGeoInclude);
     DustData::setRef(e1, DustRefLinkTarget, path);
     DustData::setRef(e1, DustRefCollectionMembers, DustMindUtils::geoCreateData(DustTagGeoRoleRotate, 0.0f, 0.0f, 1.0f));
-    DustData::setRef(gl, DustRefCollectionMembers, e1);
+    DustData::setRef(glDraw, DustRefCollectionMembers, e1);
 
     e1 = DustData::createEntity(DustTypeGeoInclude);
     DustData::setRef(e1, DustRefLinkTarget, path);
     DustData::setRef(e1, DustRefCollectionMembers, DustMindUtils::geoCreateData(DustTagGeoRoleRotate, 0.0f, 0.1f, 0.0f));
-    DustData::setRef(gl, DustRefCollectionMembers, e1);
+    DustData::setRef(glDraw, DustRefCollectionMembers, e1);
 
     e1 = DustData::createEntity(DustTypeGeoInclude);
     DustData::setRef(e1, DustRefLinkTarget, path);
     DustData::setRef(e1, DustRefCollectionMembers, DustMindUtils::geoCreateData(DustTagGeoRoleRotate, 0.1f, 0.0f, 0.0f));
-    DustData::setRef(gl, DustRefCollectionMembers, e1);
+    DustData::setRef(glDraw, DustRefCollectionMembers, e1);
+
+    DustData::setRef(gl, DustRefLinkTarget, glDraw);
 
     DustEntity eMain;
-//    eMain = DustData::createEntity(DustAgentTest01);
-    eMain = wnd;
+    eMain = DustData::createEntity(DustAgentDialog);
+    DustData::setRef(eMain, DustRefCollectionMembers, wnd);
+    DustData::setRef(eMain, DustRefCollectionMembers, gl);
+
+//    eMain = wnd;
 
     DustData::setRef(DUST_CTX_APP, DustRefAppMain, eMain);
 

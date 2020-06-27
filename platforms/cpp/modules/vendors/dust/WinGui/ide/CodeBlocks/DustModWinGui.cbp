@@ -58,6 +58,7 @@
 		<Unit filename="../../src/DustgenModWinGui.h" />
 		<Unit filename="../../src/WinGui.h" />
 		<Unit filename="../../src/WinGuiTest.cpp" />
+		<Unit filename="../../src/WinGuiWindow.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

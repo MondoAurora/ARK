@@ -24,10 +24,10 @@ void DplStlRuntimeApp::initBootMembers(map<long, DustToken*> &bootEntites)
 }
 void DplStlRuntimeApp::initBootMember(long id, DustToken* pT)
 {
-        if ( DUST_IDEA_MEMBER == pT->getPrimaryType() )
-        {
-            tokenInfo[id] = new DplStlTokenInfo(pT->getValType(), pT->getCollType());
-        }
+    if ( DUST_IDEA_MEMBER == pT->getPrimaryType() )
+    {
+        tokenInfo[id] = new DplStlTokenInfo(pT->getValType(), pT->getCollType());
+    }
 }
 
 DplStlTokenInfo* DplStlRuntimeApp::getTokenInfo(DustEntity token)
@@ -141,9 +141,11 @@ DustEntity DplStlRuntimeApp::getMemberEntity(DustEntity type, const char* name, 
     return member;
 }
 
-DplStlRuntimeDialog* DplStlRuntimeApp::openDialog(DustEntity eRoot)
+DplStlRuntimeDialog* DplStlRuntimeApp::openDialog(DplStlRuntimeThread *pThread, DustEntity eRoot)
 {
     DplStlRuntimeDialog* ret = new DplStlRuntimeDialog();
+
+    pThread->setDialog(ret);
 
     ret->init(this, eRoot);
     dialogs.insert(ret);
@@ -151,7 +153,7 @@ DplStlRuntimeDialog* DplStlRuntimeApp::openDialog(DustEntity eRoot)
     return ret;
 }
 
-bool DplStlRuntimeApp::closeDialog(DplStlRuntimeDialog* pDialog, DustResultType result)
+bool DplStlRuntimeApp::closeDialog(DplStlRuntimeDialog* pDialog)
 {
     bool found = dialogs.erase(pDialog);
     if ( found )
@@ -174,11 +176,12 @@ DplStlRuntimeThread::~DplStlRuntimeThread() {}
 
 DustResultType DplStlRuntimeThread::run(DplStlRuntimeDialog*pDialog_)
 {
-    if ( pDialog_ ) {
+    if ( pDialog_ )
+    {
         pDialog = pDialog_;
     }
 
-    DustResultType ret;
+    DustResultType ret = DUST_RESULT_REJECT;
 
     while (pDialog)
     {
@@ -186,6 +189,7 @@ DustResultType DplStlRuntimeThread::run(DplStlRuntimeDialog*pDialog_)
 
         if (!DustUtils::isReading(ret) )
         {
+            pDialog->release(this, DustUtils::isSuccess(ret));
             pDialog = NULL;
         }
 
@@ -207,7 +211,7 @@ DplStlRuntimeState::DplStlRuntimeState()
 }
 
 DplStlRuntimeState::DplStlRuntimeState(DustEntity agent, DplStlRuntimeDialog *pDialog_)
-    :    pDialog(NULL), pSelf(NULL), pLogic(NULL), logic(true), stackPos(-1), pStack(NULL), pChildren(NULL)
+    :    pDialog(NULL), pSelf(NULL), pLogic(NULL), logic(true), currIdx(-1), pChildren(NULL)
 {
     init(agent, pDialog_);
 }
@@ -215,14 +219,29 @@ DplStlRuntimeState::DplStlRuntimeState(DustEntity agent, DplStlRuntimeDialog *pD
 void DplStlRuntimeState::init(DustEntity agent, DplStlRuntimeDialog *pDialog_)
 {
     pDialog = pDialog_;
-    pSelf = agent ? new DplStlDataEntity(*(pDialog_->getEntity(agent))) : NULL;
+
+    if ( agent )
+    {
+        pSelf = new DplStlDataEntity(*(pDialog_->getEntity(agent)));
+
+        int childCount = DustData::getMemberCount(agent, DustRefCollectionMembers);
+        if ( childCount )
+        {
+            pChildren = new vector<DplStlRuntimeState*>();
+
+            for ( long idx = 0; idx < childCount; ++ idx )
+            {
+                DustEntity a = DustData::getRef(agent, DustRefCollectionMembers, DUST_ENTITY_INVALID, idx);
+                pChildren->push_back(new DplStlRuntimeState(a, pDialog_));
+            }
+
+            currIdx = 0;
+        }
+    }
 }
 
 DplStlRuntimeState::~DplStlRuntimeState()
 {
-    if ( pSelf ) {
-        delete pSelf;
-    }
 }
 
 DustResultType DplStlRuntimeState::step(DplStlRuntimeThread *pThread)
@@ -232,18 +251,51 @@ DustResultType DplStlRuntimeState::step(DplStlRuntimeThread *pThread)
     if ( !pLogic )
     {
         pLogic = pThread->getRuntime()->getNative(pSelf->id);
+        ((DustNativeLogic*)pLogic)->DustResourceInit();
     }
 
     DustResultType ret = ((DustNativeLogic*)pLogic)->DustActionExecute();
 
-    /** Just keeping the code, should check later */
+    /** Just keeping the code, should check later
     if ( pStack && !DustUtils::isReading(ret) && (0 < stackPos) )
     {
         --stackPos;
         ret = DUST_RESULT_READ;
     }
-
+*/
     return ret;
+}
+
+void DplStlRuntimeState::release(DplStlRuntimeThread *pThread)
+{
+    if ( pLogic )
+    {
+        ((DustNativeLogic*)pLogic)->DustResourceRelease();
+        pThread->getRuntime()->deleteNative(pSelf->id, pLogic);
+        pLogic = NULL;
+    }
+
+    if ( pSelf )
+    {
+        delete pSelf;
+        pSelf = NULL;
+    }
+
+    if ( pChildren )
+    {
+        for (int i = pChildren->size(); i-->0; )
+        {
+            delete (*(pChildren))[i];
+        }
+        delete pChildren;
+        pChildren = NULL;
+    }
+
+//    if ((0 == stackPos) && pStack )
+//    {
+//        delete pStack;
+//        pStack = NULL;
+//    }
 }
 
 /****************************
@@ -253,13 +305,14 @@ DustResultType DplStlRuntimeState::step(DplStlRuntimeThread *pThread)
  ****************************/
 
 DplStlRuntimeDialog::DplStlRuntimeDialog()
-    : pApp(NULL), pState(NULL), lastResult(DUST_RESULT_NOTIMPLEMENTED), currChildIdx(0)
+    : pApp(NULL), pRootState(NULL), pState(NULL), lastResult(DUST_RESULT_NOTIMPLEMENTED)
 {
 }
 
 DplStlRuntimeDialog::~DplStlRuntimeDialog()
 {
-    if (DustUtils::isSuccess(lastResult)) {
+    if (DustUtils::isSuccess(lastResult))
+    {
         commit();
     }
 }
@@ -268,44 +321,66 @@ void DplStlRuntimeDialog::init(DplStlRuntimeApp *pApp_, DustEntity eRoot)
 {
     pApp = pApp_;
     store.init(&pApp->store);
-
-    if (eRoot) {
-        childCount = DustData::getMemberCount(eRoot, DustRefCollectionMembers);
-    }
-    pState = new DplStlRuntimeState(eRoot, this);
+    pRootState = new DplStlRuntimeState(eRoot, this);
+    pState = pRootState->pChildren ? (*(pRootState->pChildren))[0] : pRootState;
 }
 
 DustResultType DplStlRuntimeDialog::step(DplStlRuntimeThread *pThread)
 {
     DustResultType ret = pState->step(pThread);
 
-    if ( childCount ) {
-    switch (ret)
+    if ( pRootState->pChildren )
     {
-    case DUST_RESULT_ACCEPT:
-        if (currChildIdx)
+        int currChildIdx = pRootState->currIdx;
+
+        switch (ret)
         {
-            currChildIdx = 0;
+        case DUST_RESULT_ACCEPT:
+            if (currChildIdx)
+            {
+                currChildIdx = 0;
+                ret = DUST_RESULT_READ;
+            }
+            break;
+        case DUST_RESULT_ACCEPT_PASS:
+            if (++currChildIdx == (signed) pRootState->pChildren->size() )
+            {
+                currChildIdx = 0;
+            }
             ret = DUST_RESULT_READ;
+            break;
+        default:
+            // do nothing
+            break;
         }
-        break;
-    case DUST_RESULT_ACCEPT_PASS:
-        if (++currChildIdx == childCount)
-        {
-            currChildIdx = 0;
-        }
-        ret = DUST_RESULT_READ;
-        break;
-    default:
-        // do nothing
-        break;
+
+        pRootState->currIdx = currChildIdx;
+        pState = (*(pRootState->pChildren))[currChildIdx];
     }
-    }
+
     return ret;
 }
 
-void DplStlRuntimeDialog::commit() {
+void DplStlRuntimeDialog::commit()
+{
     store.commit();
+}
+
+void DplStlRuntimeDialog::release(DplStlRuntimeThread *pThread, bool commit_)
+{
+    if ( commit_ )
+    {
+        commit();
+    }
+
+    if ( pState )
+    {
+        pState->release(pThread);
+        delete pState;
+        pState = NULL;
+    }
+
+    pApp->closeDialog(this);
 }
 
 DplStlRuntimeStateSwitcher::DplStlRuntimeStateSwitcher(DplStlRuntimeThread *pThread, DplStlRuntimeState *pState)

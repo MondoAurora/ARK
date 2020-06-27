@@ -12,6 +12,7 @@ extern DustToken DustAgentTestOpenGL;
 
 extern DustToken DustRefPainter;
 extern DustToken DustIntHDC;
+extern DustToken DustIntBufferChanged;
 
 extern DustToken DustTypeColor;
 extern DustToken DustIntCode;

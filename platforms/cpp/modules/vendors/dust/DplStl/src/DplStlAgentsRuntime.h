@@ -26,11 +26,8 @@ private:
     void* pLogic;
     bool logic;
 
-    int stackPos;
-    map<int, DplStlRuntimeState*> *pStack;
-    map<DustEntity, DplStlRuntimeState*> *pChildren;
-
-//    DplStlDataEntity* getLocalEntity(long id);
+    int currIdx;
+    vector<DplStlRuntimeState*> *pChildren;
 
 public:
     DplStlRuntimeState();
@@ -39,6 +36,7 @@ public:
 
     void init(DustEntity agent, DplStlRuntimeDialog *pDialog);
     DustResultType step(DplStlRuntimeThread *pThread);
+    void release(DplStlRuntimeThread *pThread);
 
 //    virtual DplStlDataEntity* getEntity(long id = DUST_ENTITY_APPEND, DustEntity primaryType = DUST_ENTITY_INVALID);
 
@@ -57,11 +55,9 @@ class DplStlRuntimeDialog // : public  DplStlContext
 
     DplStlDataStore store;
 
+    DplStlRuntimeState *pRootState;
     DplStlRuntimeState *pState;
     DustResultType lastResult;
-
-    unsigned int childCount;
-    unsigned int currChildIdx;
 
 public:
     DplStlRuntimeDialog();
@@ -80,6 +76,7 @@ public:
     void init(DplStlRuntimeApp *pApp, DustEntity eRoot);
     DustResultType step(DplStlRuntimeThread *pThread);
     void commit();
+    void release(DplStlRuntimeThread *pThread, bool commit);
 
     friend class DplStlRuntime;
     friend class DplStlRuntimeThread;
@@ -110,8 +107,8 @@ class DplStlRuntimeApp : public DustAppImpl
 
     set<DplStlRuntimeDialog*> dialogs;
 
-    DplStlRuntimeDialog* openDialog(DustEntity eRoot);
-    bool closeDialog(DplStlRuntimeDialog* pTask, DustResultType result);
+    DplStlRuntimeDialog* openDialog(DplStlRuntimeThread *pThread, DustEntity eRoot);
+    bool closeDialog(DplStlRuntimeDialog* pDialog);
 
 public:
     void initBootMembers(map<long, DustToken*> &bootEntites);
@@ -150,6 +147,10 @@ public:
     inline DplStlRuntimeDialog*getDialog()
     {
         return pDialog;
+    };
+    inline void setDialog(DplStlRuntimeDialog* pDialog_)
+    {
+        pDialog = pDialog_;
     };
     inline DplStlRuntimeApp*getApp()
     {

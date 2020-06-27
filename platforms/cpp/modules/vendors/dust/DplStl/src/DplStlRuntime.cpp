@@ -112,22 +112,10 @@ void DplStlRuntime::initRuntime(DustAppImpl* pApp, DustTextDictionary *pTokenDic
     setBootInfo(DustUnitMindTime::DustTagEventLevelTrace, DUST_EVENT_TRACE);
     setBootInfo(DustUnitMindTime::DustTagEventLevelDebug, DUST_EVENT_DEBUG);
 
-//    pBootApp->initBootMembers(bootEntites);
-
     DplStlDataEntity *pE = createEntity(DUST_BOOT_AGENT_APP);
     pE->setNative(DUST_BOOT_AGENT_APP, pBootApp);
 
     pBootThread->getDialog()->store.entities[DUST_CTX_APP] = pE;
-
-//    for (int i = 0; i < bootOrder.size(); ++i)
-//    {
-//        long id = bootOrder[i];
-//        setBootToken( bootEntites[id], id);
-//    }
-//    for (BootIterator it = bootEntites.begin(); it != bootEntites.end(); ++it)
-//    {
-//        setBootToken( it->second, it->first);
-//    }
 
     bootEntites.clear();
 }
@@ -301,9 +289,7 @@ DplStlRuntimeThread *DplStlRuntime::launch(DplStlRuntimeApp *pApp, DustEntity ag
 
     pThread->pRuntime = this;
     threads.push_back(pThread);
-    DplStlRuntimeDialog *pDialog = new DplStlRuntimeDialog();
-    pThread->pDialog = pDialog;
-    pDialog->init(pApp, agent);
+    pApp->openDialog(pThread, agent);
 
     return pThread;
 }

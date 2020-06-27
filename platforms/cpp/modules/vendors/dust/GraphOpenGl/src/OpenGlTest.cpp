@@ -58,18 +58,24 @@ void enterInclusion(DustEntity incl)
 
         DustEntity eCmd = DustUtils::getSingleTag(eAction, DustTagGeoRole, DUST_ENTITY_INVALID);
 
-        if ( eCmd ) {
+        if ( eCmd )
+        {
             double x = DustData::getReal(eAction, DustRefGeoInfoData, 0.0f, DustTagCartesianX);
             double y = DustData::getReal(eAction, DustRefGeoInfoData, 0.0f, DustTagCartesianY);
             double z = DustData::getReal(eAction, DustRefGeoInfoData, 0.0f, DustTagCartesianZ);
 
-           if ( DustTagGeoRolePlace == eCmd ) {
+            if ( DustTagGeoRolePlace == eCmd )
+            {
                 glTranslated(x, y, z);
-           } else if ( DustTagGeoRoleRotate == eCmd ) {
+            }
+            else if ( DustTagGeoRoleRotate == eCmd )
+            {
                 glRotated(theta, x, y, z);
-           } else if ( DustTagGeoRoleScale == eCmd ) {
+            }
+            else if ( DustTagGeoRoleScale == eCmd )
+            {
                 glScaled(x, y, z);
-           }
+            }
         }
     }
 }
@@ -84,10 +90,9 @@ void updateGraphics()
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    DustRef r;
-    DustEntity self = r;
+    DustRef self;
 
-    int ic = DustData::getMemberCount(self, DustRefCollectionMembers);
+    int ic = DustData::getMemberCount(self.step(DustRefLinkTarget), DustRefCollectionMembers);
 
     for ( int ii = 0; ii < ic; ++ii)
     {
@@ -123,26 +128,28 @@ public:
 
     virtual DustResultType DustActionExecute()
     {
-        DustRef self;
+        DustRef dlg(DUST_CTX_DIALOG);
 
-        HDC hDC = (HDC) DustData::getInteger(self, DustIntHDC);
+        HDC hDC = (HDC) DustData::getInteger(dlg, DustIntHDC);
 
-        if ( ! hDC )
+        if ( !hDC )
         {
             wglMakeCurrent(NULL, NULL);
             wglDeleteContext(hRC);
         }
-        else if ( !hRC )
-        {
-            hRC = wglCreateContext(hDC);
-            wglMakeCurrent(hDC, hRC);
-        }
         else
         {
+            if ( !hRC )
+            {
+                hRC = wglCreateContext(hDC);
+                wglMakeCurrent(hDC, hRC);
+            }
+
             updateGraphics();
+            DustData::setInteger(dlg, DustIntBufferChanged, 1);
         }
 
-        return DUST_RESULT_ACCEPT;
+        return DUST_RESULT_ACCEPT_PASS;
     }
 };
 
