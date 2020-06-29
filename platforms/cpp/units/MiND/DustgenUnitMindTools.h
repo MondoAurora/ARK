@@ -72,6 +72,7 @@ extern DustToken DustTagGeoData;
 extern DustToken DustTagCartesianX;
 extern DustToken DustTagCartesianY;
 extern DustToken DustTagCartesianZ;
+extern DustToken DustTagAngleTheta;
 
 extern DustToken DustTypeGeoInclude; // requires ref to target, collection of parameters
 
@@ -85,6 +86,16 @@ extern DustToken DustTagArea;
 extern DustToken DustTagAreaRect;
 extern DustToken DustTagAreaRoundRect;
 extern DustToken DustTagAreaEllipse;
+};
+
+namespace DustUnitMindDrawing {
+extern DustToken DustUnitDrawing;
+
+extern DustToken DustAgentOSWindow;
+extern DustToken DustAgentOpenGL;
+
+extern DustToken DustIntOSWindowWinHDC;
+extern DustToken DustIntWindowBufferChanged;
 };
 
 namespace DustUnitMindGeneric {

@@ -4,13 +4,11 @@
 #include <DustModule.h>
 
 #include "DustgenModWinGui.h"
-#include "WinGui.h"
 
 using namespace std;
-using namespace DustUnitDustTest01;
+using namespace DustUnitMindDrawing;
 
-DECLARE_FACTORY(WinGuiWindow, DustAgentTestWindow)
-//DECLARE_FACTORY(AgentWindow, DustAgentTestWindow)
+DECLARE_FACTORY(WinGuiWindow, DustAgentOSWindow)
 
 WinGuiModule::~WinGuiModule()
 {

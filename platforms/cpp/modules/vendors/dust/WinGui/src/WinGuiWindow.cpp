@@ -3,13 +3,8 @@
 
 #include "WinGui.h"
 
-#include <MiND/DustgenUnitMindTools.h>
-#include <MiND/DustgenUnitMindCore.h>
-#include <vendors/dust/DustgenUnitTest01.h>
-
-
 using namespace std;
-using namespace DustUnitDustTest01;
+using namespace DustUnitMindDrawing;
 
 LRESULT CALLBACK WinGuiWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -103,7 +98,7 @@ DustResultType WinGuiWindow::DustResourceInit()
     SetPixelFormat(hDC, iFormat, &pfd);
 
     DustRef dlg(DUST_CTX_DIALOG);
-    DustData::setInteger(dlg, DustIntHDC, (long) hDC);
+    DustData::setInteger(dlg, DustIntOSWindowWinHDC, (long) hDC);
 
     return DUST_RESULT_ACCEPT;
 }
@@ -113,22 +108,22 @@ DustResultType WinGuiWindow::DustActionExecute()
     MSG msg;
     DustRef dlg(DUST_CTX_DIALOG);
 
-    if (!DustData::getInteger(dlg, DustIntHDC, 0))
+    if (!DustData::getInteger(dlg, DustIntOSWindowWinHDC, 0))
     {
         return DUST_RESULT_ACCEPT;
     }
 
-    if (DustData::getInteger(dlg, DustIntBufferChanged, 0))
+    if (DustData::getInteger(dlg, DustIntWindowBufferChanged, 0))
     {
         SwapBuffers(hDC);
-        DustData::setInteger(dlg, DustIntBufferChanged, 0);
+        DustData::setInteger(dlg, DustIntWindowBufferChanged, 0);
     }
 
     if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
     {
         if (msg.message == WM_QUIT)
         {
-                DustData::setInteger(dlg, DustIntHDC, 0);
+                DustData::setInteger(dlg, DustIntOSWindowWinHDC, 0);
         }
         else
         {

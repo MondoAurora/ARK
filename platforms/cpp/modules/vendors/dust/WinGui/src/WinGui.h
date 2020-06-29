@@ -3,15 +3,10 @@
 
 #include <DustKernel.h>
 
-#include <vendors/dust/DustgenUnitTest01.h>
+#include <MiND/DustgenUnitMindTools.h>
+#include <MiND/DustgenUnitMindCore.h>
 
 #include <windows.h>
-
-class AgentWindow : public DustNativeLogic
-{
-public:
-    virtual DustResultType DustActionExecute();
-};
 
 class WinGuiWindow : public DustNativeLogic
 {

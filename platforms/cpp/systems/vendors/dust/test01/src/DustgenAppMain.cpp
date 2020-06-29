@@ -13,6 +13,7 @@ using namespace DustUnitDustTest01;
 using namespace DustUnitMindNarrative;
 using namespace DustUnitMindDialog;
 using namespace DustUnitMindGeometry;
+using namespace DustUnitMindDrawing;
 using namespace DustUnitMindGeneric;
 
 int main(int argc, char **argv)
@@ -25,9 +26,9 @@ int main(int argc, char **argv)
     DustModular::addModule("DustModGraphOpenGl");
     DustModular::addModule("DustModTest01");
 
-    DustEntity wnd = DustData::createEntity(DustAgentTestWindow);
+    DustEntity wnd = DustData::createEntity(DustAgentOSWindow);
 
-    DustEntity gl = DustData::createEntity(DustAgentTestOpenGL);
+    DustEntity gl = DustData::createEntity(DustAgentOpenGL);
 
     DustEntity col1 = DustMindUtils::setColor(1.0f, 0.0f, 0.0f);
     DustEntity col2 = DustMindUtils::setColor(0.0f, 1.0f, 0.0f);
@@ -68,8 +69,6 @@ int main(int argc, char **argv)
     eMain = DustData::createEntity(DustAgentDialog);
     DustData::setRef(eMain, DustRefCollectionMembers, wnd);
     DustData::setRef(eMain, DustRefCollectionMembers, gl);
-
-//    eMain = wnd;
 
     DustData::setRef(DUST_CTX_APP, DustRefAppMain, eMain);
 

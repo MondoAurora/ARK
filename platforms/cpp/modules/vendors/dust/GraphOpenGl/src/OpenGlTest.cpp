@@ -3,8 +3,6 @@
 
 #include <DustModule.h>
 
-#include <vendors/dust/DustgenUnitTest01.h>
-
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -14,10 +12,13 @@
 
 #include <gl/gl.h>
 
+#include <MiND/DustgenUnitMindTools.h>
+#include <MiND/DustgenUnitMindCore.h>
 #include <MiND/DustMindUtils.h>
 
 using namespace DustUnitMindGeneric;
 using namespace DustUnitMindGeometry;
+using namespace DustUnitMindDrawing;
 using namespace std;
 
 float theta = 0.0f;
@@ -49,7 +50,7 @@ void enterInclusion(DustEntity incl)
 {
     glPushMatrix();
 
-    glRotated(45.0f, 1.0f, 0.0f, 1.0f);
+//    glRotated(45.0f, 1.0f, 0.0f, 1.0f);
 
     int ic = DustData::getMemberCount(incl, DustRefCollectionMembers);
     for ( int ii = 0; ii < ic; ++ii)
@@ -70,7 +71,8 @@ void enterInclusion(DustEntity incl)
             }
             else if ( DustTagGeoRoleRotate == eCmd )
             {
-                glRotated(theta, x, y, z);
+                double t = DustData::getReal(eAction, DustRefGeoInfoData, theta, DustTagAngleTheta);
+                glRotated(t, x, y, z);
             }
             else if ( DustTagGeoRoleScale == eCmd )
             {
@@ -116,9 +118,6 @@ void updateGraphics()
 }
 
 
-using namespace std;
-using namespace DustUnitDustTest01;
-
 class GLPainter : public DustNativeLogic
 {
     HGLRC hRC;
@@ -130,7 +129,7 @@ public:
     {
         DustRef dlg(DUST_CTX_DIALOG);
 
-        HDC hDC = (HDC) DustData::getInteger(dlg, DustIntHDC);
+        HDC hDC = (HDC) DustData::getInteger(dlg, DustIntOSWindowWinHDC);
 
         if ( !hDC )
         {
@@ -146,14 +145,14 @@ public:
             }
 
             updateGraphics();
-            DustData::setInteger(dlg, DustIntBufferChanged, 1);
+            DustData::setInteger(dlg, DustIntWindowBufferChanged, 1);
         }
 
         return DUST_RESULT_ACCEPT_PASS;
     }
 };
 
-DECLARE_FACTORY(GLPainter, DustAgentTestOpenGL)
+DECLARE_FACTORY(GLPainter, DustAgentOpenGL)
 
 class OpenGlModule : public DustModule
 {

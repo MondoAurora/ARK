@@ -72,6 +72,7 @@ DustToken DustUnitMindGeometry::DustTagGeoData(DustUnitGeometry, "GeoData", DUST
 DustToken DustUnitMindGeometry::DustTagCartesianX(DustTagGeoData, "CartesianX", DUST_IDEA_TAG);
 DustToken DustUnitMindGeometry::DustTagCartesianY(DustTagGeoData, "CartesianY", DUST_IDEA_TAG);
 DustToken DustUnitMindGeometry::DustTagCartesianZ(DustTagGeoData, "CartesianZ", DUST_IDEA_TAG);
+DustToken DustUnitMindGeometry::DustTagAngleTheta(DustTagGeoData, "Theta", DUST_IDEA_TAG);
 
 DustToken DustUnitMindGeometry::DustTypeGeoInclude(DustUnitGeometry, "Include", DUST_IDEA_TYPE);
 
@@ -84,6 +85,16 @@ DustToken DustUnitMindGeometry::DustTypeGeoImage(DustUnitGeometry, "Image", DUST
 DustToken DustUnitMindGeometry::DustTagArea(DustUnitGeometry, "Area", DUST_IDEA_TAG);
 DustToken DustUnitMindGeometry::DustTagAreaRect(DustTagArea, "Rect", DUST_IDEA_TAG);
 DustToken DustUnitMindGeometry::DustTagAreaEllipse(DustTagArea, "Ellipse", DUST_IDEA_TAG);
+
+using namespace DustUnitMindDrawing;
+
+DustToken DustUnitMindDrawing::DustUnitDrawing("Drawing");
+
+DustToken DustUnitMindDrawing::DustAgentOSWindow(DustUnitDrawing, "Window", DUST_IDEA_AGENT);
+DustToken DustUnitMindDrawing::DustAgentOpenGL(DustUnitDrawing, "OpenGL", DUST_IDEA_AGENT);
+
+DustToken DustUnitMindDrawing::DustIntOSWindowWinHDC(DustAgentOSWindow, "HDC", DUST_VAL_INTEGER, DUST_COLL_SINGLE);
+DustToken DustUnitMindDrawing::DustIntWindowBufferChanged(DustAgentOSWindow, "BufferChanged", DUST_VAL_INTEGER, DUST_COLL_SINGLE);
 
 
 using namespace DustUnitMindGeneric;
