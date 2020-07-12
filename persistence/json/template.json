@@ -1,0 +1,18 @@
+[
+	{
+		"type": "contentInfo",
+		"data": "jsonDefault",
+		"verMajor": 1,
+		"verMinor": 0
+	},
+	{
+		"type": "unit",
+		"entities": {
+		},
+		"tempEntities": [
+			{
+				"tempId": ""
+			}
+		]
+	}
+]

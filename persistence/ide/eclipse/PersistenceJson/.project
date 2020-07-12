@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>PersistenceJson</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+	</buildSpec>
+	<natures>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>json</name>
+			<type>2</type>
+			<location>A:/persistence/json</location>
+		</link>
+	</linkedResources>
+</projectDescription>

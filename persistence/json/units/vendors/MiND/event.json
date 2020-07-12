@@ -1,0 +1,74 @@
+[
+	{
+		"type": "contentInfo",
+		"data": "jsonDefault",
+		"verMajor": 1,
+		"verMinor": 0
+	},
+	{
+		"type": "unit",
+		"entities": {
+			
+		},
+		"tempEntities": [
+			{
+				"token": "Event"
+			},
+			
+			
+			{
+				"token": "EventTypeTime"
+			},
+			{
+				"token": "EventRefTimeText"
+			},
+			
+			
+			{
+				"token": "EventTagTimeType"
+			},
+			{
+				"token": "EventTagTimeTypeDate"
+			},
+			{
+				"token": "EventTagTimeTypeTime"
+			},
+			{
+				"token": "EventTagTimeTypeDateTime"
+			},
+			{
+				"token": "EventTagTimeTypeDuration"
+			},
+			
+			
+			{
+				"token": "EventTypeEvent"
+			},
+			
+			
+			{
+				"token": "EventTagEventLevel"
+			},
+			{
+				"token": "EventTagEventLevelCritical"
+			},
+			{
+				"token": "EventTagEventLevelError"
+			},
+			{
+				"token": "EventTagEventLevelWarning"
+			},
+			{
+				"token": "EventTagEventLevelnfo"
+			},
+			{
+				"token": "EventTagEventLevelTrace"
+			},
+			{
+				"token": "EventTagEventLevelDebug"
+			}
+		]
+	}
+]
+
+

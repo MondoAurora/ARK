@@ -1,0 +1,152 @@
+[
+	{
+		"type": "contentInfo",
+		"data": "jsonDefault",
+		"verMajor": 1,
+		"verMinor": 0
+	},
+	{
+		"type": "unit",
+		"entities": {
+			
+		},
+		"tempEntities": [
+			{
+				"token": "Generic",
+				"MiND_ModelRefEntityPrimaryType": "MiND_ModelTypeUnit"
+			},
+			
+			{
+				"token": "MiND_Model",
+				"MiND_ModelRefEntityUnit": "MiND_Model"
+			},
+			{
+				"token": "MiND_ModelTypeUnit",
+				"MiND_ModelRefEntityUnit": "MiND_Model"
+			},
+			{
+				"token": "MiND_ModelRefEntityPrimaryType",
+				"MiND_ModelRefEntityUnit": "MiND_Model"
+			},
+			{
+				"token": "MiND_ModelRefEntityUnit",
+				"MiND_ModelRefEntityUnit": "MiND_Model"
+			},
+			{
+				"token": "MiND_ModelRefEntityOwner",
+				"MiND_ModelRefEntityUnit": "MiND_Model"
+			},
+			
+			{
+				"token": "MiND_Idea",
+				"MiND_ModelRefEntityUnit": "MiND_Idea"
+			},
+			{
+				"token": "MiND_IdeaTypeType",
+				"MiND_ModelRefEntityUnit": "MiND_Idea"
+			},
+			{
+				"token": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityUnit": "MiND_Idea"
+			},
+			
+			{
+				"token": "MiND_IdeaTagValInteger",
+				"MiND_ModelRefEntityUnit": "MiND_Idea"
+			},
+			{
+				"token": "MiND_IdeaTagValRef",
+				"MiND_ModelRefEntityUnit": "MiND_Idea"
+			},
+			{
+				"token": "MiND_IdeaTagCollOne",
+				"MiND_ModelRefEntityUnit": "MiND_Idea"
+			},
+			{
+				"token": "MiND_IdeaTagCollSet",
+				"MiND_ModelRefEntityUnit": "MiND_Idea"
+			},
+			{
+				"token": "MiND_IdeaTagCollArr",
+				"MiND_ModelRefEntityUnit": "MiND_Idea"
+			},
+			
+			
+						
+			{
+				"token": "GenericTypeConnected",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeType"
+			},
+			{
+				"token": "GenericRefConnectedRequires",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollSet"]
+			},
+			{
+				"token": "GenericRefConnectedExtends",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollSet"]
+			},
+			
+			
+			{
+				"token": "GenericTypeCollection",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeType"
+			},
+			{
+				"token": "GenericRefCollectionMembers",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollArr"]
+			},
+			{
+				"token": "GenericRefCollectionSeparator",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollOne"]
+			},
+			
+			
+			{
+				"token": "GenericTypeLink",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeType"
+			},
+			{
+				"token": "GenericRefLinkSource",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollOne"]
+			},
+			{
+				"token": "GenericRefLinkTarget",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollOne"]
+			},
+			
+			
+			{
+				"token": "GenericTypeRange",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeType"
+			},
+			{
+				"token": "GenericRefRangeBegin",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollOne"]
+			},
+			{
+				"token": "GenericRefRangeEnd",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollOne"]
+			},
+			
+			
+			{
+				"token": "GenericTag",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeTag"
+			},
+			{
+				"token": "GenericTagClosed",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeTag",
+				"MiND_ModelRefEntityOwner": "GenericTag"
+			}
+		]
+	}
+]
+

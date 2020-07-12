@@ -1,0 +1,133 @@
+[
+	{
+		"type": "contentInfo",
+		"data": "jsonDefault",
+		"verMajor": 1,
+		"verMinor": 0
+	},
+	{
+		"type": "unit",
+		"entities": {
+		},
+		"tempEntities": [
+			{
+				"token": "MiND_Idea",
+				"MiND_ModelRefEntityPrimaryType": "MiND_ModelTypeUnit"		
+			},
+			
+			
+			
+			{
+				"token": "Text",
+				"MiND_ModelRefEntityUnit": "Text"
+			},
+			{
+				"token": "token",
+				"MiND_ModelRefEntityUnit": "Text"
+			},
+			{
+				"token": "MiND_Model",
+				"MiND_ModelRefEntityUnit": "MiND_Model"
+			},
+			{
+				"token": "MiND_ModelTypeUnit",
+				"MiND_ModelRefEntityUnit": "MiND_Model"
+			},
+			{
+				"token": "MiND_ModelRefEntityPrimaryType",
+				"MiND_ModelRefEntityUnit": "MiND_Model"
+			},
+			{
+				"token": "MiND_ModelRefEntityUnit",
+				"MiND_ModelRefEntityUnit": "MiND_Model"
+			},
+			{
+				"token": "MiND_ModelRefEntityOwner",
+				"MiND_ModelRefEntityUnit": "MiND_Model"
+			},
+						
+			
+			
+			{
+				"token": "MiND_IdeaTypeType",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeType"
+			},
+			{
+				"token": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeType"
+			},
+			{
+				"token": "MiND_IdeaTypeTag",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeType"
+			},
+			{
+				"token": "MiND_IdeaTypeConstant",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeType"
+			},
+			
+			
+			
+			{
+				"token": "MiND_IdeaTagVal",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeTag"
+			},
+			{
+				"token": "MiND_IdeaTagValInteger",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeTag",
+				"MiND_ModelRefEntityOwner": "MiND_IdeaTagVal"
+			},
+			{
+				"token": "MiND_IdeaTagValReal",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeTag",
+				"MiND_ModelRefEntityOwner": "MiND_IdeaTagVal"
+			},
+			{
+				"token": "MiND_IdeaTagValRef",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeTag",
+				"MiND_ModelRefEntityOwner": "MiND_IdeaTagVal"
+			},
+			
+			
+			
+			{
+				"token": "MiND_IdeaTagColl",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeTag"
+			},
+			{
+				"token": "MiND_IdeaTagCollOne",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeTag",
+				"MiND_ModelRefEntityOwner": "MiND_IdeaTagColl"
+			},
+			{
+				"token": "MiND_IdeaTagCollSet",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeTag",
+				"MiND_ModelRefEntityOwner": "MiND_IdeaTagColl"
+			},
+			{
+				"token": "MiND_IdeaTagCollArr",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeTag",
+				"MiND_ModelRefEntityOwner": "MiND_IdeaTagColl"
+			},
+			{
+				"token": "MiND_IdeaTagCollMap",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeTag",
+				"MiND_ModelRefEntityOwner": "MiND_IdeaTagColl"
+			},
+			
+			
+			
+			{
+				"token": "MiND_IdeaConstantNull",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeConstant"
+			},
+			{
+				"token": "MiND_IdeaConstantTrue",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeConstant"
+			},
+			{
+				"token": "MiND_IdeaConstantFalse",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeConstant"
+			}
+		]
+	}
+]
