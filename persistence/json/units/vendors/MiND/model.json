@@ -68,36 +68,43 @@
 			{
 				"token": "MiND_ModelRefEntityUnit",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "MiND_ModelTypeEntity",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollOne"]
 			},
 			{			
 				"token": "MiND_ModelIntEntityId",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "MiND_ModelTypeEntity",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValInteger", "MiND_IdeaTagCollOne"]
 			},
 			{
 				"token": "MiND_ModelRefEntityGlobalId",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "MiND_ModelTypeEntity",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollOne"]
 			}, 
 			{
 				"token": "MiND_ModelRefEntityPrimaryType",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "MiND_ModelTypeEntity",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollOne"]
 			}, 
 			{
 				"token": "MiND_ModelRefEntityTypes",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "MiND_ModelTypeEntity",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollSet"]
 			}, 
 			{
 				"token": "MiND_ModelRefEntityOwner",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "MiND_ModelTypeEntity",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollOne"]
 			}, 
 			{
 				"token": "MiND_ModelRefEntityTags",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "MiND_ModelTypeEntity",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollSet"]
 			}, 
 			
@@ -109,21 +116,25 @@
 			{
 				"token": "MiND_ModelIntValueKey",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "MiND_ModelTypeValue",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValInteger", "MiND_IdeaTagCollOne"]
 			},
 			{
 				"token": "MiND_ModelIntValue",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "MiND_ModelTypeValue",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValInteger", "MiND_IdeaTagCollOne"]
 			},
 			{
 				"token": "MiND_ModelRealValue",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "MiND_ModelTypeValue",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValReal", "MiND_IdeaTagCollOne"]
 			},
 			{
 				"token": "MiND_ModelRefValue",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "MiND_ModelTypeValue",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollOne"]
 			},
 			

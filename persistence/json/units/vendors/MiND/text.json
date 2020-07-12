@@ -80,6 +80,7 @@
 			{
 				"token": "TextIntCharCode",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "TextIntCharCode",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValInteger", "MiND_IdeaTagCollOne"]
 			}
 		]

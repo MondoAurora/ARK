@@ -80,11 +80,13 @@
 			{
 				"token": "GenericRefConnectedRequires",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "GenericTypeConnected",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollSet"]
 			},
 			{
 				"token": "GenericRefConnectedExtends",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "GenericTypeConnected",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollSet"]
 			},
 			
@@ -96,11 +98,13 @@
 			{
 				"token": "GenericRefCollectionMembers",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "GenericTypeCollection",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollArr"]
 			},
 			{
 				"token": "GenericRefCollectionSeparator",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "GenericTypeCollection",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollOne"]
 			},
 			
@@ -112,11 +116,13 @@
 			{
 				"token": "GenericRefLinkSource",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "GenericTypeLink",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollOne"]
 			},
 			{
 				"token": "GenericRefLinkTarget",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "GenericTypeLink",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollOne"]
 			},
 			
@@ -128,11 +134,13 @@
 			{
 				"token": "GenericRefRangeBegin",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "GenericTypeRange",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollOne"]
 			},
 			{
 				"token": "GenericRefRangeEnd",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "GenericTypeRange",
 				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollOne"]
 			},
 			
