@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/AppDustTest01App01/src/dust/test01/app01/DustAppTest01App01.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="dust.test01.app01.DustAppTest01App01"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="AppDustTest01App01"/>
+</launchConfiguration>

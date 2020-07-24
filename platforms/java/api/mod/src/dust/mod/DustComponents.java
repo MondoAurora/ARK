@@ -72,7 +72,7 @@ public interface DustComponents {
 			super(src);
 		}
 		
-		public static void throwException(Throwable src, Object... params) {
+		public static <FakeRet> FakeRet throwException(Throwable src, Object... params) {
 			DustException e = ( src instanceof DustException ) ? (DustException ) src : new DustException(src);
 			throw e;
 		}
