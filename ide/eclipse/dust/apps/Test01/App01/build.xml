@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_jar" name="Test01App01">
+	
+	<include file="../../../ant_props.xml"/>
+	
+	<property name="dir.project" value="." />
+	<property name="ark.vendor" value="dust" />
+	<property name="ark.system" value="Test01" />
+	<property name="ark.app" value="App01" />
+
+	<target name="create_jar">
+        <javac debug="true" debuglevel="${javac.debuglevel}" destdir="bin" 
+        	includeantruntime="false" source="${javac.source}" target="${javac.target}">
+            <src path="${ARK_APP}/${ark.vendor}/${ark.system}/${ark.app}/src"/>
+            <classpath location="${ARK_API}/DustApiApp/bin"/>
+            <classpath location="${ARK_API}/DustApiModule/bin"/>
+        </javac>
+
+		<jar destfile="${ARK_LIB}/app/Test01App01.jar">
+			<manifest>
+				<attribute name="Main-Class" value="dust.test01.app01.DustAppTest01App01" />
+			</manifest>
+
+			<fileset dir="${dir.project}/bin" />
+			<fileset dir="${ARK_API}/DustApiApp/bin" />
+			<fileset dir="${ARK_API}/DustApiModule/bin" />
+		</jar>
+	</target>
+</project>

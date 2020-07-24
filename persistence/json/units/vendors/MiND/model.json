@@ -58,6 +58,10 @@
 				"token": "MiND_IdeaTagCollSet",
 				"MiND_ModelRefEntityUnit": "MiND_Idea"
 			},
+			{
+				"token": "MiND_IdeaTagCollArr",
+				"MiND_ModelRefEntityUnit": "MiND_Idea"
+			},
 			
 			
 			
@@ -146,6 +150,12 @@
 			{
 				"token": "MiND_ModelTypeSystem",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeType"
+			}, 
+			{
+				"token": "MiND_ModelRefSystemUnits",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeMember",
+				"MiND_ModelRefEntityOwner": "MiND_ModelTypeSystem",
+				"MiND_ModelRefEntityTags": ["MiND_IdeaTagValRef", "MiND_IdeaTagCollArr"]
 			}
 		]
 	}

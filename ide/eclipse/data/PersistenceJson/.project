@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>RemoteSystemsTempFiles</name>
+	<name>PersistenceJson</name>
 	<comment></comment>
 	<projects>
 	</projects>
 	<buildSpec>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.rse.ui.remoteSystemsTempNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>json</name>
+			<type>2</type>
+			<locationURI>ARK_DATA/json</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
