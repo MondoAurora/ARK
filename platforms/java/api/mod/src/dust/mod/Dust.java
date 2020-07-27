@@ -11,11 +11,11 @@ public class Dust implements DustComponents {
 		DIALOG_API = api;
 	}
 	
-	public static <ValType> ValType access(DustDialogTray tray) {
-		return DIALOG_API.access(tray);
+	public static <RetType> RetType access(DustDialogCmd cmd, DustDialogTray tray) {
+		return DIALOG_API.access(cmd, tray);
 	}
 
-	DustResultType visit(Long entity, Long token, DustAgent visitor) {
-		return DIALOG_API.visit(entity, token, visitor);
+	DustResultType visit(DustAgent visitor, DustDialogTray tray) throws Exception {
+		return DIALOG_API.visit(visitor, tray);
 	}
 }

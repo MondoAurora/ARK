@@ -1,0 +1,66 @@
+package dust.mod.runtime.data;
+
+import dust.mod.DustUtils;
+import dust.mod.runtime.data.RuntimeDataComponents.RuntimeData;
+
+public class RuntimeDataVariant implements RuntimeData {
+    RuntimeDataToken token;
+
+    Integer key;
+    Object value;
+    RuntimeDataCollection coll;
+
+    public RuntimeDataVariant(RuntimeDataToken token, Object value, Integer key) {
+        this.token = token;
+        this.value = value;
+        this.key = key;
+    }
+
+    boolean isValid() {
+        return (null != value) || ((coll != null) && coll.isValid());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <RetType> RetType access(DustDialogCmd cmd, DustDialogTray tray) {
+        Object ret = null;
+
+        if (CollType.SINGLE == token.getCollType()) {
+            switch (cmd) {
+            case CHK:
+                ret = DustUtils.isEqual(value, tray.value);
+            case DEL:
+                value = null;
+                ret = true;
+                break;
+            case GET:
+                ret = tray.value = value;
+                break;
+            case SET:
+            case ADD:
+                ret = value;
+                value = tray.value;
+                break;
+            }
+        } else {
+            ret = (null == coll) ? RuntimeDataCollection.access(cmd, tray, this) : coll.access(cmd, tray);
+        }
+
+        return (RetType) ret;
+    }
+
+    @Override
+    public DustResultType visit(DustAgent visitor, DustDialogTray tray) throws Exception {
+        DustResultType rt = DustResultType.REJECT;
+
+        if (null == coll) {
+            if (null != value) {
+                rt = visitor.agentAction(DustAgentAction.PROCESS, tray);
+            }
+        } else {
+            coll.visit(visitor, tray);
+        }
+
+        return rt;
+    }
+}

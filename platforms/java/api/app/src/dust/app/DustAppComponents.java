@@ -4,11 +4,11 @@ import dust.mod.DustComponents;
 
 public interface DustAppComponents extends DustComponents {
     interface NativeModule {
-        Object createNative(Long type);
-        void assignClass(Long type, String cName);
+        Object createNative(int type);
+        void assignClass(int type, String cName);
     }
     interface NativeApp {
-        <RetType> RetType createNative(Long type);
+        <RetType> RetType createNative(int type);
         NativeModule addModule(String modName, String ... libNames);
     }
     interface NativeRuntime {

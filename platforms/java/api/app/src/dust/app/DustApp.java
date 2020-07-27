@@ -1,7 +1,6 @@
 package dust.app;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -13,7 +12,7 @@ import java.util.Set;
 
 import dust.mod.DustComponents;
 
-public class DustApp extends DustComponents.DustAgentDefault implements DustAppComponents, DustAppComponents.NativeApp {
+public class DustApp implements DustAppComponents, DustComponents.DustAgent, DustAppComponents.NativeApp {
     
     URL toUrl(File root, String name) throws Exception {
         File f = new File(root, name);
@@ -29,7 +28,7 @@ public class DustApp extends DustComponents.DustAgentDefault implements DustAppC
     
     class Module implements NativeModule {
         URLClassLoader modLoader;
-        private Map<Long, Class<?>> classes = new HashMap<>();
+        private Map<Integer, Class<?>> classes = new HashMap<>();
 
         public Module(String modName, String... libNames) {
             String currLib = null;
@@ -52,7 +51,7 @@ public class DustApp extends DustComponents.DustAgentDefault implements DustAppC
         }
 
         @Override
-        public Object createNative(Long type) {
+        public Object createNative(int type) {
             try {
                 return classes.get(type).newInstance();
             } catch (Exception e) {
@@ -61,7 +60,7 @@ public class DustApp extends DustComponents.DustAgentDefault implements DustAppC
         }
 
         @Override
-        public void assignClass(Long type, String cName) {
+        public void assignClass(int type, String cName) {
             try {
                 classes.put(type, modLoader.loadClass(cName));
             } catch (Exception e) {
@@ -74,7 +73,7 @@ public class DustApp extends DustComponents.DustAgentDefault implements DustAppC
     private final File extRoot;
     
     private Set<Module> modules = new HashSet<Module>();
-    private Map<Long, Module> modByType = new HashMap<Long, Module>();
+    private Map<Integer, Module> modByType = new HashMap<Integer, Module>();
 
     public DustApp(String modRoot, String extRoot) {
         String ar = System.getenv("ARK_ROOT");
@@ -95,7 +94,7 @@ public class DustApp extends DustComponents.DustAgentDefault implements DustAppC
     
     @SuppressWarnings("unchecked")
     @Override
-    public synchronized <RetType> RetType createNative(Long type) {
+    public synchronized <RetType> RetType createNative(int type) {
         Module m = modByType.get(type);
         
         if ( null == m ) {
@@ -117,5 +116,10 @@ public class DustApp extends DustComponents.DustAgentDefault implements DustAppC
         modules.add(m);
         
         return m;
+    }
+    
+    @Override
+    public DustResultType agentAction(DustAgentAction action, DustDialogTray tray) throws Exception {
+        return DustResultType.ACCEPT;
     }
 }

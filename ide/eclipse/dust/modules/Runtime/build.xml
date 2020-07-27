@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_jar" name="DustRuntime">
+	
+	<include file="../../ant_props.xml"/>
+	
+	<property name="dir.project" value="." />
+	<property name="ark.vendor" value="dust" />
+	<property name="ark.mod" value="Runtime" />
+
+	<target name="create_jar">
+        <javac debug="true" debuglevel="${javac.debuglevel}" destdir="bin" 
+        	includeantruntime="false" source="${javac.source}" target="${javac.target}">
+            <src path="${ARK_MOD}/${ark.vendor}/${ark.mod}/src"/>
+            <classpath location="${ARK_API}/DustApiApp/bin"/>
+            <classpath location="${ARK_API}/DustApiModule/bin"/>
+        </javac>
+
+		<jar destfile="${ARK_LIB}/mod/${ark.vendor}${ark.mod}.jar">
+			<fileset dir="${dir.project}/bin" />
+			<fileset dir="${ARK_API}/DustApiApp/bin" />
+			<fileset dir="${ARK_API}/DustApiModule/bin" />
+		</jar>
+	</target>
+</project>

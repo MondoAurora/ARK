@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DustModule implements DustComponents {
-	private Map<Long, Class<?>> moduleClasses = new HashMap<Long, Class<?>>();
+	private Map<Integer, Class<?>> moduleClasses = new HashMap<Integer, Class<?>>();
 	
-	public Object createNative(Long typeId) {
+	public Object createNative(int typeId) {
 		try {
 			return moduleClasses.get(typeId).newInstance();
 		} catch (Exception e) {
@@ -15,7 +15,7 @@ public class DustModule implements DustComponents {
 		}
 	}
 
-	protected void registerClass(Long typeId, Class<?> c) {
+	protected void registerClass(int typeId, Class<?> c) {
 		moduleClasses.put(typeId, c);
 	}
 }
