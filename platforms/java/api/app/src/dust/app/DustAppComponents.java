@@ -11,7 +11,4 @@ public interface DustAppComponents extends DustComponents {
         <RetType> RetType createNative(int type);
         NativeModule addModule(String modName, String ... libNames);
     }
-    interface NativeRuntime {
-        void setApp(NativeApp app);
-    }
 }

@@ -16,7 +16,9 @@
 
 		<jar destfile="${ARK_LIB}/mod/${ark.vendor}${ark.mod}.jar">
 			<fileset dir="${dir.project}/bin" />
-			<fileset dir="${ARK_API}/DustApiModule/bin" />
+<!--			
+			<fileset dir="${ARK_API}/DustApiModule/bin" /> 
+-->
 		</jar>
 	</target>
 </project>

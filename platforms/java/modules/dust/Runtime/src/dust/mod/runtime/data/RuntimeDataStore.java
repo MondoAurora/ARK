@@ -29,15 +29,15 @@ public class RuntimeDataStore implements RuntimeData {
         RuntimeDataEntity e = null;
         Object ret = null;
 
-        if (CONST_NULL == tray.entity) {
-            if ((DustDialogCmd.ADD == cmd) && (CONST_NULL != tray.token)) {
+        if (null == tray.entity) {
+            if ((DustDialogCmd.ADD == cmd) && (null != tray.token)) {
                 e = newEntity(tray.token);
                 ret = tray.entity = lastId;
             }
         } else {
             e = entities.get(tray.entity);
 
-            if (CONST_NULL == tray.token) {
+            if (null == tray.token) {
                 switch (cmd) {
                 case CHK:
                     ret = (null != e);
@@ -69,7 +69,7 @@ public class RuntimeDataStore implements RuntimeData {
     public DustResultType visit(DustAgent visitor, DustDialogTray tray) throws Exception {
         DustResultType rt = DustResultType.REJECT;
 
-        if (CONST_NULL != tray.entity) {
+        if (null != tray.entity) {
             RuntimeDataEntity e = entities.get(tray.entity);
             if (null != e) {
                 rt = e.visit(visitor, tray);

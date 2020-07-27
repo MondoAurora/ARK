@@ -39,11 +39,12 @@ public class RuntimeDataEntity implements RuntimeData {
             case ADD:
                 t = RuntimeAgent.getToken(tray.token);
                 v = new RuntimeDataVariant(t, tray.value, tray.key);
+                variants.put(tray.token, v);
                 break;
             }
         } else {
             ret = v.access(cmd, tray);
-            if ( (DustDialogCmd.DEL == cmd) && !v.isValid() ) {
+            if ( ((DustDialogCmd.DEL == cmd) || (DustDialogCmd.SET == cmd)) && !v.isValid() ) {
                 variants.remove(tray.token);
             }
         }
@@ -55,7 +56,7 @@ public class RuntimeDataEntity implements RuntimeData {
     public DustResultType visit(DustAgent visitor, DustDialogTray tray) throws Exception {
         DustResultType rt = DustResultType.REJECT;
 
-        if (CONST_NULL != tray.token) {
+        if (null != tray.token) {
             RuntimeDataVariant v = variants.get(tray.token);
             if (null != v) {
                 rt = v.visit(visitor, tray);

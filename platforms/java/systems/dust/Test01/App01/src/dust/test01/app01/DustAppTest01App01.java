@@ -10,11 +10,11 @@ public class DustAppTest01App01 implements DustAppComponents {
         System.out.println("Hello world 3!");
 
         try {
-            DustApp app = new DustApp();
+            DustApp app = new DustApp("dustRuntime.jar");
 
             NativeModule m;
             
-            m = app.addModule("dustRuntime.jar");
+//            m = app.addModule("dustRuntime.jar");
             
             m = app.addModule("dustJsonSimple.jar", "json/json-simple-1.1.1.jar");
             m.assignClass(eJS, "dust.mod.jsonsimple.JsonSimpleAgent");

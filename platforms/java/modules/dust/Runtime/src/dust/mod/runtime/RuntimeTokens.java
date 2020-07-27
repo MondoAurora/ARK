@@ -1,7 +1,7 @@
 package dust.mod.runtime;
 
 public interface RuntimeTokens {  
-    int CONST_NULL = 0;
+    int CONST_NUL = 0;
     int CONST_FALSE = 1;
     int CONST_TRUE = 2;
 

@@ -34,7 +34,7 @@ public class RuntimeDataVariant implements RuntimeData {
                 ret = true;
                 break;
             case GET:
-                ret = tray.value = value;
+                ret = value;
                 break;
             case SET:
             case ADD:
