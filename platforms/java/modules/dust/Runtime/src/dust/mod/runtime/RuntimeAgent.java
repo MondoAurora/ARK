@@ -9,7 +9,7 @@ import dust.mod.runtime.data.RuntimeDataComponents.ValType;
 import dust.mod.runtime.data.RuntimeDataStore;
 import dust.mod.runtime.data.RuntimeDataToken;
 
-public class RuntimeAgent implements DustComponents.DustDialogAPI, DustComponents.DustAgent, RuntimeComponents {
+public class RuntimeAgent implements DustComponents.DustDialogAPI, DustComponents.DustAgent, DustComponents.DustTokenResolver, RuntimeComponents {
     private static RuntimeAgent THE_AGENT;
     
     NativeApp app = null;
@@ -33,6 +33,9 @@ public class RuntimeAgent implements DustComponents.DustDialogAPI, DustComponent
 
     @Override
     public DustResultType agentAction(DustAgentAction action, DustDialogTray tray) throws Exception {
+        int tt = t1.getEntity();
+        System.out.println("Token resolver " + tt);
+
         return DustResultType.ACCEPT;
     }
     
@@ -53,6 +56,12 @@ public class RuntimeAgent implements DustComponents.DustDialogAPI, DustComponent
         tray.value = 42;
         
         THE_AGENT.access(DustDialogCmd.SET, tray);
+        
+    }
+    
+    @Override
+    public int getTokenEntity(DustToken token) {
+        return app.getSystemStoreIdx(token);
     }
     
     public static RuntimeDataToken getToken(int entity) {

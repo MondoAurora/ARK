@@ -1,5 +1,6 @@
 package dust.app;
 
+import dust.app.DustApp.Module;
 import dust.mod.DustComponents;
 
 public interface DustAppComponents extends DustComponents {
@@ -9,6 +10,7 @@ public interface DustAppComponents extends DustComponents {
     }
     interface NativeApp {
         <RetType> RetType createNative(int type);
-        NativeModule addModule(String modName, String ... libNames);
+        Module addModule(String modName, int[] storeRelay, String... libNames);
+        int getSystemStoreIdx(DustToken token);
     }
 }

@@ -1,5 +1,7 @@
 package dust.mod;
 
+import dust.mod.DustComponents.DustToken;
+
 public interface DustComponents {
     enum DustResultType {
         NOTIMPLEMENTED, REJECT, ACCEPT_PASS, ACCEPT, ACCEPT_READ, READ
@@ -14,8 +16,33 @@ public interface DustComponents {
 	};
 
 	final long KEY_APPEND = -1;
+	
+	class DustToken {
+        public final int store;
+        public final int id;
+        
+        protected Integer entity = null;
+	    
+	    public DustToken(int store, int id, Object localOb) {
+	        this.store = store;
+	        this.id = id;
+	    }
+	    
+	    public int getEntity() {
+	        if ( null == entity ) {
+	            entity = Dust.getTokenEntity(this);
+	        }
+	        
+	        return entity;
+	    }
+    }
+	
+    public interface DustTokenResolver {
+        int getTokenEntity(DustToken token);
+    }
 
-	class DustDialogTray {
+
+    class DustDialogTray {
 		public Integer entity;
 		public Integer token;
 		public Integer key;

@@ -7,22 +7,21 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import dust.mod.Dust;
 import dust.mod.DustComponents;
-import dust.mod.DustComponents.DustDialogAPI;
 
 public class DustApp implements DustAppComponents, DustComponents.DustAgent, DustAppComponents.NativeApp {
 
     URL toUrl(File root, String name) throws Exception {
         File f = new File(root, name);
 
-        boolean fe = f.exists();
-        String ap = f.getAbsolutePath();
-
+        if (!f.exists()) {
+            String ap = f.getAbsolutePath();
+            DustException.throwException(null, "Missing library", ap);
+        }
+        
         URI uri = f.toURI();
         URL url = uri.toURL();
 
@@ -30,16 +29,22 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
     }
 
     class Module implements NativeModule {
+        String modName;
         URLClassLoader modLoader;
         private Map<Integer, Class<?>> classes = new HashMap<>();
+        
+        int[] storeRelay;
 
-        public Module(String modName, String... libNames) {
+        public Module(String modName, int[] storeRelay, String... libNames) {
+            this.modName = modName;
+            this.storeRelay = storeRelay;
+
             String currLib = null;
-
+            
             try {
                 ArrayList<URL> urls = new ArrayList<>();
 
-                urls.add(toUrl(modRoot, modName));
+                urls.add(toUrl(modRoot, modName + ".jar"));
                 for (String ln : libNames) {
                     currLib = ln;
                     urls.add(toUrl(extRoot, currLib));
@@ -75,22 +80,22 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
     private final File modRoot;
     private final File extRoot;
 
-    private Set<Module> modules = new HashSet<Module>();
-    private Map<Integer, Module> modByType = new HashMap<Integer, Module>();
+    private Map<ClassLoader, Module> modules = new HashMap<>();
+    private Map<Integer, Module> modByType = new HashMap<>();
 
-    public DustApp(String runtimeModName, String... libNames) {
+    public DustApp(String runtimeModName, int[] storeRelay, String... libNames) {
         String ar = System.getenv("ARK_ROOT");
 
         File f = new File(ar, "platforms/java/lib");
-        boolean fe = f.exists();
+//        boolean fe = f.exists();
 
         this.modRoot = new File(f, "mod");
         this.extRoot = new File(f, "ext");
 
-        fe = this.modRoot.exists();
-        fe = this.extRoot.exists();
+//        fe = this.modRoot.exists();
+//        fe = this.extRoot.exists();
 
-        Module m = addModule(runtimeModName, libNames);
+        Module m = addModule(runtimeModName, storeRelay, libNames);
 
         try {
             Class<?> c;
@@ -101,6 +106,9 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
             DustDialogAPI dlg = (DustDialogAPI) method.invoke(null, this);
 
             Dust.init(dlg);
+            
+            ((DustAgent)dlg).agentAction(DustAgentAction.PROCESS, null);
+            
         } catch (Exception e) {
             DustException.throwException(e, "DustApp", runtimeModName);
         }
@@ -112,7 +120,7 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
         Module m = modByType.get(type);
 
         if (null == m) {
-            for (Module tm : modules) {
+            for (Module tm : modules.values()) {
                 if (tm.classes.containsKey(type)) {
                     m = tm;
                     break;
@@ -124,12 +132,22 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
     }
 
     @Override
-    public Module addModule(String modName, String... libNames) {
-        Module m = new Module(modName, libNames);
+    public Module addModule(String modName, int[] storeRelay, String... libNames) {
+        Module m = new Module(modName, storeRelay, libNames);
 
-        modules.add(m);
+        modules.put(m.modLoader, m);
 
         return m;
+    }
+    
+    @Override
+    public int getSystemStoreIdx(DustToken token) {
+        ClassLoader cl = token.getClass().getClassLoader();
+        Module m = modules.get(cl);
+        
+        System.out.println("Loading token from module " + m.modName);
+        
+        return m.storeRelay[token.store];
     }
 
     @Override
