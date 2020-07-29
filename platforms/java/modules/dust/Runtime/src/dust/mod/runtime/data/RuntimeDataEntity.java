@@ -13,18 +13,36 @@ public class RuntimeDataEntity implements RuntimeData {
 
     public RuntimeDataEntity(RuntimeDataStore store, int primaryType, int id) {
         this.store = store;
-        // variants.put(VAR_ENTITY_PRIMARY_TYPE, new RuntimeDataVariant(primaryType,
-        // VAL_REF));
-        // variants.put(VAR_ENTITY_STORE_ID, new RuntimeDataVariant(id, VAL_INTEGER));
+        setVariant(MiND_ModelRefEntityPrimaryType.getEntity(), primaryType, null);
+        setVariant(MiND_ModelIntEntityStoreId.getEntity(), id, null);
     }
 
+    public void setNewVariant(int token, Object value, Integer key) {
+        RuntimeDataTokenInfo t = RuntimeAgent.getToken(token);
+        RuntimeDataVariant v = new RuntimeDataVariant(t, value, key);
+        variants.put(token, v);            
+    }
+
+    public void setVariant(int token, Object value, Integer key) {
+        RuntimeDataVariant v = variants.get(token);
+        
+        if ( null == v ) {
+            setNewVariant(token, value, key);
+        } else {
+            DustDialogTray tray = new DustDialogTray();
+            tray.token = token;
+            tray.value = value;
+            tray.key = key;
+            v.access(DustDialogCmd.SET, tray);
+        }
+    }
+    
     @SuppressWarnings("unchecked")
    @Override
     public <RetType> RetType access(DustDialogCmd cmd, DustDialogTray tray) {
 
         RuntimeDataVariant v = variants.get(tray.token);
         Object ret = null;
-        RuntimeDataToken t;
 
         if (null == v) {
             switch (cmd) {
@@ -37,9 +55,7 @@ public class RuntimeDataEntity implements RuntimeData {
                 break;
             case SET:
             case ADD:
-                t = RuntimeAgent.getToken(tray.token);
-                v = new RuntimeDataVariant(t, tray.value, tray.key);
-                variants.put(tray.token, v);
+                setNewVariant(tray.token, tray.value, tray.key);
                 break;
             }
         } else {

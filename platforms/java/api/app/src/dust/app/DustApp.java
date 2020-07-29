@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import dust.mod.Dust;
 import dust.mod.DustComponents;
 
 public class DustApp implements DustAppComponents, DustComponents.DustAgent, DustAppComponents.NativeApp {
@@ -21,7 +20,7 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
             String ap = f.getAbsolutePath();
             DustException.throwException(null, "Missing library", ap);
         }
-        
+
         URI uri = f.toURI();
         URL url = uri.toURL();
 
@@ -31,8 +30,10 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
     class Module implements NativeModule {
         String modName;
         URLClassLoader modLoader;
+        DustAgent modAgent;
+
         private Map<Integer, Class<?>> classes = new HashMap<>();
-        
+
         int[] storeRelay;
 
         public Module(String modName, int[] storeRelay, String... libNames) {
@@ -40,7 +41,7 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
             this.storeRelay = storeRelay;
 
             String currLib = null;
-            
+
             try {
                 ArrayList<URL> urls = new ArrayList<>();
 
@@ -53,8 +54,11 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
                 URL[] uu = new URL[urls.size()];
                 uu = urls.toArray(uu);
                 modLoader = new URLClassLoader(uu);
+
+                Class<?> c  = modLoader.loadClass("dust.mod.ModuleAgent");
+                modAgent =(null == c) ? null :  (DustAgent) c.newInstance();
             } catch (Exception e) {
-                DustException.throwException(e, currLib);
+                DustException.throwException(e, modName, currLib);
             }
         }
 
@@ -87,31 +91,20 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
         String ar = System.getenv("ARK_ROOT");
 
         File f = new File(ar, "platforms/java/lib");
-//        boolean fe = f.exists();
 
         this.modRoot = new File(f, "mod");
         this.extRoot = new File(f, "ext");
 
-//        fe = this.modRoot.exists();
-//        fe = this.extRoot.exists();
-
         Module m = addModule(runtimeModName, storeRelay, libNames);
-
+        
         try {
-            Class<?> c;
-            Method method;
-
-            c = m.modLoader.loadClass("dust.mod.runtime.RuntimeAgent");
-            method = c.getMethod("createRuntime", NativeApp.class);
-            DustDialogAPI dlg = (DustDialogAPI) method.invoke(null, this);
-
-            Dust.init(dlg);
-            
-            ((DustAgent)dlg).agentAction(DustAgentAction.PROCESS, null);
-            
+            Class<?> c  = m.modLoader.loadClass("dust.mod.Bootloader");
+            Method method = c.getMethod("bootRuntime", NativeApp.class);
+            method.invoke(null, this);
         } catch (Exception e) {
-            DustException.throwException(e, "DustApp", runtimeModName);
+            DustException.throwException(e, "Calling createRuntime", runtimeModName);
         }
+
     }
 
     @SuppressWarnings("unchecked")
@@ -139,14 +132,14 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
 
         return m;
     }
-    
+
     @Override
     public int getSystemStoreIdx(DustToken token) {
         ClassLoader cl = token.getClass().getClassLoader();
         Module m = modules.get(cl);
-        
+
         System.out.println("Loading token from module " + m.modName);
-        
+
         return m.storeRelay[token.store];
     }
 

@@ -13,6 +13,6 @@ public interface RuntimeDataComponents extends RuntimeComponents {
     }
     
     enum CollType {
-        SINGLE, SET, ARR, MAP
+        ONE, SET, ARR, MAP
     }
 }

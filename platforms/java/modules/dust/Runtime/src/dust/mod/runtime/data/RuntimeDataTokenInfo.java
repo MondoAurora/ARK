@@ -2,7 +2,7 @@ package dust.mod.runtime.data;
 
 import dust.mod.DustComponents.DustAgent;
 
-public class RuntimeDataToken implements RuntimeDataComponents, DustAgent {
+public class RuntimeDataTokenInfo implements RuntimeDataComponents, DustAgent {
     
     private int store;
     private int storeId;
@@ -11,14 +11,15 @@ public class RuntimeDataToken implements RuntimeDataComponents, DustAgent {
     private CollType collType;
     
         
-    public RuntimeDataToken(int store, int storeId, ValType valType, CollType collType) {
-        this.store = store;
-        this.storeId = storeId;
+    public RuntimeDataTokenInfo(DustToken token, ValType valType, CollType collType) {
+        this.store = token.store;
+        this.storeId = token.id;
+        
         this.valType = valType;
         this.collType = collType;
     }
     
-    public RuntimeDataToken() {
+    public RuntimeDataTokenInfo() {
     }
 
     public boolean matchId(int store, int storeId) {
@@ -35,7 +36,15 @@ public class RuntimeDataToken implements RuntimeDataComponents, DustAgent {
     public CollType getCollType() {
         return collType;
     }
+    
+    public int getStore() {
+        return store;
+    }
 
+    public int getStoreId() {
+        return storeId;
+    }
+    
     @Override
     public DustResultType agentAction(DustAgentAction action, DustDialogTray tray) throws Exception {
         // TODO Auto-generated method stub

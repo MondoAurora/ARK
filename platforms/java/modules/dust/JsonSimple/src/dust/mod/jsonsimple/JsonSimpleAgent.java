@@ -12,13 +12,13 @@ public class JsonSimpleAgent implements JsonSimpleComponents, DustComponents.Dus
         Object ob = JSONValue.parse("{\"test\":true}");
         System.out.println("Kukucs... " + ob);
                 
-        int tt = t1.getEntity();
-        System.out.println("Token resolver " + tt);
+//        int tt = t1.getEntity();
+//        System.out.println("Token resolver " + tt);
 
         DustDialogTray t = new DustDialogTray();
 
-        t.entity = 1;
-        t.token = -2;
+        t.entity = -3;
+        t.setToken(MiND_ModelIntEntityStoreId);
         t.value = 0;
 
         int ret = Dust.access(DustDialogCmd.GET, t);

@@ -3,6 +3,7 @@ package dust.mod.runtime.data;
 import java.util.HashMap;
 import java.util.Map;
 
+import dust.mod.DustUtils;
 import dust.mod.runtime.data.RuntimeDataComponents.RuntimeData;
 
 public class RuntimeDataStore implements RuntimeData {
@@ -12,11 +13,27 @@ public class RuntimeDataStore implements RuntimeData {
 
     Map<Integer, RuntimeDataEntity> entities = new HashMap<Integer, RuntimeDataEntity>();
 
-    RuntimeDataEntity newEntity(int primaryType) {
-        int id = ++lastId;
-        RuntimeDataEntity e = new RuntimeDataEntity(this, primaryType, id);
-        entities.put(id, e);
+    public RuntimeDataEntity newEntity(int primaryType) {
+        return getEntity(++lastId, primaryType);
+    }
+
+    public RuntimeDataEntity getEntity(int id, int primaryType) {
+        RuntimeDataEntity e = entities.get(id);
+        
+        if ( null == e ) {
+            e = new RuntimeDataEntity(this, primaryType, id);
+            put(id, e);
+        }
+        
         return e;
+    }
+
+    public void put(int id, RuntimeDataEntity e) {
+        entities.put(id, e);
+        
+        if ( id > lastId ) {
+            lastId = id;
+        }
     }
 
     RuntimeDataEntity removeEntity(int id) {
@@ -88,5 +105,15 @@ public class RuntimeDataStore implements RuntimeData {
         }
 
         return rt;
+    }
+
+    public Integer find(RuntimeDataEntity e) {
+        for ( Map.Entry<Integer, RuntimeDataEntity> ee : entities.entrySet() ) {
+            if ( DustUtils.isEqual(e, ee.getValue()) ) {
+                return ee.getKey();
+            }
+        }
+        
+        return null;
     }
 }

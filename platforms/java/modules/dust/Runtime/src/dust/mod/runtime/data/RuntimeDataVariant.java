@@ -4,13 +4,13 @@ import dust.mod.DustUtils;
 import dust.mod.runtime.data.RuntimeDataComponents.RuntimeData;
 
 public class RuntimeDataVariant implements RuntimeData {
-    RuntimeDataToken token;
+    RuntimeDataTokenInfo token;
 
     Integer key;
     Object value;
     RuntimeDataCollection coll;
 
-    public RuntimeDataVariant(RuntimeDataToken token, Object value, Integer key) {
+    public RuntimeDataVariant(RuntimeDataTokenInfo token, Object value, Integer key) {
         this.token = token;
         this.value = value;
         this.key = key;
@@ -25,7 +25,7 @@ public class RuntimeDataVariant implements RuntimeData {
     public <RetType> RetType access(DustDialogCmd cmd, DustDialogTray tray) {
         Object ret = null;
 
-        if (CollType.SINGLE == token.getCollType()) {
+        if (CollType.ONE == token.getCollType()) {
             switch (cmd) {
             case CHK:
                 ret = DustUtils.isEqual(value, tray.value);

@@ -1,7 +1,5 @@
 package dust.mod;
 
-import dust.mod.DustComponents.DustToken;
-
 public interface DustComponents {
     enum DustResultType {
         NOTIMPLEMENTED, REJECT, ACCEPT_PASS, ACCEPT, ACCEPT_READ, READ
@@ -23,7 +21,7 @@ public interface DustComponents {
         
         protected Integer entity = null;
 	    
-	    public DustToken(int store, int id, Object localOb) {
+	    public DustToken(int store, int id) {
 	        this.store = store;
 	        this.id = id;
 	    }
@@ -48,6 +46,10 @@ public interface DustComponents {
 		public Integer key;
 
 		public Object value;
+		
+		public void setToken(DustToken t) {
+		    this.token = t.getEntity();
+		}
 	}
 
     public interface DustAgent {
