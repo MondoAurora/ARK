@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import dust.mod.DustComponents;
+import dust.mod.DustUtils;
 
 public class DustApp implements DustAppComponents, DustComponents.DustAgent, DustAppComponents.NativeApp {
 
@@ -137,10 +138,14 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
     public int getSystemStoreIdx(DustToken token) {
         ClassLoader cl = token.getClass().getClassLoader();
         Module m = modules.get(cl);
-
-        System.out.println("Loading token from module " + m.modName);
-
-        return m.storeRelay[token.store];
+        
+        if ( null == m ) {
+            DustUtils.log(DustEventLevel.TRACE, "Resolving token index from App");
+            return token.store;
+        } else {
+            System.out.println("Loading token from module " + m.modName);
+            return m.storeRelay[token.store];
+        }
     }
 
     @Override

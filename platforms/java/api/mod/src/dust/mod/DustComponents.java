@@ -9,9 +9,13 @@ public interface DustComponents {
         INIT, BEGIN, PROCESS, END, RELEASE
     };
 
-	enum DustDialogCmd {
-		CHK, GET, SET, ADD, DEL
-	};
+    enum DustEventLevel {
+        CRITICAL, ERROR, WARNING, INFO, TRACE, DEBUG
+    };
+
+    enum DustDialogCmd {
+        CHK, GET, SET, ADD, DEL
+    };
 
 	final long KEY_APPEND = -1;
 	

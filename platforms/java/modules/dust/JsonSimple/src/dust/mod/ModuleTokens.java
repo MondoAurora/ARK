@@ -9,7 +9,9 @@ public interface ModuleTokens extends DustComponents {
         
     }
     
-    DustTokenModule MiND_ModelIntEntityStoreId = new DustTokenModule(0, 17);
+    DustTokenModule MiND_ModelIntEntityStoreId = new DustTokenModule(0, 41);
+    DustTokenModule MiND_ModelNativeEntityContent = new DustTokenModule(0, 43);
+    DustTokenModule TextTypeStatementImmutable = new DustTokenModule(0, 103);
 
     
 //    DustToken t1 = new DustTokenModule(0, 1);

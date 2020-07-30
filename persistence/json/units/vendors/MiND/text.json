@@ -57,8 +57,32 @@
 			
 			
 			{
-				"token": "TextTypePlainText",
+				"token": "TextTypeLanguage",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeType"
+			},
+			{
+				"token": "TextTypeConst",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeType"
+			},
+			{
+				"token": "TextTypeEditable",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeType"
+			},
+			
+			
+			{
+				"token": "TextTagType",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeTag"
+			},
+			{
+				"token": "TextTagTypeToken",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeTag",
+				"MiND_ModelRefEntityOwner": "TextTagType"
+			},
+			{
+				"token": "TextTagTypeText",
+				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeTag",
+				"MiND_ModelRefEntityOwner": "TextTagType"
 			},
 			
 			{

@@ -11,9 +11,6 @@ public class JsonSimpleAgent implements JsonSimpleComponents, DustComponents.Dus
     public DustResultType agentAction(DustAgentAction action, DustDialogTray tray) throws Exception {
         Object ob = JSONValue.parse("{\"test\":true}");
         System.out.println("Kukucs... " + ob);
-                
-//        int tt = t1.getEntity();
-//        System.out.println("Token resolver " + tt);
 
         DustDialogTray t = new DustDialogTray();
 
@@ -23,6 +20,13 @@ public class JsonSimpleAgent implements JsonSimpleComponents, DustComponents.Dus
 
         int ret = Dust.access(DustDialogCmd.GET, t);
         System.out.println("The answer is... " + ret);
+        
+        t.setToken(MiND_ModelNativeEntityContent);
+        t.key = TextTypeStatementImmutable.getEntity();
+        t.value = "?";
+
+        String msg = Dust.access(DustDialogCmd.GET, t);
+        System.out.println("The message is... " + msg);
         
         return DustResultType.ACCEPT_PASS;
     }

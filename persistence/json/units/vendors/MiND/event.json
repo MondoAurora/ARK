@@ -126,7 +126,7 @@
 				"MiND_ModelRefEntityOwner": "EventTagEventLevel"
 			},
 			{
-				"token": "EventTagEventLevelnfo",
+				"token": "EventTagEventLevelInfo",
 				"MiND_ModelRefEntityPrimaryType": "MiND_IdeaTypeTag",
 				"MiND_ModelRefEntityOwner": "EventTagEventLevel"
 			},

@@ -114,6 +114,8 @@ public class RuntimeDataStore implements RuntimeData {
             }
         }
         
-        return null;
+        put(++lastId, e);
+        
+        return lastId;
     }
 }

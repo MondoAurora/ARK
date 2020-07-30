@@ -34,6 +34,7 @@ public class RuntimeAgent implements DustComponents.DustDialogAPI, DustComponent
         addBootToken(MiND_ModelRefEntityPrimaryType, ValType.REF, CollType.ONE);
         addBootToken(MiND_ModelRefEntityTypes, ValType.REF, CollType.SET);
         addBootToken(MiND_ModelRefEntityTags, ValType.REF, CollType.SET);
+        addBootToken(MiND_ModelNativeEntityContent, ValType.REF, CollType.MAP);
 
         addBootToken(MiND_IdeaTagValInteger, ValType.REF, CollType.SET);
         addBootToken(MiND_IdeaTagValReal, ValType.REF, CollType.SET);
@@ -129,6 +130,11 @@ public class RuntimeAgent implements DustComponents.DustDialogAPI, DustComponent
         tray.setToken(MiND_ModelIntEntityStoreId);
         tray.value = 42;
 
+        THE_AGENT.access(DustDialogCmd.SET, tray);
+        
+        tray.setToken(MiND_ModelNativeEntityContent);
+        tray.key = TextTypeStatementImmutable.getEntity();
+        tray.value = "Hello world!";
         THE_AGENT.access(DustDialogCmd.SET, tray);
 
         try {
