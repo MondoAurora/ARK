@@ -1,0 +1,464 @@
+package dust.mod.jdbc;
+
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
+import dust.mj02.dust.Dust;
+import dust.mj02.dust.DustPopulatedFactory;
+import dust.mj02.dust.DustTempHacks;
+import dust.mj02.dust.DustUtils;
+import dust.mj02.dust.knowledge.DustProcComponents;
+import dust.mj02.dust.text.DustTextComponents;
+import dust.utils.DustUtilsDev;
+import dust.utils.DustUtilsFactory;
+import dust.utils.DustUtilsJava;
+import dust.utils.DustUtilsMuteManager;
+
+public class DustJdbcConnector implements JdbcComponents, DustProcComponents.DustProcActive, DustProcComponents.DustProcPocessor,
+        DustProcComponents.DustProcEvaluator, DustProcComponents.DustProcListener {
+
+    abstract class ColumnInfo {
+        final String colName;
+        final DustEntity eColumn;
+        final DustEntity eDbTypeTemp;
+
+        Map<String, Object> colData;
+
+        boolean primaryKey;
+        Map<String, Object> keyData;
+
+        protected ColumnInfo(String colName, DustEntity eColumn) {
+            this.colName = colName;
+            this.eColumn = eColumn;
+            eDbTypeTemp = null;
+        };
+
+        protected ColumnInfo(boolean isRef, String colName, ResultSet rsFrom, TableInfo ti) {
+            colData = JdbcUtils.mapFromRS(rsFrom);
+            this.colName = colName;
+            
+            initKeyData(ti);
+
+            eColumn = DustUtils.accessEntity(DataCommand.getEntity, isRef ? DustMetaTypes.LinkDef : DustMetaTypes.AttDef);
+
+            DustUtils.accessEntity(DataCommand.setValue, eColumn, DustGenericAtts.IdentifiedIdLocal, colName);
+            String typeName = (String) colData.get(JDBC_TYPE_NAME);
+            eDbTypeTemp = pfTypeInfo.get(typeName);
+            DustUtils.accessEntity(DataCommand.setRef, eColumn, DustJdbcLinks.ColumnType, eDbTypeTemp);
+        }
+
+        public void initKeyData(TableInfo ti) {
+            keyData = ti.pKeyInfo.get(colName);
+            primaryKey = null != keyData;
+        }
+
+        public abstract void prepareForSelect(Map<DustEntity, TableInfo> map);
+
+        public abstract void loadValue(DustEntity e, Object value);
+    }
+
+    class AttInfo extends ColumnInfo {
+        DustMetaAttDefTypeValues valType;
+
+        protected AttInfo(String colName, DustEntity eColumn) {
+            super(colName, eColumn);
+        };
+
+        public AttInfo(String colName, ResultSet rsFrom, TableInfo ti) {
+            super(false, colName, rsFrom, ti);
+
+            DustUtils.accessEntity(DataCommand.setRef, eColumn, DustMetaLinks.AttDefParent, ti.eTable);
+            optSetAttType(eDbTypeTemp);
+        }
+
+        public void optSetAttType(DustEntity eDbType) {
+            if (null == valType) {
+                DustEntity eAttType = null;
+                DustRef refAttType = DustUtils.accessEntity(DataCommand.getValue, eColumn, DustMetaLinks.AttDefType);
+                if (null == refAttType) {
+                    if (null == eDbType) {
+                        eDbType = ((DustRef) DustUtils.accessEntity(DataCommand.getValue, eColumn, DustJdbcLinks.ColumnType)).get(RefKey.target);
+                    }
+                    DustRef refDustType = (DustRef) DustUtils.accessEntity(DataCommand.getValue, eDbType, DustJdbcLinks.DataTypeToDustType);
+                    if (null != refDustType) {
+                        eAttType = refDustType.get(RefKey.target);
+                        DustUtils.accessEntity(DataCommand.setRef, eColumn, DustMetaLinks.AttDefType, eAttType);
+                    }
+                } else {
+                    eAttType = refAttType.get(RefKey.target);
+                }
+                valType = EntityResolver.getKey(eAttType);
+            }
+        }
+
+        @Override
+        public void prepareForSelect(Map<DustEntity, TableInfo> map) {
+            optSetAttType(null);
+        }
+        
+        @Override
+        public void loadValue(DustEntity e, Object value) {
+            DustUtils.accessEntity(DataCommand.setValue, e, eColumn, DustUtils.AttConverter.fixValueType(valType, value));
+        }
+    }
+
+    class RefInfo extends ColumnInfo {
+        Map<String, Object> refData;
+
+        TableInfo foreignTableInfo;
+
+        protected RefInfo(String colName, DustEntity eColumn) {
+            super(colName, eColumn);
+        };
+
+        public RefInfo(String colName, ResultSet rsFrom, TableInfo ti) {
+            super(true, colName, rsFrom, ti);
+
+            DustUtils.accessEntity(DataCommand.setRef, eColumn, DustMetaLinks.LinkDefParent, ti.eTable);
+
+            DustUtils.accessEntity(DataCommand.setRef, eColumn, DustMetaLinks.LinkDefType, DustMetaLinkDefTypeValues.LinkDefSingle);
+            DustUtils.accessEntity(DataCommand.setRef, eColumn, DustMetaLinks.LinkDefItemTypePrimary, foreignTableInfo.eTable);
+        }
+
+        public void initKeyData(TableInfo ti) {
+            super.initKeyData(ti);
+
+            refData = ti.fKeyInfo.get(colName);
+            String pkTbl = (String) refData.get(JDBC_PKTABLE_NAME);
+            foreignTableInfo = factTableInfos.get(pkTbl);
+        }
+
+        @Override
+        public void prepareForSelect(Map<DustEntity, TableInfo> mapLinks) {
+            mapLinks.put(eColumn, foreignTableInfo);
+        }
+
+        @Override
+        public void loadValue(DustEntity e, Object value) {
+            DustEntity eRef = foreignTableInfo.pfData.get(value.toString());
+            DustUtils.accessEntity(DataCommand.setRef, e, eColumn, eRef);
+            DustUtils.accessEntity(DataCommand.setRef, ContextRef.msg, DustGenericLinks.ConnectedRequires, eRef);
+        }
+    }
+
+    class TableInfo {
+        final String tblName;
+        final DustEntity eTable;
+
+        private boolean dbVerified;
+
+        Map<String, Map<String, Object>> pKeyInfo = new TreeMap<>();
+        Map<String, Map<String, Object>> fKeyInfo = new TreeMap<>();
+
+        DustPopulatedFactory<AttInfo> pfAtts;
+        DustPopulatedFactory<RefInfo> pfRefs;
+
+        DustPopulatedFactory.Entity pfData;
+
+        public TableInfo(String tblName, DustEntity eTblType) {
+            this.tblName = tblName;
+            this.eTable = eTblType;
+
+            initData();
+        };
+
+        public TableInfo(String tblName) {
+            this.tblName = tblName;
+
+            eTable = DustUtils.accessEntity(DataCommand.getEntity, DustMetaTypes.Type, ContextRef.self);
+
+            DustUtils.accessEntity(DataCommand.setValue, eTable, DustGenericAtts.IdentifiedIdLocal, tblName);
+            DustUtils.accessEntity(DataCommand.setRef, eTable, DustCommLinks.PersistentContainingUnit, eMyUnit);
+
+            initData();
+        };
+
+        private void initData() {
+            pfAtts = new DustPopulatedFactory<AttInfo>(eTable, DustMetaLinks.AttDefParent, false) {
+                @Override
+                protected AttInfo create(String key, Object... hints) {
+                    return new AttInfo(key, (ResultSet) hints[0], TableInfo.this);
+                }
+                @Override
+                protected AttInfo createForRef(String id, DustEntity other) {
+                    return new AttInfo(id, other);
+                }
+            };
+
+            pfRefs = new DustPopulatedFactory<RefInfo>(eTable, DustMetaLinks.LinkDefParent, false) {
+                @Override
+                protected RefInfo create(String key, Object... hints) {
+                    return new RefInfo(key, (ResultSet) hints[0], TableInfo.this);
+                }
+                @Override
+                protected RefInfo createForRef(String id, DustEntity other) {
+                    return new RefInfo(id, other);
+                }
+            };
+
+            pfData = new DustPopulatedFactory.Entity(eTable, DustGenericLinks.ConnectedOwner, false, eTable);
+            pfData.setUnit(eMyUnit);
+        }
+
+        public void setDbVerified(boolean verified) throws Exception {
+            this.dbVerified = verified;
+
+            if (dbVerified) {
+                String colName;
+
+                ResultSet rs = dbMetaData.getPrimaryKeys(dbName, null, tblName);
+                for (boolean ok = JdbcUtils.optFirst(rs); ok; ok = rs.next()) {
+                    colName = rs.getString(JDBC_COLUMN_NAME);
+                    pKeyInfo.put(colName, JdbcUtils.mapFromRS(rs));
+                }
+
+                rs = dbMetaData.getImportedKeys(dbName, null, tblName);
+                for (boolean ok = JdbcUtils.optFirst(rs); ok; ok = rs.next()) {
+                    colName = rs.getString(JDBC_FKCOLUMN_NAME);
+                    fKeyInfo.put(colName, JdbcUtils.mapFromRS(rs));
+                }
+            }
+        }
+
+        public void registerColumn(ResultSet rs) throws Exception {
+            String colName = rs.getString(JDBC_COLUMN_NAME);
+            ColumnInfo colInfo = fKeyInfo.containsKey(colName) ? pfRefs.get(colName, rs) : pfAtts.get(colName, rs);
+            colInfo.initKeyData(this);
+        }
+
+        public ColumnInfo getColInfo(String colName) {
+            ColumnInfo ci = pfAtts.peek(colName);
+            return (null == ci) ? pfRefs.peek(colName) : ci;
+        }
+
+        public void clean() {
+            for (DustEntity e : pfData.values()) {
+                DustUtils.accessEntity(DataCommand.dropEntity, e);
+            }
+        }
+    }
+
+    Map<String, Object> mapAtts = new HashMap<>();
+
+    String dbName;
+    DustEntity eMyUnit;
+
+    DustUtilsFactory<String, TableInfo> factTableInfos = new DustUtilsFactory<String, TableInfo>(true) {
+        @Override
+        protected TableInfo create(String key, Object... hints) {
+            return new TableInfo(key);
+        }
+    };
+
+    DustPopulatedFactory.Entity pfTypeInfo;
+
+    Connection conn = null;
+    DatabaseMetaData dbMetaData;
+
+    private void updateParams() throws Exception {
+        eMyUnit = ((DustRef) DustUtils.accessEntity(DataCommand.getValue, ContextRef.self, DustCommLinks.PersistentContainingUnit))
+                .get(RefKey.target);
+        
+        DustTempHacks.loadAtts(mapAtts, ContextRef.self);
+    }
+
+    private void optCreateConn() throws Exception {
+        if ((null == conn) || conn.isClosed()) {
+            System.out.println("Connecting to database...");
+
+            try {
+                Class.forName((String) mapAtts.get("driverClass"));
+
+                dbName = (String) mapAtts.get("dbName");
+                String dbUrl = (String) mapAtts.get("dbUrl");
+                if ( !dbUrl.endsWith(dbName)) {
+                    dbUrl += "/" + dbName;
+                }
+                conn = DriverManager.getConnection(dbUrl, (String) mapAtts.get("userId"), (String) mapAtts.get("password"));
+
+                JdbcUtils.addConn(conn);
+
+                dbMetaData = conn.getMetaData();
+
+                System.out.println("Connection successful.");
+
+                Dust.processRefs(new RefProcessor() {
+                    @Override
+                    public void processRef(DustRef ref) {
+                        DustEntity eTableType = ref.get(RefKey.source);
+                        String tableId = DustUtils.accessEntity(DataCommand.getValue, eTableType,
+                                DustUtils.optResolve(DustGenericAtts.IdentifiedIdLocal));
+                        factTableInfos.put(tableId, new TableInfo(tableId, eTableType));
+                    }
+                }, null, DustUtils.optResolve(DustGenericLinks.ConnectedOwner), ContextRef.self);
+
+                pfTypeInfo = new DustPopulatedFactory.Entity(ContextRef.self, DustJdbcLinks.ConnectorDataTypes, true, DustJdbcTypes.JdbcDataType);
+                pfTypeInfo.setUnit(eMyUnit);
+
+            } catch (Throwable e) {
+                releaseConn(conn, e);
+                conn = null;
+                dbMetaData = null;
+                Dust.wrapAndRethrowException("Connection exception", e);
+            }
+        }
+    }
+
+    public static void releaseConn(Connection conn, Throwable cause) throws Exception {
+        if (null != conn) {
+            if (!conn.isClosed()) {
+                if (!conn.getAutoCommit()) {
+                    if (null == cause) {
+                        conn.commit();
+                    } else {
+                        conn.rollback();
+                    }
+                }
+                conn.close();
+                System.out.println("DB connection closed.");
+            }
+            conn = null;
+        }
+    }
+
+    @Override
+    public void activeInit() throws Exception {
+        updateParams();
+
+        optCreateConn();
+
+        try {
+            ResultSet rs;
+
+            System.out.println("Getting tables...");
+
+            rs = dbMetaData.getTables(dbName, null, null, new String[] { JDBC_TABLE });
+
+            JdbcUtils.dumpResultSet(rs);
+
+            for (TableInfo ti : factTableInfos.values()) {
+                ti.setDbVerified(false);
+            }
+
+            for (boolean ok = JdbcUtils.optFirst(rs); ok; ok = rs.next()) {
+                String tblName = rs.getString(JDBC_TABLE_NAME);
+                factTableInfos.get(tblName).setDbVerified(true);
+            }
+
+            rs = dbMetaData.getColumns(dbName, null, null, null);
+
+            for (boolean ok = JdbcUtils.optFirst(rs); ok; ok = rs.next()) {
+                String tblName = rs.getString(JDBC_TABLE_NAME);
+                TableInfo ti = factTableInfos.peek(tblName);
+                if (null != ti) {
+                    ti.registerColumn(rs);
+                }
+            }
+
+        } catch (Throwable e) {
+            releaseConn(conn, e);
+            Dust.wrapAndRethrowException("JDBCInit", e);
+        }
+    }
+
+    @Override
+    public void activeRelease() throws Exception {
+        releaseConn(conn, null);
+        conn = null;
+        dbMetaData = null;
+    }
+
+    @Override
+    public void dustProcListenerProcessChange() throws Exception {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public Object evaluatorEvaluate() throws Exception {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void processorProcess() throws Exception {
+        try {
+            DustUtilsMuteManager.mute(DustUtilsMuteManager.MutableModule.GUI, true);
+//            DustUtils.accessEntity(DataCommand.setValue, ContextRef.session, DustProcAtts.SessionChangeMute, true);
+
+            String query = DustUtils.getMsgVal(DustTextComponents.DustTextAtts.TextSpanString, false);
+
+            DustUtils.accessEntity(DataCommand.clearRefs, ContextRef.msg, DustGenericLinks.ConnectedExtends);
+            DustUtils.accessEntity(DataCommand.clearRefs, ContextRef.msg, DustGenericLinks.ConnectedRequires);
+
+            if (DustUtilsJava.isEmpty(query)) {
+                for (TableInfo ti : factTableInfos.values()) {
+                    ti.clean();
+                }
+                return;
+            }
+
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            JdbcUtils.dumpResultSet(rs);
+
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int cc = rsmd.getColumnCount();
+            
+            String tblName = rsmd.getTableName(1);
+            for ( int i = 1; i <= cc; ++i ) {
+                String tbl = rsmd.getTableName(i);
+                DustUtilsDev.dump(rsmd.getColumnName(i), tbl);
+                if ( DustUtilsJava.isEmpty(tblName) ) {
+                    tblName = tbl;
+                }
+            }
+            if ( DustUtilsJava.isEmpty(tblName) ) {
+                tblName = query.substring(query.lastIndexOf(" ")).trim();
+            }
+
+            TableInfo ti = factTableInfos.peek(tblName);
+
+            ColumnInfo[] cols = new ColumnInfo[cc];
+            int pKeyIdx = 0;
+            Map<DustEntity, TableInfo> mapLinks = new HashMap<>();
+
+            for (int i = 0; i < cc; ++i) {
+                int colIdx = i + 1;
+                String colName = rsmd.getColumnName(colIdx);
+
+                ColumnInfo colInfo = ti.getColInfo(colName);
+                cols[i] = colInfo;
+
+                colInfo.prepareForSelect(mapLinks);
+
+                if (colInfo.primaryKey) {
+                    pKeyIdx = colIdx;
+                }
+            }
+
+            for (boolean ok = JdbcUtils.optFirst(rs); ok; ok = rs.next()) {
+                String id = rs.getObject(pKeyIdx).toString();
+
+                DustEntity e = ti.pfData.get(id);
+
+                for (int i = 0; i < cc; ++i) {
+                    cols[i].loadValue(e, rs.getObject(i + 1));
+                }
+
+                DustUtils.accessEntity(DataCommand.setRef, ContextRef.msg, DustGenericLinks.ConnectedExtends, e);
+            }
+        } finally {
+            DustUtilsMuteManager.mute(DustUtilsMuteManager.MutableModule.GUI, false);
+//            DustUtils.accessEntity(DataCommand.setValue, ContextRef.session, DustProcAtts.SessionChangeMute, false);
+        }
+    }
+}
