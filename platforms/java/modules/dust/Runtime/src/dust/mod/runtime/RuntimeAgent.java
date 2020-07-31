@@ -1,6 +1,5 @@
 package dust.mod.runtime;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import dust.mod.Dust;
@@ -16,7 +15,15 @@ public class RuntimeAgent implements DustComponents.DustDialogAPI, DustComponent
     private static RuntimeAgent THE_AGENT;
 
     NativeApp app = null;
-    private final Map<Integer, RuntimeDataTokenInfo> tokens = new HashMap<>();
+    private final DustUtils.Factory<Integer, RuntimeDataTokenInfo> tokens = new DustUtils.Factory<Integer, RuntimeDataTokenInfo>(null) {
+        private static final long serialVersionUID = 1L;
+
+        protected RuntimeDataTokenInfo createItem(Integer key) {
+            RuntimeDataTokenInfo rti = new RuntimeDataTokenInfo();
+            rti.load(key);
+            return rti;
+        };
+    };
 
     enum FirstEntities {
         NULL, STORE_0, TYPE_STORE, TYPE_TYPE, TYPE_MEMBER, TYPE_TAG,
@@ -36,15 +43,10 @@ public class RuntimeAgent implements DustComponents.DustDialogAPI, DustComponent
         addBootToken(MiND_ModelRefEntityTags, ValType.REF, CollType.SET);
         addBootToken(MiND_ModelNativeEntityContent, ValType.REF, CollType.MAP);
 
-        addBootToken(MiND_IdeaTagValInteger, ValType.REF, CollType.SET);
-        addBootToken(MiND_IdeaTagValReal, ValType.REF, CollType.SET);
-        addBootToken(MiND_IdeaTagValRef, ValType.REF, CollType.SET);
+        addBootToken(TextRefIdentifiedId, ValType.REF, CollType.ONE);
+        addBootToken(MiND_NativeRefModuleLibraries, ValType.REF, CollType.SET);
+        addBootToken(MiND_NativeRefModuleObjects, ValType.REF, CollType.MAP);
 
-        addBootToken(MiND_IdeaTagCollOne, ValType.REF, CollType.SET);
-        addBootToken(MiND_IdeaTagCollSet, ValType.REF, CollType.SET);
-        addBootToken(MiND_IdeaTagCollArr, ValType.REF, CollType.SET);
-        addBootToken(MiND_IdeaTagCollMap, ValType.REF, CollType.SET);
-        
         mainStore.getEntity(FirstEntities.STORE_0.ordinal(), FirstEntities.TYPE_STORE.ordinal());
 
         for (Map.Entry<Integer, RuntimeDataTokenInfo> eRti : tokens.entrySet()) {
@@ -110,14 +112,15 @@ public class RuntimeAgent implements DustComponents.DustDialogAPI, DustComponent
 
     @Override
     public DustResultType agentAction(DustAgentAction action, DustDialogTray tray) throws Exception {
-//         int tt = t1.getEntity();
-//         System.out.println("Token resolver " + tt);
-
         return DustResultType.ACCEPT;
     }
 
     public RuntimeDataTokenInfo getToken_(int entity) {
         RuntimeDataTokenInfo rt = tokens.get(entity);
+
+        if (null == rt) {
+
+        }
 
         return rt;
     }
@@ -131,7 +134,7 @@ public class RuntimeAgent implements DustComponents.DustDialogAPI, DustComponent
         tray.value = 42;
 
         THE_AGENT.access(DustDialogCmd.SET, tray);
-        
+
         tray.setToken(MiND_ModelNativeEntityContent);
         tray.key = TextTypeStatementImmutable.getEntity();
         tray.value = "Hello world!";
@@ -145,15 +148,19 @@ public class RuntimeAgent implements DustComponents.DustDialogAPI, DustComponent
     }
 
     @Override
-    public int getTokenEntity(DustToken token) {
+    public int getTokenMember(DustToken token) {
         int storeId = app.getSystemStoreIdx(token);
         RuntimeDataEntity e = stores.get(storeId).getEntity(token.id, FirstEntities.TYPE_MEMBER.ordinal());
-        
+
         return mainStore.find(e);
     }
 
     public static RuntimeDataTokenInfo getToken(int entity) {
         return THE_AGENT.getToken_(entity);
+    }
+
+    public static Object createNative(int type) {
+        return THE_AGENT.app.createNative(type);
     }
 
     public static DustDialogAPI createRuntime(NativeApp app) {
@@ -164,9 +171,12 @@ public class RuntimeAgent implements DustComponents.DustDialogAPI, DustComponent
         Dust.init(THE_AGENT);
 
         THE_AGENT.boot();
-        
+
         THE_AGENT.test();
 
         return THE_AGENT;
+    }
+
+    public static void launch() {
     }
 }

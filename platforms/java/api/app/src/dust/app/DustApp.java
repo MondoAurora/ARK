@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import dust.mod.Dust;
 import dust.mod.DustComponents;
 import dust.mod.DustUtils;
 
@@ -32,6 +33,7 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
         String modName;
         URLClassLoader modLoader;
         DustAgent modAgent;
+        Integer modEntity = null;
 
         private Map<Integer, Class<?>> classes = new HashMap<>();
 
@@ -56,10 +58,45 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
                 uu = urls.toArray(uu);
                 modLoader = new URLClassLoader(uu);
 
-                Class<?> c  = modLoader.loadClass("dust.mod.ModuleAgent");
-                modAgent =(null == c) ? null :  (DustAgent) c.newInstance();
+                Class<?> c = modLoader.loadClass("dust.mod." + modName);
+                modAgent = (DustAgent) c.newInstance();
             } catch (Exception e) {
                 DustException.throwException(e, modName, currLib);
+            }
+        }
+
+        public void initModule(AppTokens appTokens) {
+            DustDialogTray t = new DustDialogTray();
+
+            t.setToken(appTokens.typeModule);
+            modEntity = Dust.access(DustDialogCmd.ADD, t);
+
+            t.entity = modEntity;
+            t.token = null;
+            int kTxt = appTokens.typeText.getEntity();
+            int kNat = appTokens.refNative.getEntity();
+
+            try {
+                modAgent.agentAction(DustAgentAction.INIT, t);
+
+                t.setToken(appTokens.refObjects);
+                Dust.visit(new DustAgent() {
+                    @Override
+                    public DustResultType agentAction(DustAgentAction action, DustDialogTray tray) throws Exception {
+                        Integer natType = t.key;
+                        
+                        t.entity = (Integer) t.value;
+                        t.token = kNat;
+                        t.key = kTxt;
+                        
+                        String natClass = Dust.access(DustDialogCmd.GET, t);
+                        
+                        classes.put(natType, modLoader.loadClass(natClass));
+                        return DustResultType.READ;
+                    }
+                }, t);
+            } catch (Exception e) {
+               DustException.throwException(e);
             }
         }
 
@@ -71,24 +108,19 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
                 return DustException.throwException(e, type);
             }
         }
-
-        @Override
-        public void assignClass(int type, String cName) {
-            try {
-                classes.put(type, modLoader.loadClass(cName));
-            } catch (Exception e) {
-                DustException.throwException(e, type, cName);
-            }
-        }
     }
 
     private final File modRoot;
     private final File extRoot;
 
+    AppTokens appTokens;
+
     private Map<ClassLoader, Module> modules = new HashMap<>();
     private Map<Integer, Module> modByType = new HashMap<>();
 
-    public DustApp(String runtimeModName, int[] storeRelay, String... libNames) {
+    public DustApp(AppTokens appTokens, String runtimeModName, int[] storeRelay, String... libNames) {
+        this.appTokens = appTokens;
+
         String ar = System.getenv("ARK_ROOT");
 
         File f = new File(ar, "platforms/java/lib");
@@ -97,11 +129,12 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
         this.extRoot = new File(f, "ext");
 
         Module m = addModule(runtimeModName, storeRelay, libNames);
-        
+
         try {
-            Class<?> c  = m.modLoader.loadClass("dust.mod.Bootloader");
-            Method method = c.getMethod("bootRuntime", NativeApp.class);
+            Method method = m.modAgent.getClass().getMethod("bootRuntime", NativeApp.class);
             method.invoke(null, this);
+
+            m.initModule(appTokens);
         } catch (Exception e) {
             DustException.throwException(e, "Calling createRuntime", runtimeModName);
         }
@@ -129,6 +162,10 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
     public Module addModule(String modName, int[] storeRelay, String... libNames) {
         Module m = new Module(modName, storeRelay, libNames);
 
+        if (!modules.isEmpty()) {
+            m.initModule(appTokens);
+        }
+
         modules.put(m.modLoader, m);
 
         return m;
@@ -138,8 +175,8 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
     public int getSystemStoreIdx(DustToken token) {
         ClassLoader cl = token.getClass().getClassLoader();
         Module m = modules.get(cl);
-        
-        if ( null == m ) {
+
+        if (null == m) {
             DustUtils.log(DustEventLevel.TRACE, "Resolving token index from App");
             return token.store;
         } else {

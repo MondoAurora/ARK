@@ -4,7 +4,7 @@
 	<include file="../../ant_props.xml"/>
 	
 	<property name="dir.project" value="." />
-	<property name="ark.vendor" value="dust" />
+	<property name="ark.vendor" value="Dust" />
 	<property name="ark.mod" value="JsonSimple" />
 
 	<target name="create_jar">

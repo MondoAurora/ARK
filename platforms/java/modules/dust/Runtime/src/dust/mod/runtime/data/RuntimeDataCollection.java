@@ -34,7 +34,7 @@ public abstract class RuntimeDataCollection implements RuntimeData {
             rt = visitor.agentAction(DustAgentAction.BEGIN, tray);
             tray.key = 0;
 
-            if (DustResultType.REJECT == rt) {
+            if (DustResultType.REJECT != rt) {
                 for (Object o : set) {
                     tray.value = o;
                     rt = visitor.agentAction(DustAgentAction.PROCESS, tray);

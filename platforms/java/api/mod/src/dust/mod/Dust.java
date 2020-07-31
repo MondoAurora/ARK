@@ -22,6 +22,6 @@ public class Dust implements DustComponents {
     }
     
     static int getTokenEntity(DustToken token) {
-        return TOKEN_RESOLVER.getTokenEntity(token);
+        return TOKEN_RESOLVER.getTokenMember(token);
     }
 }

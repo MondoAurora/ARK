@@ -40,7 +40,7 @@ public interface DustComponents {
     }
 	
     public interface DustTokenResolver {
-        int getTokenEntity(DustToken token);
+        int getTokenMember(DustToken token);
     }
 
 

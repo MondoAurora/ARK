@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_jar" name="Test01App01">
+<project default="create_jar" name="DustTest01App01">
 	
 	<include file="../../../ant_props.xml"/>
 	
 	<property name="dir.project" value="." />
-	<property name="ark.vendor" value="dust" />
+	<property name="ark.vendor" value="Dust" />
 	<property name="ark.system" value="Test01" />
 	<property name="ark.app" value="App01" />
 
@@ -16,7 +16,7 @@
             <classpath location="${ARK_API}/DustApiModule/bin"/>
         </javac>
 
-		<jar destfile="${ARK_LIB}/app/Test01App01.jar">
+		<jar destfile="${ARK_LIB}/app/${ark.vendor}${ark.system}${ark.app}.jar">
 			<manifest>
 				<attribute name="Main-Class" value="dust.test01.app01.DustAppTest01App01" />
 			</manifest>

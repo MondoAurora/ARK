@@ -1,8 +1,9 @@
 package dust.test01.app01;
 
-import dust.mod.DustComponents;
+import dust.app.DustAppComponents;
+import dust.mod.DustUtils;
 
-public interface AppBootTokens extends DustComponents {  
+public interface AppBootTokens extends DustAppComponents {  
 
     
     DustToken MiND_IdeaTypeTag = new DustToken(0, 2);
@@ -19,11 +20,14 @@ public interface AppBootTokens extends DustComponents {
     DustToken MiND_IdeaTagCollArr = new DustToken(0, 23);
     DustToken MiND_IdeaTagCollMap = new DustToken(0, 24);
 
-    
-    
     DustToken MiND_ModelRefEntityTags = new DustToken(0, 47);
 
     DustToken MiND_ModelNativeEntityContent = new DustToken(0, 43);
+    
+    DustToken MiND_NativeTypeModule = new DustToken(0, 50);
+    DustToken MiND_NativeRefModuleObjects = new DustToken(0, 52);
+
+    
     DustToken TextTypeStatementImmutable = new DustToken(0, 103);
 
     DustToken GuardTypeAccount = new DustToken(0, 300);
@@ -34,6 +38,7 @@ public interface AppBootTokens extends DustComponents {
     DustToken JdbcRefConnectorDriver = new DustToken(0, 201);
     DustToken JdbcRefConnectorPath = new DustToken(0, 202);
  
-    
-    
+    DustToken JsonTypeConnector = new DustToken(0, 400);
+
+    AppTokens APP_TOKENS = new AppTokens(MiND_NativeTypeModule, TextTypeStatementImmutable, MiND_NativeRefModuleObjects, MiND_ModelNativeEntityContent);
 }

@@ -20,13 +20,13 @@ public class RuntimeDataEntity implements RuntimeData {
     public void setNewVariant(int token, Object value, Integer key) {
         RuntimeDataTokenInfo t = RuntimeAgent.getToken(token);
         RuntimeDataVariant v = new RuntimeDataVariant(t, value, key);
-        variants.put(token, v);            
+        variants.put(token, v);
     }
 
     public void setVariant(int token, Object value, Integer key) {
         RuntimeDataVariant v = variants.get(token);
-        
-        if ( null == v ) {
+
+        if (null == v) {
             setNewVariant(token, value, key);
         } else {
             DustDialogTray tray = new DustDialogTray();
@@ -36,13 +36,17 @@ public class RuntimeDataEntity implements RuntimeData {
             v.access(DustDialogCmd.SET, tray);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
-   @Override
+    @Override
     public <RetType> RetType access(DustDialogCmd cmd, DustDialogTray tray) {
 
         RuntimeDataVariant v = variants.get(tray.token);
         Object ret = null;
+
+        if ((tray.token == MiND_ModelNativeEntityContent.getEntity()) && (DustDialogCmd.GET == cmd) && (null == tray.key)) {
+            tray.key = (Integer) variants.get(MiND_ModelRefEntityPrimaryType.getEntity()).value;
+        }
 
         if (null == v) {
             switch (cmd) {
@@ -60,8 +64,15 @@ public class RuntimeDataEntity implements RuntimeData {
             }
         } else {
             ret = v.access(cmd, tray);
-            if ( ((DustDialogCmd.DEL == cmd) || (DustDialogCmd.SET == cmd)) && !v.isValid() ) {
+            if (((DustDialogCmd.DEL == cmd) || (DustDialogCmd.SET == cmd)) && !v.isValid()) {
                 variants.remove(tray.token);
+            }
+        }
+
+        if ((null == ret) && (DustDialogCmd.GET == cmd) && (tray.token == MiND_ModelNativeEntityContent.getEntity())) {
+            ret = RuntimeAgent.createNative(tray.key);
+            if (null != ret) {
+                setVariant(tray.token, ret, tray.key);
             }
         }
 

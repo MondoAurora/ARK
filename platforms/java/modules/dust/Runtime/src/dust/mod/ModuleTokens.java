@@ -42,11 +42,17 @@ public interface ModuleTokens extends DustComponents {
     DustTokenModule MiND_ModelRefEntityOwner = new DustTokenModule(0, 46);
     DustTokenModule MiND_ModelRefEntityTags = new DustTokenModule(0, 47);
     
+    DustTokenModule MiND_NativeTypeModule = new DustTokenModule(0, 50);
+    DustTokenModule MiND_NativeRefModuleLibraries = new DustTokenModule(0, 51);
+    DustTokenModule MiND_NativeRefModuleObjects = new DustTokenModule(0, 52);
+    
+    
     DustTokenModule TextTypeLanguage = new DustTokenModule(0, 100);
     DustTokenModule TextConstLanguageTokens = new DustTokenModule(0, 101);
     DustTokenModule TextTypeStatementMutable = new DustTokenModule(0, 102);
     DustTokenModule TextTypeStatementImmutable = new DustTokenModule(0, 103);
     
-//    DustToken t1 = new DustTokenModule(0, 1);
+    DustTokenModule TextTypeIdentified = new DustTokenModule(0, 110);
+    DustTokenModule TextRefIdentifiedId = new DustTokenModule(0, 111);
 
 }

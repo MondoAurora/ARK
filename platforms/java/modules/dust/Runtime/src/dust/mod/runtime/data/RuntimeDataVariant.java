@@ -55,6 +55,8 @@ public class RuntimeDataVariant implements RuntimeData {
 
         if (null == coll) {
             if (null != value) {
+                tray.key = key;
+                tray.value = value;
                 rt = visitor.agentAction(DustAgentAction.PROCESS, tray);
             }
         } else {
