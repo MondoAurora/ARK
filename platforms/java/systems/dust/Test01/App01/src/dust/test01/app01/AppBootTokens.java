@@ -1,11 +1,9 @@
 package dust.test01.app01;
 
 import dust.app.DustAppComponents;
-import dust.mod.DustUtils;
 
 public interface AppBootTokens extends DustAppComponents {  
 
-    
     DustToken MiND_IdeaTypeTag = new DustToken(0, 2);
     DustToken MiND_IdeaTypeConstant = new DustToken(0, 3);
     
@@ -40,5 +38,6 @@ public interface AppBootTokens extends DustAppComponents {
  
     DustToken JsonTypeConnector = new DustToken(0, 400);
 
-    AppTokens APP_TOKENS = new AppTokens(MiND_NativeTypeModule, TextTypeStatementImmutable, MiND_NativeRefModuleObjects, MiND_ModelNativeEntityContent);
+    AppTokens APP_TOKENS = new AppTokens(MiND_NativeTypeModule, TextTypeStatementImmutable, 
+            MiND_NativeRefModuleObjects, MiND_ModelNativeEntityContent);
 }

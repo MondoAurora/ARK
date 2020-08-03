@@ -6,7 +6,6 @@ public interface ModuleTokens extends DustComponents {
         public DustTokenModule(int store, int id) {
             super(store, id);
         }
-        
     }
     
     
@@ -31,6 +30,6 @@ public interface ModuleTokens extends DustComponents {
     DustTokenModule JdbcRefConnectorDriver = new DustTokenModule(0, 201);
     DustTokenModule JdbcRefConnectorPath = new DustTokenModule(0, 202);
 
-    DustUtils.TokenUtils TOKEN_UTILS = new DustUtils.TokenUtils(TextTypeStatementImmutable, MiND_ModelNativeEntityContent, MiND_ModelRefEntityTags);
-    
+    DustUtils.TokenUtils TOKEN_UTILS = new DustUtils.TokenUtils(TextTypeStatementImmutable, 
+            MiND_ModelNativeEntityContent, MiND_ModelRefEntityTags);
 }

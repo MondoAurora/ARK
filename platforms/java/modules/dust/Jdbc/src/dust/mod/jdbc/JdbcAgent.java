@@ -20,14 +20,15 @@ public class JdbcAgent implements ModuleTokens, DustComponents.DustAgent {
     public DustResultType agentAction(DustAgentAction action, DustDialogTray tray) throws Exception {
         switch (action) {
         case BEGIN:
-            params = TOKEN_UTILS.getTextParams(params, tray.entity, JdbcRefConnectorDriver, JdbcRefConnectorPath, GuardRefAccountId,
-                    GuardRefAccountPass, TextRefIdentifiedId);
+            params = TOKEN_UTILS.getTextParams(params, tray.entity, JdbcRefConnectorDriver, JdbcRefConnectorPath, 
+                    GuardRefAccountId, GuardRefAccountPass, TextRefIdentifiedId);
 
             return DustResultType.ACCEPT_PASS;
         case PROCESS:
             optCreateConn();
             String query = "select * from mind_core_entity";
 
+            DustUtils.log(DustEventLevel.TRACE, "Running SQL command", query);
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
 
@@ -45,23 +46,24 @@ public class JdbcAgent implements ModuleTokens, DustComponents.DustAgent {
 
     private void optCreateConn() throws Exception {
         if ((null == conn) || conn.isClosed()) {
-            System.out.println("Connecting to database...");
+            String dbName = params.get(TextRefIdentifiedId);
+            String dbUrl = params.get(JdbcRefConnectorPath);
+            if (!DustUtils.isEmpty(dbName) && !dbUrl.endsWith(dbName)) {
+                dbUrl += "/" + dbName;
+            }
+
+            DustUtils.log(DustEventLevel.TRACE, "Connecting to database...", dbUrl);
 
             try {
                 Class.forName(params.get(JdbcRefConnectorDriver));
 
-                String dbName = params.get(TextRefIdentifiedId);
-                String dbUrl = params.get(JdbcRefConnectorPath);
-                if (!DustUtils.isEmpty(dbName) && !dbUrl.endsWith(dbName)) {
-                    dbUrl += "/" + dbName;
-                }
                 conn = DriverManager.getConnection(dbUrl, params.get(GuardRefAccountId), params.get(GuardRefAccountPass));
 
                 JdbcUtils.addConn(conn);
 
                 dbMetaData = conn.getMetaData();
 
-                System.out.println("Connection successful.");
+                DustUtils.log(DustEventLevel.TRACE, "Connection successful.");
 
             } catch (Throwable e) {
                 releaseConn(conn, e);
@@ -83,7 +85,7 @@ public class JdbcAgent implements ModuleTokens, DustComponents.DustAgent {
                     }
                 }
                 conn.close();
-                System.out.println("DB connection closed.");
+                DustUtils.log(DustEventLevel.TRACE, "DB connection closed.");
             }
             conn = null;
         }

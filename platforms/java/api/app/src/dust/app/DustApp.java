@@ -160,6 +160,8 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
 
     @Override
     public Module addModule(String modName, int[] storeRelay, String... libNames) {
+        DustUtils.log(DustEventLevel.TRACE, "Loading module", modName);
+        
         Module m = new Module(modName, storeRelay, libNames);
 
         if (!modules.isEmpty()) {
@@ -177,10 +179,10 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
         Module m = modules.get(cl);
 
         if (null == m) {
-            DustUtils.log(DustEventLevel.TRACE, "Resolving token index from App");
+//            DustUtils.log(DustEventLevel.TRACE, "Resolving token index from App");
             return token.store;
         } else {
-            System.out.println("Loading token from module " + m.modName);
+//            System.out.println("Loading token from module " + m.modName);
             return m.storeRelay[token.store];
         }
     }

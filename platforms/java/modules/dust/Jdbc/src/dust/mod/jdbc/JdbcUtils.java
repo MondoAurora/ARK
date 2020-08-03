@@ -24,10 +24,10 @@ public class JdbcUtils implements JdbcComponents {
         }
         System.out.println(sb);
         
-        if ( ResultSet.TYPE_FORWARD_ONLY == rs.getType() ) {
-            DustUtils.log(DustEventLevel.INFO, "Skip dumping forward only resultset");
-            return;
-        }
+//        if ( ResultSet.TYPE_FORWARD_ONLY == rs.getType() ) {
+//            DustUtils.log(DustEventLevel.INFO, "Skip dumping forward only resultset");
+//            return;
+//        }
         
         for ( boolean ok = optFirst(rs); ok; ok = rs.next() ) {
             sb = null;

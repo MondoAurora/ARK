@@ -3,6 +3,7 @@ package dust.mod.runtime;
 import java.util.Map;
 
 import dust.mod.Dust;
+import dust.mod.Dust.DustDialogAPI;
 import dust.mod.DustComponents;
 import dust.mod.DustUtils;
 import dust.mod.runtime.data.RuntimeDataComponents.CollType;
@@ -11,7 +12,7 @@ import dust.mod.runtime.data.RuntimeDataEntity;
 import dust.mod.runtime.data.RuntimeDataStore;
 import dust.mod.runtime.data.RuntimeDataTokenInfo;
 
-public class RuntimeAgent implements DustComponents.DustDialogAPI, DustComponents.DustAgent, DustComponents.DustTokenResolver, RuntimeComponents {
+public class RuntimeAgent implements DustComponents, Dust.DustDialogAPI, DustComponents.DustAgent, DustComponents.DustTokenResolver, RuntimeComponents {
     private static RuntimeAgent THE_AGENT;
 
     NativeApp app = null;

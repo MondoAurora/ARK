@@ -13,12 +13,14 @@ public class DustJdbc implements DustComponents.DustAgent, ModuleTokens {
             TOKEN_UTILS.setMemberMeta(JdbcRefConnectorPath, MiND_IdeaTagValRef, MiND_IdeaTagCollOne);
             TOKEN_UTILS.setMemberMeta(TextRefIdentifiedId, MiND_IdeaTagValRef, MiND_IdeaTagCollOne);
             
-            TOKEN_UTILS.setTextMember(tray.entity, MiND_NativeRefModuleObjects.getEntity(), JdbcTypeConnector.getEntity(), "dust.mod.jdbc.JdbcAgent");
+            TOKEN_UTILS.setTextMember(tray.entity, MiND_NativeRefModuleObjects.getEntity(), 
+                    JdbcTypeConnector.getEntity(), "dust.mod.jdbc.JdbcAgent");
             break;
         default:
             break;
         }
         return null;
     }
-
 }
+
+

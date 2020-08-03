@@ -9,40 +9,9 @@ public interface DustComponents {
         INIT, BEGIN, PROCESS, END, RELEASE
     };
 
-    enum DustEventLevel {
-        CRITICAL, ERROR, WARNING, INFO, TRACE, DEBUG
-    };
-
     enum DustDialogCmd {
         CHK, GET, SET, ADD, DEL
     };
-
-	final long KEY_APPEND = -1;
-	
-	class DustToken {
-        public final int store;
-        public final int id;
-        
-        protected Integer entity = null;
-	    
-	    public DustToken(int store, int id) {
-	        this.store = store;
-	        this.id = id;
-	    }
-	    
-	    public int getEntity() {
-	        if ( null == entity ) {
-	            entity = Dust.getTokenEntity(this);
-	        }
-	        
-	        return entity;
-	    }
-    }
-	
-    public interface DustTokenResolver {
-        int getTokenMember(DustToken token);
-    }
-
 
     class DustDialogTray {
 		public Integer entity;
@@ -58,12 +27,41 @@ public interface DustComponents {
 
     public interface DustAgent {
         DustResultType agentAction(DustAgentAction action, DustDialogTray tray) throws Exception;
+    }	
+	
+	
+
+    final long KEY_APPEND = -1;
+    
+    class DustToken {
+        public final int store;
+        public final int id;
+        
+        protected Integer entity = null;
+        
+        public DustToken(int store, int id) {
+            this.store = store;
+            this.id = id;
+        }
+        
+        public int getEntity() {
+            if ( null == entity ) {
+                entity = Dust.getTokenEntity(this);
+            }
+            
+            return entity;
+        }
+    }
+    
+    public interface DustTokenResolver {
+        int getTokenMember(DustToken token);
     }
 
-	public interface DustDialogAPI {
-		<RetType> RetType access(DustDialogCmd cmd, DustDialogTray tray);
-		DustResultType visit(DustAgent visitor, DustDialogTray tray) throws Exception;
-	}
+    
+
+    enum DustEventLevel {
+        CRITICAL, ERROR, WARNING, INFO, TRACE, DEBUG
+    };
 	
 	public class DustException extends RuntimeException {
 		private static final long serialVersionUID = 1L;

@@ -54,5 +54,4 @@ public interface ModuleTokens extends DustComponents {
     
     DustTokenModule TextTypeIdentified = new DustTokenModule(0, 110);
     DustTokenModule TextRefIdentifiedId = new DustTokenModule(0, 111);
-
 }
