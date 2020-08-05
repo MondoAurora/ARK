@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." name="AntProps">
     <property environment="env"/>
-    <property name="ARK_JAVA_ROOT" value="A:/platforms/java"/>
+    <property name="ARK_JAVA_ROOT" value="${env.ARK_ROOT}/platforms/java"/>
 
-    <property name="ARK_API" value="A:/ide/eclipse/dust/api"/>
+    <property name="ARK_API" value="${env.ARK_ROOT}/ide/eclipse/dust/api"/>
 	
     <property name="ARK_MOD" value="${ARK_JAVA_ROOT}/modules"/>
     <property name="ARK_APP" value="${ARK_JAVA_ROOT}/systems"/>
