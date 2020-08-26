@@ -4,12 +4,16 @@
 #include <iostream>
 
 #include <vendors/dust/DustgenUnitTest01.h>
+#include <dust/DustgenUnitHttp.h>
+#include <dust/DustgenUnitStore.h>
 #include <MiND/DustgenUnitMindCore.h>
 #include <MiND/DustgenUnitMindTools.h>
 #include <MiND/DustMindUtils.h>
 
 using namespace std;
 using namespace DustUnitDustTest01;
+using namespace DustUnitDustHttp;
+using namespace DustUnitDustStore;
 using namespace DustUnitMindNarrative;
 using namespace DustUnitMindDialog;
 using namespace DustUnitMindGeometry;
@@ -25,6 +29,11 @@ int main(int argc, char **argv)
     DustModular::addModule("DustModWinGui");
     DustModular::addModule("DustModGraphOpenGl");
     DustModular::addModule("DustModTest01");
+    DustModular::addModule("DustModHttpYHirose");
+    DustModular::addModule("DustModStoreQJson");
+
+    DustEntity netGetter = DustData::createEntity(DustAgentHttpGetter);
+    DustEntity jsonReader = DustData::createEntity(DustAgentStoreReader);
 
     DustEntity wnd = DustData::createEntity(DustAgentOSWindow);
 
@@ -42,9 +51,6 @@ int main(int argc, char **argv)
     DustMindUtils::geoPath(path, col1, -0.5, 0.0);
 
     DustUtils::tag(path, DUST_ACCESS_SET, DustGenTagClosed);
-
-//    int len = DustData::getMemberCount(path, DustRefCollectionMembers);
-//    cout << "Path members " << len << endl;
 
     DustEntity glDraw = DustData::createEntity(DustTypeCollection);
 
@@ -68,6 +74,8 @@ int main(int argc, char **argv)
     DustEntity eMain;
     eMain = DustData::createEntity(DustAgentDialog);
     DustData::setRef(eMain, DustRefCollectionMembers, wnd);
+    DustData::setRef(eMain, DustRefCollectionMembers, netGetter);
+    DustData::setRef(eMain, DustRefCollectionMembers, jsonReader);
     DustData::setRef(eMain, DustRefCollectionMembers, gl);
 
     DustData::setRef(DUST_CTX_APP, DustRefAppMain, eMain);

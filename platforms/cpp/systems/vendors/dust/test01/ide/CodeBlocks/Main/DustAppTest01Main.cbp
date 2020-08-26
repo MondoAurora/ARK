@@ -51,6 +51,10 @@
 		<Unit filename="../../../../../../../units/MiND/DustgenUnitMindCore.h" />
 		<Unit filename="../../../../../../../units/MiND/DustgenUnitMindTools.cpp" />
 		<Unit filename="../../../../../../../units/MiND/DustgenUnitMindTools.h" />
+		<Unit filename="../../../../../../../units/dust/DustgenUnitHttp.cpp" />
+		<Unit filename="../../../../../../../units/dust/DustgenUnitHttp.h" />
+		<Unit filename="../../../../../../../units/dust/DustgenUnitStore.cpp" />
+		<Unit filename="../../../../../../../units/dust/DustgenUnitStore.h" />
 		<Unit filename="../../../../../../../units/vendors/dust/DustgenUnitTest01.cpp" />
 		<Unit filename="../../../../../../../units/vendors/dust/DustgenUnitTest01.h" />
 		<Unit filename="../../../src/DustgenAppMain.cpp" />
