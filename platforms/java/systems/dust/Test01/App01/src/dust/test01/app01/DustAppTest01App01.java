@@ -32,7 +32,7 @@ public class DustAppTest01App01 implements DustAppComponents, AppBootTokens {
             TOKEN_UTILS.setTextMember(db, JdbcRefConnectorDriver.getEntity(), 0, 
                     "com.mysql.cj.jdbc.Driver");
             TOKEN_UTILS.setTextMember(db, JdbcRefConnectorPath.getEntity(), 0, 
-                    "jdbc:mysql://localhost:3306/ark01");
+                    "jdbc:mysql://localhost:3306/ark01?serverTimezone=UTC");
             
             // Have the Jdbc module create the Agent (only for testing!)
             tray.key = null;

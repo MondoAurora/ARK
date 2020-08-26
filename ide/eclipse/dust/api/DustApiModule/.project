@@ -16,6 +16,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>ant_props.xml</name>
+			<type>1</type>
+			<location>/Users/lkedves/git/ARK/ide/eclipse/dust/ant_props.xml</location>
+		</link>
+		<link>
 			<name>src</name>
 			<type>2</type>
 			<locationURI>ARK_JAVA/api/mod/src</locationURI>
