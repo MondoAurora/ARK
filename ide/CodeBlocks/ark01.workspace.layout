@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_layout_file>
 	<FileVersion major="1" minor="0" />
-	<ActiveProject path="../../platforms/cpp/systems/vendors/dust/test01/ide/CodeBlocks/Main/DustAppTest01Main.cbp" />
-	<PreferredTarget name="Debug" />
+	<ActiveProject path="B:/ide/CodeBlocks/PPKE/modules/FleetMan01/PpkeModFleetMan01.cbp" />
+	<PreferredTarget name="Release" />
 </CodeBlocks_workspace_layout_file>

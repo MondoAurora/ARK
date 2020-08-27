@@ -42,10 +42,6 @@
 			<Add directory="$(#ark_main.DUSTAPI)" />
 			<Add directory="$(#ark_main.INCLUDE)" />
 		</Compiler>
-		<Linker>
-			<Add library="gdi32" />
-			<Add library="user32" />
-		</Linker>
 		<Unit filename="../../../../../platforms/cpp/modules/dust/StoreQJson/DustgenModStoreQJson.cpp" />
 		<Unit filename="../../../../../platforms/cpp/modules/dust/StoreQJson/DustgenModStoreQJson.h" />
 		<Unit filename="../../../../../platforms/cpp/modules/dust/StoreQJson/StoreQJson.cpp" />

@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="DustModHttpYHirose" />
+		<Option title="DustModTest01" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="$(#ark_main.LIB)/Debug/DustModHttpYHirose" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#ark_main.LIB)/Debug/DustModTest01" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -21,7 +21,7 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="$(#ark_main.LIB)/Release/DustModHttpYHirose" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#ark_main.LIB)/Release/DustModTest01" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -39,20 +39,16 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-DBUILD_DLL" />
-			<Add directory="$(#ark_main.DUSTAPI)" />
 			<Add directory="$(#ark_main.INCLUDE)" />
-			<Add directory="$(#ark_main.SRCMOD)/dust/HttpYHirose/httplib" />
+			<Add directory="$(#ark_main.DUSTAPI)" />
 		</Compiler>
-		<Linker>
-			<Add library="Ws2_32" />
-		</Linker>
-		<Unit filename="../../../../../platforms/cpp/modules/dust/HttpYHirose/DustgenModHttpYHirose.cpp" />
-		<Unit filename="../../../../../platforms/cpp/modules/dust/HttpYHirose/DustgenModHttpYHirose.h" />
-		<Unit filename="../../../../../platforms/cpp/modules/dust/HttpYHirose/HttpYHirose.cpp" />
-		<Unit filename="../../../../../platforms/cpp/modules/dust/HttpYHirose/HttpYHirose.h" />
-		<Unit filename="../../../../../platforms/cpp/modules/dust/HttpYHirose/httplib/httplib.h" />
-		<Unit filename="../../../../../platforms/cpp/units/dust/DustgenUnitHttp.cpp" />
-		<Unit filename="../../../../../platforms/cpp/units/dust/DustgenUnitHttp.h" />
+		<Unit filename="../../../../../platforms/cpp/modules/dust/Test01/test01.cpp" />
+		<Unit filename="../../../../../platforms/cpp/units/MiND/DustgenUnitMindCore.cpp" />
+		<Unit filename="../../../../../platforms/cpp/units/MiND/DustgenUnitMindCore.h" />
+		<Unit filename="../../../../../platforms/cpp/units/MiND/DustgenUnitMindTools.cpp" />
+		<Unit filename="../../../../../platforms/cpp/units/MiND/DustgenUnitMindTools.h" />
+		<Unit filename="../../../../../platforms/cpp/units/dust/DustgenUnitTest01.cpp" />
+		<Unit filename="../../../../../platforms/cpp/units/dust/DustgenUnitTest01.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

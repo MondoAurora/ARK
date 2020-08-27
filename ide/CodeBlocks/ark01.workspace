@@ -1,23 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="Workspace">
-		<Project filename="../../platforms/cpp/dust/api/ide/CodeBlocks/DustLibApi.cbp" />
-		<Project filename="../../platforms/cpp/dust/main/ide/CodeBlocks/DustLibMain.cbp">
-			<Depends filename="../../platforms/cpp/dust/api/ide/CodeBlocks/DustLibApi.cbp" />
+		<Project filename="dust/core/api/DustLibApi.cbp" />
+		<Project filename="dust/core/runtime/DustLibRuntime.cbp">
+			<Depends filename="dust/core/api/DustLibApi.cbp" />
 		</Project>
-		<Project filename="../../platforms/cpp/modules/vendors/dust/Text/ide/CodeBlocks/DustModText.cbp" />
-		<Project filename="../../platforms/cpp/modules/vendors/dust/DplStl/ide/CodeBlocks/DustModDplStl.cbp">
-			<Depends filename="../../platforms/cpp/dust/api/ide/CodeBlocks/DustLibApi.cbp" />
+		<Project filename="dust/core/main/DustLibMain.cbp">
+			<Depends filename="dust/core/api/DustLibApi.cbp" />
+			<Depends filename="dust/core/runtime/DustLibRuntime.cbp" />
 		</Project>
-		<Project filename="../../platforms/cpp/modules/vendors/dust/Test01/ide/CodeBlocks/DustModTest01.cbp">
-			<Depends filename="../../platforms/cpp/dust/api/ide/CodeBlocks/DustLibApi.cbp" />
+		<Project filename="dust/modules/DplStl/DustModDplStl.cbp">
+			<Depends filename="dust/core/api/DustLibApi.cbp" />
 		</Project>
-		<Project filename="../../platforms/cpp/systems/vendors/dust/test01/ide/CodeBlocks/Main/DustAppTest01Main.cbp">
-			<Depends filename="../../platforms/cpp/dust/main/ide/CodeBlocks/DustLibMain.cbp" />
-			<Depends filename="../../platforms/cpp/dust/api/ide/CodeBlocks/DustLibApi.cbp" />
-			<Depends filename="../../platforms/cpp/modules/vendors/dust/DplStl/ide/CodeBlocks/DustModDplStl.cbp" />
-			<Depends filename="../../platforms/cpp/modules/vendors/dust/Test01/ide/CodeBlocks/DustModTest01.cbp" />
-			<Depends filename="../../platforms/cpp/modules/vendors/dust/Text/ide/CodeBlocks/DustModText.cbp" />
+		<Project filename="dust/modules/Text/DustModText.cbp">
+			<Depends filename="dust/core/api/DustLibApi.cbp" />
 		</Project>
+		<Project filename="dust/modules/StoreQJson/StoreQJson.cbp" />
+		<Project filename="dust/modules/HttpYHirose/DustModHttpYHirose.cbp" />
+		<Project filename="dust/modules/GraphOpenGl/DustModGraphOpenGl.cbp" />
+		<Project filename="dust/modules/WinGui/DustModWinGui.cbp" />
+		<Project filename="dust/modules/Test01/DustModTest01.cbp" />
+		<Project filename="dust/systems/Test01/Main/DustAppTest01Main.cbp">
+			<Depends filename="dust/core/api/DustLibApi.cbp" />
+			<Depends filename="dust/core/runtime/DustLibRuntime.cbp" />
+			<Depends filename="dust/modules/DplStl/DustModDplStl.cbp" />
+			<Depends filename="dust/modules/Text/DustModText.cbp" />
+			<Depends filename="dust/modules/StoreQJson/StoreQJson.cbp" />
+			<Depends filename="dust/modules/HttpYHirose/DustModHttpYHirose.cbp" />
+			<Depends filename="dust/modules/GraphOpenGl/DustModGraphOpenGl.cbp" />
+			<Depends filename="dust/modules/WinGui/DustModWinGui.cbp" />
+			<Depends filename="dust/modules/Test01/DustModTest01.cbp" />
+			<Depends filename="dust/core/main/DustLibMain.cbp" />
+		</Project>
+		<Project filename="B:/ide/CodeBlocks/PPKE/modules/FleetMan01/PpkeModFleetMan01.cbp">
+			<Depends filename="dust/core/api/DustLibApi.cbp" />
+		</Project>
+		<Project filename="B:/ide/CodeBlocks/PPKE/systems/PpkeAppTest01/Main/PpkeAppTest01.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
