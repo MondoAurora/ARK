@@ -47,6 +47,10 @@
 		<Unit filename="../../../../../platforms/cpp/modules/dust/StoreQJson/StoreQJson.cpp" />
 		<Unit filename="../../../../../platforms/cpp/modules/dust/StoreQJson/StoreQJson.h" />
 		<Unit filename="../../../../../platforms/cpp/modules/dust/StoreQJson/qjson.h" />
+		<Unit filename="../../../../../platforms/cpp/units/MiND/DustMindUtils.cpp" />
+		<Unit filename="../../../../../platforms/cpp/units/MiND/DustMindUtils.h" />
+		<Unit filename="../../../../../platforms/cpp/units/MiND/DustgenUnitMindTools.cpp" />
+		<Unit filename="../../../../../platforms/cpp/units/MiND/DustgenUnitMindTools.h" />
 		<Unit filename="../../../../../platforms/cpp/units/dust/DustgenUnitStore.cpp" />
 		<Unit filename="../../../../../platforms/cpp/units/dust/DustgenUnitStore.h" />
 		<Extensions>

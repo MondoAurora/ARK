@@ -13,6 +13,7 @@ class AgentStoreReader : public DustNativeLogic
 
 class AgentStoreWriter : public DustNativeLogic
 {
+    virtual DustResultType DustResourceInit();
     virtual DustResultType DustActionExecute();
 };
 

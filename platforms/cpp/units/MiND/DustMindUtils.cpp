@@ -3,6 +3,35 @@
 
 using namespace DustUnitMindGeometry;
 using namespace DustUnitMindGeneric;
+using namespace DustUnitMindText;
+
+using namespace std;
+
+void DustMindUtils::setPlainText(DustEntity entity, DustEntity token, const char* str,  long key)
+{
+    DustEntity eTxt = DustData::getRef(entity, token, DUST_ENTITY_INVALID, key);
+    if ( !eTxt ) {
+        eTxt = DustData::createEntity(DustTypePlainText);
+        DustData::setRef(entity, token, eTxt, key);
+    }
+
+    string *pStr = (string *) DustData::getNative(eTxt);
+    (*pStr) = str;
+}
+
+bool DustMindUtils::readPlainText(DustEntity entity, DustEntity token, string* pTarget,  long key)
+{
+    DustEntity eTxt = DustData::getRef(entity, token, DUST_ENTITY_INVALID, key);
+    if ( eTxt ) {
+        string *pStr = (string *) DustData::getNative(eTxt, DUST_ENTITY_APPEND, false);
+//        string *pStr = (string *) DustData::getNative(eTxt);
+        if ( pStr ) {
+            (*pTarget) = *pStr;
+            return true;
+        }
+    }
+    return false;
+}
 
 DustEntity DustMindUtils::setColor(double red, double green, double blue, DustEntity col)
 {

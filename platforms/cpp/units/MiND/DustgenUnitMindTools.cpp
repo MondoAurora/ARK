@@ -134,6 +134,22 @@ DustToken DustUnitMindGeneric::DustRefColoredColor(DustTypeColored, "Color", DUS
 DustToken DustUnitMindGeneric::DustGenTag(DustUnitGeneric, "GenericTag", DUST_IDEA_TAG);
 DustToken DustUnitMindGeneric::DustGenTagClosed(DustGenTag, "Closed", DUST_IDEA_TAG);
 
+
+using namespace DustUnitMindNet;
+
+DustToken DustUnitMindNet::DustUnitNet("Net");
+
+DustToken DustUnitMindNet::DustTypeHost(DustUnitNet, "Host", DUST_IDEA_TYPE);
+DustToken DustUnitMindNet::DustRefHostName(DustTypeHost, "Name", DUST_VAL_REF, DUST_COLL_SINGLE);
+DustToken DustUnitMindNet::DustRefHostIPv4(DustTypeHost, "IPv4", DUST_VAL_REF, DUST_COLL_SINGLE);
+DustToken DustUnitMindNet::DustRefHostIPv6(DustTypeHost, "IPv6", DUST_VAL_REF, DUST_COLL_SINGLE);
+
+DustToken DustUnitMindNet::DustTypeService(DustUnitNet, "Service", DUST_IDEA_TYPE);
+DustToken DustUnitMindNet::DustRefServiceHost(DustTypeService, "Host", DUST_VAL_REF, DUST_COLL_SINGLE);
+DustToken DustUnitMindNet::DustRefServicePath(DustTypeService, "Path", DUST_VAL_REF, DUST_COLL_SINGLE);
+DustToken DustUnitMindNet::DustIntServicePort(DustTypeService, "Port", DUST_VAL_INTEGER, DUST_COLL_SINGLE);
+
+
 using namespace DustUnitMindBinary;
 
 DustToken DustUnitMindBinary::DustUnitBinary("Binary");

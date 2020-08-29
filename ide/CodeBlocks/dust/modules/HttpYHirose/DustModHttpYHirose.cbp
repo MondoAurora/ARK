@@ -51,6 +51,10 @@
 		<Unit filename="../../../../../platforms/cpp/modules/dust/HttpYHirose/HttpYHirose.cpp" />
 		<Unit filename="../../../../../platforms/cpp/modules/dust/HttpYHirose/HttpYHirose.h" />
 		<Unit filename="../../../../../platforms/cpp/modules/dust/HttpYHirose/httplib/httplib.h" />
+		<Unit filename="../../../../../platforms/cpp/units/MiND/DustMindUtils.cpp" />
+		<Unit filename="../../../../../platforms/cpp/units/MiND/DustMindUtils.h" />
+		<Unit filename="../../../../../platforms/cpp/units/MiND/DustgenUnitMindTools.cpp" />
+		<Unit filename="../../../../../platforms/cpp/units/MiND/DustgenUnitMindTools.h" />
 		<Unit filename="../../../../../platforms/cpp/units/dust/DustgenUnitHttp.cpp" />
 		<Unit filename="../../../../../platforms/cpp/units/dust/DustgenUnitHttp.h" />
 		<Extensions>

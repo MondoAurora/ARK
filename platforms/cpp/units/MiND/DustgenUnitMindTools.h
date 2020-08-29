@@ -8,6 +8,10 @@ extern DustToken DustUnitText;
 
 extern DustToken DustTypePlainText;
 
+extern DustToken DustTypeSpoken;
+extern DustToken DustRefSpokenName;
+extern DustToken DustRefSpokenDescription;
+
 extern DustToken DustTypeChar;
 extern DustToken DustIntCharCode;
 
@@ -133,6 +137,20 @@ extern DustToken DustRefColoredColor;
 
 extern DustToken DustGenTag;
 extern DustToken DustGenTagClosed;
+};
+
+namespace DustUnitMindNet {
+extern DustToken DustUnitNet;
+
+extern DustToken DustTypeHost;
+extern DustToken DustRefHostName;
+extern DustToken DustRefHostIPv4;
+extern DustToken DustRefHostIPv6;
+
+extern DustToken DustTypeService;
+extern DustToken DustRefServiceHost;
+extern DustToken DustRefServicePath;
+extern DustToken DustIntServicePort;
 };
 
 namespace DustUnitMindBinary {

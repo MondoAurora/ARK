@@ -7,6 +7,7 @@ namespace DustUnitDustHttp {
 extern DustToken DustUnitDustHttp;
 
 extern DustToken DustAgentHttpGetter;
+extern DustToken DustAgentHttpPoster;
 };
 
 #endif // DUSTGENUNITHTTP_H_INCLUDED
