@@ -81,6 +81,7 @@ public:
     friend class DplStlRuntime;
     friend class DplStlRuntimeThread;
     friend class DplStlRuntimeStateSwitcher;
+    friend class DplStlDataVisit;
 };
 
 class DplStlRuntimeStateSwitcher

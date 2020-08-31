@@ -29,7 +29,17 @@ enum DustBoot
     DUST_BOOT_
 };
 
-#define DUST_LAST_CONST_RUNTIME DUST_BOOT_
+enum DustVisitState
+{
+    DUST_VISIT_OPEN = DUST_BOOT_,
+    DUST_VISIT_BEGIN,
+    DUST_VISIT_VALUE,
+    DUST_VISIT_END,
+    DUST_VISIT_CLOSE,
+    DUST_VISIT_
+};
+
+#define DUST_LAST_CONST_RUNTIME DUST_VISIT_
 
 extern "C" class DustTextDictionary: public DustNativeLogic
 {
@@ -76,6 +86,16 @@ public:
     }
 };
 
+
+typedef DustResultType (*DustDiscoveryVisitor)(DustVisitState state, DustAccessData &data, void* pHint);
+
+class DustDiscovery
+{
+public:
+    static DustEntity getTextToken(const char* name, DustEntity txtParent = DUST_ENTITY_INVALID);
+    static DustResultType visit(DustAccessData &start, DustDiscoveryVisitor visitor, void* pHint = 0);
+};
+
 extern "C" class DustRuntime: public DustNativeLogic
 {
 protected:
@@ -97,6 +117,9 @@ public:
 
 // Entity native content access
     virtual void* getNative(DustEntity entity, DustEntity type = DUST_ENTITY_APPEND, bool createIfMissing = true) = 0;
+
+    virtual DustEntity getTextToken(const char* name, DustEntity txtParent) = 0;
+    virtual DustResultType visit(DustAccessData &start, DustDiscoveryVisitor visitor, void* pHint) = 0;
 };
 
 #define DUST_FNAME_GET_MODULE "getModule"

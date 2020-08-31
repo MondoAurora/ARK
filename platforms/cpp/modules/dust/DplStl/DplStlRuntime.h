@@ -46,6 +46,10 @@ public:
     virtual void* getNative(DustEntity entity, DustEntity type = DUST_ENTITY_APPEND, bool createIfMissing = true);
     void deleteNative(DustEntity type, void* pNative);
 
+    virtual DustEntity getTextToken(const char* name, DustEntity txtParent);
+    virtual DustResultType visit(DustAccessData &start, DustDiscoveryVisitor visitor, void* pHint);
+
+
     virtual DustResultType DustResourceInit();
     virtual DustResultType DustResourceRelease();
     virtual DustResultType DustActionExecute();

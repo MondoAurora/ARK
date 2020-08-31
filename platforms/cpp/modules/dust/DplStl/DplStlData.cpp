@@ -6,7 +6,7 @@ using namespace std;
 
 DplStlDataValue::DplStlDataValue()
     :key(DUST_ENTITY_APPEND), valTarget(DUST_ENTITY_INVALID) // valPtrRef(NULL)
-    {}
+{}
 
 DplStlDataValue::DplStlDataValue(const DplStlDataValue &src, DplStlDataVariant *pVar)
 {
@@ -22,23 +22,14 @@ DplStlDataValue::DplStlDataValue(const DplStlDataValue &src, DplStlDataVariant *
         break;
     case DUST_VAL_REF:
         valTarget = src.valTarget;
-//        valPtrRef = (src.valPtrRef->pVariant == pVar)
-//                    ? src.valPtrRef
-//                    : new DplStlDataRef(pVar, src.valPtrRef->eSource, src.valPtrRef->eTarget);
         break;
     default:
-//        valPtrRef = NULL;
         break;
     }
 }
 
 DplStlDataValue::~DplStlDataValue()
 {
-//    if ( valPtrRef )
-//    {
-//        delete valPtrRef;
-//        valPtrRef = NULL;
-//    }
 }
 
 bool DplStlDataValue::match(DustValType vT, DustAccessData &ad)
@@ -56,14 +47,6 @@ bool DplStlDataValue::match(DustValType vT, DustAccessData &ad)
         return ad.valDouble == valDouble;
     case DUST_VAL_REF:
         return ad.valLong == valTarget;
-//        if ( valPtrRef )
-//        {
-//            return ad.valLong == valPtrRef->eTarget;
-//        }
-//        else
-//        {
-//            return false;
-//        }
     default:
         return false;
     }
@@ -104,29 +87,34 @@ bool DplStlDataValue::writeTo(DustValType vT, DustAccessData &ad)
         return true;
     case DUST_VAL_REF:
         ad.valLong = valTarget;
-//        ad.valLong = valPtrRef ? valPtrRef->eTarget : DUST_ENTITY_INVALID;
         return true;
     default:
         return false;
     }
 }
 
-//bool DplStlDataValue::setRef(DustEntity k, DplStlDataRef *pR)
-//{
-//    if ( valPtrRef )
-//    {
-//        delete valPtrRef;
-//    }
-//    key = k;
-//    valPtrRef = pR;
-//
-//    return true;
-//}
+void DplStlDataValue::visit(DustValType vT, DplStlDataVisit *pVisit)
+{
+    DustAccessData *pAd =  pVisit->getAccData();
+    writeTo(vT, *pAd);
+
+    switch ( vT )
+    {
+    case DUST_VAL_REF:
+        pVisit->optAdd(valTarget);
+        break;
+    default:
+        pVisit->send(DUST_VISIT_VALUE);
+        break;
+    }
+
+    pAd->valLong = 0;
+    pAd->valDouble = 0.0;
+}
 
 DplStlDataVariant::DplStlDataVariant(DplStlTokenInfo *pTI)
     :pTokenInfo(pTI), pColl(0)
 {
-//    value.valPtrRef = 0;
 }
 
 DplStlDataVariant::DplStlDataVariant(const DplStlDataVariant &src)
@@ -149,21 +137,12 @@ DplStlDataVariant::~DplStlDataVariant()
 {
     if ( pColl )
     {
-//        value.valPtrRef = NULL;
-
         for ( int i = pColl->size(); i-->0; )
         {
             delete pColl->at(i);
         }
         pColl->clear();
         delete pColl;
-    }
-    else
-    {
-//        if (DUST_VAL_REF != pTokenInfo->valType )
-//        {
-//            value.valPtrRef = NULL;
-//        }
     }
 };
 
@@ -238,9 +217,6 @@ DplStlDataValue* DplStlDataVariant::locateForOverride(DustAccessData &ad)
 bool DplStlDataVariant::setValue(DustValType vt, DustAccessData &ad, DplStlDataValue * pVal)
 {
     return pVal->loadFrom(vt, ad);
-//    return ( DUST_VAL_REF == vt )
-//           ? pVal->setRef(ad.key, new DplStlDataRef(this, ad.entity, ad.valLong))
-//           : pVal->loadFrom(vt, ad);
 }
 
 DplStlDataValue * DplStlDataVariant::add(DustValType vt, DustAccessData &ad)
@@ -292,13 +268,34 @@ bool DplStlDataVariant::access(DustAccessData &ad)
     return ret;
 }
 
-//DplStlDataRef::DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eSource_, DustEntity eTarget_)
-//    :pVariant(pVariant_), eSource(eSource_), eTarget(eTarget_)
-//{}
-//
-//DplStlDataRef::~DplStlDataRef()
-//{
-//};
+void DplStlDataVariant::visit(DplStlDataVisit *pVisit)
+{
+    if ( DUST_COLL_SINGLE == pTokenInfo->collType )
+    {
+        value.visit(pTokenInfo->valType, pVisit);
+    }
+    else
+    {
+        DustResultType res = pVisit->send(DUST_VISIT_BEGIN);
+        if ( DUST_RESULT_REJECT != res )
+        {
+            if ( pColl )
+            {
+                for ( int i = pColl->size(); i-->0; )
+                {
+                    pColl->at(i)->visit(pTokenInfo->valType, pVisit);
+                }
+            }
+            else
+            {
+                value.visit(pTokenInfo->valType, pVisit);
+            }
+        }
+        pVisit->send(DUST_VISIT_END);
+    }
+}
+
+
 
 DplStlDataEntity::DplStlDataEntity(long id_, DustEntity primaryType_)
     :id(id_), primaryType(primaryType_), pNative(NULL)
@@ -416,6 +413,35 @@ bool DplStlDataEntity::access(DustAccessData &ad)
     return ret;
 }
 
+void DplStlDataEntity::visit(DplStlDataVisit *pVisit)
+{
+    DustResultType res = pVisit->send(DUST_VISIT_BEGIN);
+    DustAccessData *pAd =  pVisit->getAccData();
+
+    if ( DUST_RESULT_REJECT != res )
+    {
+        if ( pAd->token )
+        {
+            DplStlDataVariant *pVar = getVariant(pAd->token);
+            if ( pVar )
+            {
+                pVar->visit(pVisit);
+            }
+        }
+        else
+        {
+            for (VarPtrIterator it = model.begin(); it != model.end(); ++it)
+            {
+                pAd->token = it->first;
+                it->second->visit(pVisit);
+            }
+            pAd->token = DUST_ENTITY_INVALID;
+        }
+    }
+
+    pVisit->send(DUST_VISIT_END);
+}
+
 void DplStlDataEntity::setType(DustAccessData &ad, DplStlDataEntity *pSrc)
 {
     // copy type content
@@ -480,6 +506,14 @@ void DplStlDataStore::init(DplStlDataStore *pParent_)
     pParent = pParent_;
 }
 
+void DplStlDataStore::loadAll(DplStlDataVisit *pVisit)
+{
+    for ( EntityPtrIterator it = entities.begin(); it != entities.end(); ++it)
+    {
+        pVisit->optAdd(it->first);
+    }
+}
+
 void DplStlDataStore::commit()
 {
     if ( pParent )
@@ -498,3 +532,55 @@ void DplStlDataStore::rollback()
 
     }
 };
+
+DplStlDataVisit::DplStlDataVisit(DplStlRuntime *pR, DustAccessData &da, DustDiscoveryVisitor v, void* h)
+    :pRuntime(pR), pAd(&da), visitor(v), pHint(h), ret(DUST_RESULT_NOTIMPLEMENTED)
+{
+}
+
+DplStlDataVisit::~DplStlDataVisit()
+{
+    if ( DUST_RESULT_NOTIMPLEMENTED != ret )
+    {
+        send(DUST_VISIT_CLOSE);
+    }
+}
+
+DustResultType DplStlDataVisit::execute()
+{
+    send(DUST_VISIT_OPEN);
+
+    if ( pAd->entity )
+    {
+        toVisit.insert(pAd->entity);
+    }
+    else
+    {
+        pRuntime->getCurrentThread()->getDialog()->store.loadAll(this);
+    }
+
+    for ( VisitIterator vi = toVisit.begin(); vi != toVisit.end(); vi = toVisit.begin())
+    {
+        DustEntity target = *vi;
+        DplStlDataEntity *pE = pRuntime->resolveEntity(target);
+        pE->visit(this);
+        visited.insert(target);
+        toVisit.erase(target);
+    }
+
+    return ret;
+}
+
+DustResultType DplStlDataVisit::send(DustVisitState vs)
+{
+    ret = visitor(vs, *pAd, pHint);
+    return ret;
+}
+
+void DplStlDataVisit::optAdd(DustEntity entity)
+{
+    if ( visited.find(entity) != visited.end() )
+    {
+        toVisit.insert(entity);
+    }
+}

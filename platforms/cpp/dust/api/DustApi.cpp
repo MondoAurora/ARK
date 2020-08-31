@@ -229,3 +229,13 @@ void* DustData::getNative(DustEntity entity, DustEntity type, bool createIfMissi
 {
     return apiRuntime->getNative(entity, type, createIfMissing);
 }
+
+DustEntity DustDiscovery::getTextToken(const char* name, DustEntity txtParent)
+{
+    return apiRuntime->getTextToken(name, txtParent);
+}
+
+DustResultType DustDiscovery::visit(DustAccessData &start, DustDiscoveryVisitor visitor, void *pHint)
+{
+    return apiRuntime->visit(start, visitor, pHint);
+}

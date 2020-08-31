@@ -48,6 +48,7 @@ enum DustCtxType
 enum DustAccessType
 {
     DUST_ACCESS_GET = DUST_CTX_,
+    DUST_ACCESS_VISIT,
     DUST_ACCESS_SET,
     DUST_ACCESS_MOVE,
     DUST_ACCESS_REMOVE,

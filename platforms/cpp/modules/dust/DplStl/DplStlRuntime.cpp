@@ -260,6 +260,22 @@ void DplStlRuntime::deleteNative(DustEntity type, void* pNative)
     getCurrentThread()->getApp()->releaseNative(type, pNative);
 }
 
+DustEntity DplStlRuntime::getTextToken(const char* name, DustEntity txtParent)
+{
+    return pTokenDicionary->getTextToken(name, txtParent);
+}
+
+DustResultType DplStlRuntime::visit(DustAccessData &start, DustDiscoveryVisitor visitor, void* pHint)
+{
+    DplStlDataVisit visit(this, start, visitor, pHint);
+
+    return visit.execute();
+}
+
+
+
+
+
 DustResultType DplStlRuntime::DustActionExecute()
 {
     pBootThread->getDialog()->commit();

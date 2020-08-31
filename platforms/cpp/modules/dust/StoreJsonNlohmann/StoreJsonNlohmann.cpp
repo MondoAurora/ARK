@@ -6,9 +6,10 @@
 
 #include <DustKernel.h>
 
-#include "StoreQJson.h"
-#include "qjson.h"
+#include "StoreJsonNlohmann.h"
+#include "json.hpp"
 
+using json = nlohmann::json;
 using namespace std;
 
 DustResultType AgentStoreReader::DustResourceInit()
@@ -16,7 +17,8 @@ DustResultType AgentStoreReader::DustResourceInit()
     DustRef self;
     string data;
     DustMindUtils::readPlainText(self, DustRefLinkSource, &data);
-    qjson::value val(data);
+
+    auto val = json::parse(data);
 
     DustUtils::log() << "StoreReader received string " << data << endl << "   as JSON value: " << val << endl;
 
@@ -29,23 +31,32 @@ DustResultType AgentStoreReader::DustActionExecute()
     return DUST_RESULT_ACCEPT_PASS;
 }
 
+DustResultType jsonVisitor(DustVisitState state, DustAccessData &data, void* pHint)
+{
+    switch ( state ) {
+    case DUST_VISIT_VALUE:
+        DustUtils::log() << "jsonVisitor received entity: " << data.entity << " token: " << data.token
+            << " key: " << data.key << " valLong: " << data.valLong << " valDouble: " << data.valDouble << endl;
+        break;
+    default:
+        break;
+    }
+
+    return DUST_RESULT_ACCEPT_PASS;
+}
+
 
 DustResultType AgentStoreWriter::DustResourceInit()
 {
-    DustEntity src = DustRef().step(DustRefLinkSource);
-
-    DustAccessData da(DUST_ACCESS_VISIT, src, DUST_ENTITY_INVALID);
-
-
-    qjson::value val("{ \"data\" : { \"id\" : \"test01\" , \"target\" : \"World\" , \"from\" : \"CPP client\" } } ");
-
-    ostringstream oss;
-    oss << val;
-    string data = oss.str();
-
+    json val = "{ \"data\" : { \"id\" : \"test01\" , \"target\" : \"World\" , \"from\" : \"CPP client\" } } "_json;
+    string data = val.dump();
     DustUtils::log() << "StoreWriter created " << data << endl;
 
     DustRef self;
+
+    DustAccessData da(DUST_ACCESS_VISIT, self, DustRefLinkSource);
+    DustDiscovery::visit(da, jsonVisitor, &val);
+
     DustMindUtils::setPlainText(self, DustRefLinkTarget, data.c_str());
 
     return DUST_RESULT_ACCEPT_PASS;

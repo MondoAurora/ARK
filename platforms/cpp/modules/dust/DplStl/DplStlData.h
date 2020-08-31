@@ -5,12 +5,15 @@
 
 #include <vector>
 #include <map>
+#include <set>
 
 using namespace std;
 
 //class DplStlDataRef;
 class DplStlDataVariant;
 class DplStlDataStore;
+class DplStlDataVisit;
+class DplStlRuntime;
 
 class DplStlTokenInfo
 {
@@ -45,6 +48,9 @@ public:
     bool loadFrom(DustValType vT, DustAccessData &ad);
     bool writeTo(DustValType vT, DustAccessData &ad);
 
+    void visit(DustValType vT, DplStlDataVisit *pVisit);
+
+
 //    bool setRef(DustEntity key, DplStlDataRef *pRef);
 
     friend class DplStlDataVariant;
@@ -70,33 +76,12 @@ public:
     ~DplStlDataVariant();
 
     bool access(DustAccessData &ad);
+    void visit(DplStlDataVisit *pVisit);
 
     friend class DplStlRuntime;
     friend class DplStlDataEntity;
     friend class DplStlDataValue;
 };
-
-/** Not needed? All stuff moved over to Variant and Value already.
-Later the Refs may be stored in parallel with the Entities in the Store,
-using from/to Variant and Value.
-
-class DplStlDataRef
-{
-    DplStlDataVariant *pVariant;
-
-    DustEntity eSource;
-    DustEntity eTarget;
-
-public:
-    DplStlDataRef(DplStlDataVariant *pVariant_, DustEntity eSource_, DustEntity eTarget_);
-    ~DplStlDataRef();
-
-    friend class DplStlRuntime;
-    friend class DplStlDataEntity;
-    friend class DplStlDataVariant;
-    friend class DplStlDataValue;
-};
-*/
 
 typedef map<DustEntity, DplStlDataVariant*>::iterator VarPtrIterator;
 typedef map<DustEntity, void*>::iterator PtrIterator;
@@ -123,8 +108,10 @@ public:
     void *getNative(DustEntity token);
     void *setNative(DustEntity token, void *ptr);
 
-    bool access(DustAccessData &ad);
     void setType(DustAccessData &ad, DplStlDataEntity *pSrc);
+
+    bool access(DustAccessData &ad);
+    void visit(DplStlDataVisit *pVisit);
 
     friend class DplStlRuntime;
 };
@@ -155,6 +142,7 @@ public:
     virtual DplStlDataEntity* getEntity(long id = DUST_ENTITY_APPEND, DustEntity primaryType = DUST_ENTITY_INVALID);
 
     void init(DplStlDataStore *pParent);
+    void loadAll(DplStlDataVisit *pVisit);
 
     void commit();
     void rollback();
@@ -162,6 +150,39 @@ public:
     friend class DplStlDataEntity;
     friend class DplStlRuntimeState;
     friend class DplStlRuntime;
+};
+
+typedef  set<DustEntity>::iterator VisitIterator;
+
+class DplStlDataVisit
+{
+private:
+    DplStlRuntime *pRuntime;
+    DustAccessData *pAd;
+    DustDiscoveryVisitor visitor;
+    void* pHint;
+
+    DustResultType ret;
+
+    set<DustEntity> visited;
+    set<DustEntity> toVisit;
+
+public:
+
+    DplStlDataVisit(DplStlRuntime *pRuntime, DustAccessData &da, DustDiscoveryVisitor visitor, void* pHint);
+    ~DplStlDataVisit();
+
+    DustResultType execute();
+    DustResultType send(DustVisitState vs);
+    void optAdd(DustEntity entity);
+
+    DustResultType getRet() {
+        return ret;
+    }
+
+    DustAccessData * getAccData() {
+        return pAd;
+    }
 };
 
 #endif // DPLSTLDATA_H_INCLUDED
