@@ -23,15 +23,14 @@ using namespace DustUnitMindGeneric;
 using namespace DustUnitMindText;
 using namespace DustUnitMindNet;
 
-class ClientConfig
+class ClientHelper
 {
 public:
     string hostName;
     long port;
     string path;
 
-    ClientConfig()
-    {
+    ClientHelper() {
         DustRef self;
         DustEntity host;
 
@@ -42,26 +41,30 @@ public:
         DustMindUtils::readPlainText(self, DustRefServicePath, &path);
     }
 
-    virtual ~ClientConfig() { }
+    virtual ~ClientHelper() { }
+
+    inline void optLogRes(const char* cmd, shared_ptr<httplib::Response> res) {
+        if (res) {
+            DustUtils::log()  << cmd << " return status: " << res->status
+                << ", content type: " << res->get_header_value("Content-Type") << endl
+                << res->body << endl << endl;
+        }
+    }
 };
 
 
 DustResultType AgentHttpGetter::DustResourceInit()
 {
-    ClientConfig ccfg;
-    httplib::Client client(ccfg.hostName, ccfg.port);
+    ClientHelper cliHlp;
+    httplib::Client client(cliHlp.hostName, cliHlp.port);
 
-    auto res = client.Get(ccfg.path.c_str());
+    auto res = client.Get(cliHlp.path.c_str());
     const char * ret = res ? res->body.c_str() : 0;
 
     DustRef self;
     DustMindUtils::setPlainText(self, DustRefLinkTarget, ret);
 
-    if (res)
-    {
-        DustUtils::log()  << "GET return status: " << res->status << ", content type: " << res->get_header_value("Content-Type") << endl;
-        DustUtils::log()  << res->body << endl << endl;
-    }
+    cliHlp.optLogRes("GET", res);
 
     return DUST_RESULT_ACCEPT_PASS;
 }
@@ -73,20 +76,16 @@ DustResultType AgentHttpGetter::DustActionExecute()
 
 DustResultType AgentHttpPoster::DustResourceInit()
 {
-    ClientConfig ccfg;
-    httplib::Client client(ccfg.hostName, ccfg.port);
+    ClientHelper cliHlp;
+    httplib::Client client(cliHlp.hostName, cliHlp.port);
 
     DustRef self;
     string data;
     DustMindUtils::readPlainText(self, DustRefLinkSource, &data);
 
-    auto res = client.Post(ccfg.path.c_str(), data.c_str(), "application/json" );
+    auto res = client.Post(cliHlp.path.c_str(), data.c_str(), "application/json" );
 
-    if (res)
-    {
-        DustUtils::log()  << "POST return status: " << res->status << ", content type: " << res->get_header_value("Content-Type") << endl;
-        DustUtils::log()  << res->body << endl << endl;
-    }
+    cliHlp.optLogRes("POST", res);
 
     return DUST_RESULT_ACCEPT;
 }

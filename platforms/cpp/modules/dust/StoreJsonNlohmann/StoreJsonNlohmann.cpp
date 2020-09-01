@@ -20,7 +20,8 @@ DustResultType AgentStoreReader::DustResourceInit()
 
     auto val = json::parse(data);
 
-    DustUtils::log() << "StoreReader received string " << data << endl << "   as JSON value: " << val << endl;
+    DustUtils::log() << "StoreReader received string " << data << endl
+        << "   as JSON value: " << val << endl;
 
     return DUST_RESULT_ACCEPT_PASS;
 }
@@ -35,8 +36,10 @@ DustResultType jsonVisitor(DustVisitState state, DustAccessData &data, void* pHi
 {
     switch ( state ) {
     case DUST_VISIT_VALUE:
-        DustUtils::log() << "jsonVisitor received entity: " << data.entity << " token: " << data.token
-            << " key: " << data.key << " valLong: " << data.valLong << " valDouble: " << data.valDouble << endl;
+        DustUtils::log() << "jsonVisitor received entity: " << data.entity
+            << " token: " << data.token << " key: " << data.key
+            << " valLong: " << data.valLong << " valDouble: " << data.valDouble
+            << endl;
         break;
     default:
         break;
@@ -54,7 +57,8 @@ DustResultType AgentStoreWriter::DustResourceInit()
 
     DustRef self;
 
-    DustAccessData da(DUST_ACCESS_VISIT, self, DustRefLinkSource);
+    DustEntity target = DustData::getRef(self, DustRefLinkSource);
+    DustAccessData da(DUST_ACCESS_VISIT, target, DUST_ENTITY_INVALID);
     DustDiscovery::visit(da, jsonVisitor, &val);
 
     DustMindUtils::setPlainText(self, DustRefLinkTarget, data.c_str());

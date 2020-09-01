@@ -97,15 +97,11 @@ void DplStlDataValue::visit(DustValType vT, DplStlDataVisit *pVisit)
 {
     DustAccessData *pAd =  pVisit->getAccData();
     writeTo(vT, *pAd);
+    pVisit->send(DUST_VISIT_VALUE);
 
-    switch ( vT )
+    if ( DUST_VAL_REF == vT )
     {
-    case DUST_VAL_REF:
         pVisit->optAdd(valTarget);
-        break;
-    default:
-        pVisit->send(DUST_VISIT_VALUE);
-        break;
     }
 
     pAd->valLong = 0;
@@ -418,6 +414,8 @@ void DplStlDataEntity::visit(DplStlDataVisit *pVisit)
     DustResultType res = pVisit->send(DUST_VISIT_BEGIN);
     DustAccessData *pAd =  pVisit->getAccData();
 
+    pAd->entity = id;
+
     if ( DUST_RESULT_REJECT != res )
     {
         if ( pAd->token )
@@ -579,7 +577,7 @@ DustResultType DplStlDataVisit::send(DustVisitState vs)
 
 void DplStlDataVisit::optAdd(DustEntity entity)
 {
-    if ( visited.find(entity) != visited.end() )
+    if ( visited.find(entity) == visited.end() )
     {
         toVisit.insert(entity);
     }
