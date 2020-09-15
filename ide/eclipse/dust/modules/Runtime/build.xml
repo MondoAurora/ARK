@@ -10,6 +10,7 @@
 	<target name="create_jar">
 		<javac debug="true" debuglevel="${javac.debuglevel}" destdir="bin" includeantruntime="false" source="${javac.source}" target="${javac.target}">
 			<src path="${ARK_MOD}/${ark.vendor}/${ark.mod}/src" />
+			<classpath location="${ARK_API}/DustApiGen/bin" />
 			<classpath location="${ARK_API}/DustApiApp/bin" />
 			<classpath location="${ARK_API}/DustApiModule/bin" />
 		</javac>

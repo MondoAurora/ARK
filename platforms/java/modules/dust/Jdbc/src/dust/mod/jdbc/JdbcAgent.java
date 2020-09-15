@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Map;
 
+import dust.gen.DustGenLog;
 import dust.mod.DustComponents;
 import dust.mod.DustUtils;
 import dust.mod.ModuleTokens;
@@ -28,7 +29,7 @@ public class JdbcAgent implements ModuleTokens, DustComponents.DustAgent {
             optCreateConn();
             String query = "select * from mind_core_entity";
 
-            DustUtils.log(DustEventLevel.TRACE, "Running SQL command", query);
+            DustGenLog.log(DustEventLevel.TRACE, "Running SQL command", query);
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
 
@@ -52,7 +53,7 @@ public class JdbcAgent implements ModuleTokens, DustComponents.DustAgent {
                 dbUrl += "/" + dbName;
             }
 
-            DustUtils.log(DustEventLevel.TRACE, "Connecting to database...", dbUrl);
+            DustGenLog.log(DustEventLevel.TRACE, "Connecting to database...", dbUrl);
 
             try {
                 Class.forName(params.get(JdbcRefConnectorDriver));
@@ -63,7 +64,7 @@ public class JdbcAgent implements ModuleTokens, DustComponents.DustAgent {
 
                 dbMetaData = conn.getMetaData();
 
-                DustUtils.log(DustEventLevel.TRACE, "Connection successful.");
+                DustGenLog.log(DustEventLevel.TRACE, "Connection successful.");
 
             } catch (Throwable e) {
                 releaseConn(conn, e);
@@ -85,7 +86,7 @@ public class JdbcAgent implements ModuleTokens, DustComponents.DustAgent {
                     }
                 }
                 conn.close();
-                DustUtils.log(DustEventLevel.TRACE, "DB connection closed.");
+                DustGenLog.log(DustEventLevel.TRACE, "DB connection closed.");
             }
             conn = null;
         }

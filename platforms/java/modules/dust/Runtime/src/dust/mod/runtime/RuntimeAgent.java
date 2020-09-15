@@ -2,10 +2,10 @@ package dust.mod.runtime;
 
 import java.util.Map;
 
+import dust.gen.DustGenFactory;
 import dust.mod.Dust;
 import dust.mod.Dust.DustDialogAPI;
 import dust.mod.DustComponents;
-import dust.mod.DustUtils;
 import dust.mod.runtime.data.RuntimeDataComponents.CollType;
 import dust.mod.runtime.data.RuntimeDataComponents.ValType;
 import dust.mod.runtime.data.RuntimeDataEntity;
@@ -16,7 +16,7 @@ public class RuntimeAgent implements DustComponents, Dust.DustDialogAPI, DustCom
     private static RuntimeAgent THE_AGENT;
 
     NativeApp app = null;
-    private final DustUtils.Factory<Integer, RuntimeDataTokenInfo> tokens = new DustUtils.Factory<Integer, RuntimeDataTokenInfo>(null) {
+    private final DustGenFactory<Integer, RuntimeDataTokenInfo> tokens = new DustGenFactory<Integer, RuntimeDataTokenInfo>(null) {
         private static final long serialVersionUID = 1L;
 
         protected RuntimeDataTokenInfo createItem(Integer key) {
@@ -33,7 +33,7 @@ public class RuntimeAgent implements DustComponents, Dust.DustDialogAPI, DustCom
     int nextToken = FirstEntities.values().length;
 
     RuntimeDataStore mainStore = new RuntimeDataStore();
-    private final DustUtils.Factory<Integer, RuntimeDataStore> stores = new DustUtils.Factory<>(RuntimeDataStore.class);
+    private final DustGenFactory<Integer, RuntimeDataStore> stores = new DustGenFactory<>(RuntimeDataStore.class);
 
     public void boot() {
         addBootToken(MiND_ModelRefEntityStore, ValType.REF, CollType.ONE);

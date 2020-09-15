@@ -1,9 +1,9 @@
 package dust.mod;
 
 import dust.app.DustAppComponents.NativeApp;
-import dust.mod.DustComponents.DustAgentAction;
+import dust.gen.DustGenConsts.DustAgentAction;
+import dust.gen.DustGenConsts.DustResultType;
 import dust.mod.DustComponents.DustDialogTray;
-import dust.mod.DustComponents.DustResultType;
 import dust.mod.runtime.RuntimeAgent;
 
 public class DustRuntime implements DustComponents.DustAgent {

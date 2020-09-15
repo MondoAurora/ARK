@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>DustApiModule</name>
+	<name>DustApiGen</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -16,14 +16,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>ant_props.xml</name>
-			<type>1</type>
-			<locationURI>ARK_ECLIPSE/dust/ant_props.xml</locationURI>
-		</link>
-		<link>
 			<name>src</name>
 			<type>2</type>
-			<locationURI>ARK_JAVA/api/mod/src</locationURI>
+			<locationURI>ARK_JAVA/api/gen/src</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

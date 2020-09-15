@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import dust.gen.DustGenLog;
 import dust.mod.Dust;
 import dust.mod.DustComponents;
-import dust.mod.DustUtils;
 
 public class DustApp implements DustAppComponents, DustComponents.DustAgent, DustAppComponents.NativeApp {
 
@@ -160,7 +160,7 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
 
     @Override
     public Module addModule(String modName, int[] storeRelay, String... libNames) {
-        DustUtils.log(DustEventLevel.TRACE, "Loading module", modName);
+        DustGenLog.log(DustEventLevel.TRACE, "Loading module", modName);
         
         Module m = new Module(modName, storeRelay, libNames);
 

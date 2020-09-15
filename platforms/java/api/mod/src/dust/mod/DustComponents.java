@@ -1,17 +1,8 @@
 package dust.mod;
 
-public interface DustComponents {
-    enum DustResultType {
-        NOTIMPLEMENTED, REJECT, ACCEPT_PASS, ACCEPT, ACCEPT_READ, READ
-    };
+import dust.gen.DustGenConsts;
 
-    enum DustAgentAction {
-        INIT, BEGIN, PROCESS, END, RELEASE
-    };
-
-    enum DustDialogCmd {
-        CHK, GET, SET, ADD, DEL
-    };
+public interface DustComponents extends DustGenConsts {
 
     class DustDialogTray {
 		public Integer entity;
@@ -29,10 +20,6 @@ public interface DustComponents {
         DustResultType agentAction(DustAgentAction action, DustDialogTray tray) throws Exception;
     }	
 	
-	
-
-    final long KEY_APPEND = -1;
-    
     class DustToken {
         public final int store;
         public final int id;
@@ -56,23 +43,4 @@ public interface DustComponents {
     public interface DustTokenResolver {
         int getTokenMember(DustToken token);
     }
-
-    
-
-    enum DustEventLevel {
-        CRITICAL, ERROR, WARNING, INFO, TRACE, DEBUG
-    };
-	
-	public class DustException extends RuntimeException {
-		private static final long serialVersionUID = 1L;
-		
-		DustException(Throwable src) {
-			super(src);
-		}
-		
-		public static <FakeRet> FakeRet throwException(Throwable src, Object... params) {
-			DustException e = ( src instanceof DustException ) ? (DustException ) src : new DustException(src);
-			throw e;
-		}
-	}
 }
