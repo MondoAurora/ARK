@@ -2,7 +2,7 @@ package dust.gen;
 
 public interface DustGenConsts {
     enum DustResultType {
-        NOTIMPLEMENTED, REJECT, ACCEPT_PASS, ACCEPT, ACCEPT_READ, READ;        
+        NOTIMPLEMENTED, REJECT, ACCEPT_PASS, ACCEPT, ACCEPT_READ, READ;
     };
 
     enum DustAgentAction {
@@ -44,4 +44,7 @@ public interface DustGenConsts {
         T create();
     }
 
+    public abstract class DustEntity {
+        public abstract String getGlobalId();
+    }
 }

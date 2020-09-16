@@ -20,7 +20,6 @@ public class DustGenAgentSmart implements DustGenConsts, DustGenConsts.DustGenAg
     
     DustGenAgent current;
     ArrayList<Object> ctx;
-//    ArrayList<WeakReference<Object>> ctx;
     Stack<RelayInfo> relayStack;
     
     public DustGenAgentSmart(DustGenAgent root) {
@@ -67,57 +66,6 @@ public class DustGenAgentSmart implements DustGenConsts, DustGenConsts.DustGenAg
         return ret;
     }
     
-    /*
-    public Object getCtxNeighbor(boolean up) {
-        Object ret = null;
-        
-        if ( null != ctx ) {
-            int d = up ? depth - 1 : depth + 1;
-            if ( (0 <= d) && (d < ctx.size()) ) {
-                WeakReference<Object> ref = ctx.get(d);
-                if ( null != ref ) {
-                    ret = ref.get();
-                }
-            }
-        }
-        
-        return ret;
-    }
-    
-    public Object getCtxOb(DustCreator<?> creator) {
-        WeakReference<Object> ref = getCtxRef(creator);
-        return ( null == ref ) ? null : ref.get();
-    }
-    
-    public void setCtxOb(Object ob) {
-        setCtxRef(ob);
-    }
-    
-    private WeakReference<Object> getCtxRef(DustCreator<?> creator) {
-        WeakReference<Object> ret = ((null != ctx) && (ctx.size() > depth)) ? ctx.get(depth) : null;
-        
-        if ( (null != creator) && (null == ret) ) {
-            ret = setCtxRef(creator.create());
-        }
-        
-        return ret;
-    }
-    
-    private WeakReference<Object> setCtxRef(Object ob) {
-        if ( null == ctx  ) {
-            ctx = new ArrayList<>();
-        }
-        
-        for ( int i = ctx.size(); i <= depth; ++i ) {
-            ctx.add(null);
-        }
-        
-        WeakReference<Object> ret = new WeakReference<>(ob);
-        ctx.set(depth, ret);
-        
-        return ret;
-    }
-    */
     public DustResultType setRelay(DustGenAgent agent, boolean shareCtx) throws Exception {
         if ( null == relayStack ) {
             relayStack = new Stack<>();
@@ -139,10 +87,6 @@ public class DustGenAgentSmart implements DustGenConsts, DustGenConsts.DustGenAg
         if ( down ) {
             ++ depth;
         } else {
-//            if ((null != ctx) && (ctx.size() > depth) ) {
-//                ctx.set(depth, null);
-//            }
-                        
             if ( null != relayStack ) {
                 Exception e = null;
                 
@@ -156,7 +100,6 @@ public class DustGenAgentSmart implements DustGenConsts, DustGenConsts.DustGenAg
                                 e = ex;
                             }
                         }
-//                        move(false);
                     }
                     current = ri.parent;
                     
@@ -207,7 +150,5 @@ public class DustGenAgentSmart implements DustGenConsts, DustGenConsts.DustGenAg
                 move(false);
             }
         }
-        
     }
-
 }

@@ -13,7 +13,7 @@ public class DustGenFactory<K, V> extends HashMap<K, V> {
         this.cc = cc;
     }
 
-    protected V createItem(K key) {
+    protected V createItem(K key, Object hint) {
         try {
             return cc.newInstance();
         } catch (Exception e) {
@@ -22,15 +22,19 @@ public class DustGenFactory<K, V> extends HashMap<K, V> {
     }
 
     @SuppressWarnings("unchecked")
-    @Override
-    public V get(Object key) {
+    public V get(Object key, Object hint) {
         V val = super.get(key);
 
         if (null == val) {
-            val = createItem((K) key);
+            val = createItem((K) key, hint);
             put((K) key, val);
         }
 
         return val;
+    }
+
+    @Override
+    public V get(Object key) {
+        return get(key, null);
     }
 }
