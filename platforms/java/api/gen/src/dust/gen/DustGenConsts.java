@@ -31,6 +31,7 @@ public interface DustGenConsts {
         }
 
         public static <FakeRet> FakeRet throwException(Throwable src, Object... params) {
+            DustGenLog.log(DustEventLevel.CRITICAL, params);
             DustException e = (src instanceof DustException) ? (DustException) src : new DustException(src);
             throw e;
         }
@@ -44,7 +45,8 @@ public interface DustGenConsts {
         T create();
     }
 
-    public abstract class DustEntity {
-        public abstract String getGlobalId();
+    public interface DustEntity {
+        String getGlobalId();
+        public String getId();
     }
 }

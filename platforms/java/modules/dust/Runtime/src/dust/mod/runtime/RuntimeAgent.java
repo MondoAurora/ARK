@@ -19,7 +19,8 @@ public class RuntimeAgent implements DustComponents, Dust.DustDialogAPI, DustCom
     private final DustGenFactory<Integer, RuntimeDataTokenInfo> tokens = new DustGenFactory<Integer, RuntimeDataTokenInfo>(null) {
         private static final long serialVersionUID = 1L;
 
-        protected RuntimeDataTokenInfo createItem(Integer key) {
+        @Override
+        protected RuntimeDataTokenInfo createItem(Integer key, Object hint) {
             RuntimeDataTokenInfo rti = new RuntimeDataTokenInfo();
             rti.load(key);
             return rti;

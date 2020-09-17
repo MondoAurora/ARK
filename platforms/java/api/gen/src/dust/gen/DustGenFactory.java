@@ -37,4 +37,8 @@ public class DustGenFactory<K, V> extends HashMap<K, V> {
     public V get(Object key) {
         return get(key, null);
     }
+    
+    public V peek(Object key) {
+        return super.get(key);
+    }
 }
