@@ -10,21 +10,21 @@ public interface DustGenDevUtils {
             this.start = System.currentTimeMillis();
             DustGenLog.log(header, "starting...");
         }
-        
+
         @Override
         public String toString() {
             return header + " time: " + ((double) System.currentTimeMillis() - start) / 1000 + " sec.";
         }
-        
+
         public void log() {
             DustGenLog.log(this);
         }
     }
-    
+
     public class DevMonitor {
         long interval;
         long next;
-        
+
         long totalCount;
         long lastCount;
 
@@ -33,19 +33,21 @@ public interface DustGenDevUtils {
             totalCount = lastCount = 0;
             next = System.currentTimeMillis() + interval;
         }
-        
-        public void step() {
+
+        public boolean step() {
+            boolean ret = false;
             ++totalCount;
             ++lastCount;
             long t = System.currentTimeMillis();
-            if ( t > next ) {
+            if (t > next) {
                 next = t + interval;
                 log();
                 lastCount = 0;
+                ret = true;
             }
+            return ret;
         }
-        
-        
+
         public void log() {
             DustGenLog.log("Total count:", totalCount, "since last step:", lastCount);
         }
