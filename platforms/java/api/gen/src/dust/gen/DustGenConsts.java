@@ -12,6 +12,14 @@ public interface DustGenConsts {
     enum DustDialogCmd {
         CHK, GET, SET, ADD, DEL
     };
+    
+    enum DustValType {
+        INT, REAL, REF, RAW
+    }
+    
+    enum DustCollType {
+        ONE, SET, ARR, MAP
+    }
 
     public interface DustGenAgent {
         DustResultType agentAction(DustAgentAction action) throws Exception;
@@ -46,7 +54,5 @@ public interface DustGenConsts {
     }
 
     public interface DustEntity {
-        String getGlobalId();
-        public String getId();
     }
 }
