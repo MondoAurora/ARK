@@ -3,7 +3,7 @@ package dust.gen;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class DustGenAgentSmart implements DustGenConsts, DustGenConsts.DustGenAgent {
+public class DustGenVisitor<EventCtxType> implements DustGenConsts, DustGenConsts.DustGenCtxAgent<EventCtxType> {
     class RelayInfo {
         int start;
         DustGenAgent parent;
@@ -19,47 +19,60 @@ public class DustGenAgentSmart implements DustGenConsts, DustGenConsts.DustGenAg
     int depth;
     
     DustGenAgent current;
-    ArrayList<Object> ctx;
+    ArrayList<Object> procCtx;
     Stack<RelayInfo> relayStack;
     
-    public DustGenAgentSmart(DustGenAgent root) {
+    EventCtxType eventCtx;
+    
+    public DustGenVisitor(EventCtxType eventCtx, DustGenAgent root) {
         this.current = root;
+        this.eventCtx = eventCtx;
     }
     
-    public Object getCtxOb() {
-        return getCtxOb(null);
+    @Override
+    public EventCtxType getEventCtx() {
+		return eventCtx;
+	}
+    
+    @Override
+    public void setEventCtx(EventCtxType ctx) {
+    	this.eventCtx = ctx;
     }
     
-    public Object getCtxOb(DustCreator<?> creator) {
-        Object ret = ((null != ctx) && (ctx.size() > depth)) ? ctx.get(depth) : null;
+    public Object getProcCtx() {
+        return getProcCtx(null);
+    }
+    
+    public Object getProcCtx(DustCreator<?> creator) {
+        Object ret = ((null != procCtx) && (procCtx.size() > depth)) ? procCtx.get(depth) : null;
         
         if ( (null != creator) && (null == ret) ) {
             ret = creator.create();
-            setCtxOb(ret);
+            setProcCtx(ret);
         }
         
         return ret;
     }
     
-    public void setCtxOb(Object ob) {
-        if ( null == ctx  ) {
-            ctx = new ArrayList<>();
+    public void setProcCtx(Object ob) {
+        if ( null == procCtx  ) {
+            procCtx = new ArrayList<>();
         }
         
-        for ( int i = ctx.size(); i <= depth; ++i ) {
-            ctx.add(null);
+        for ( int i = procCtx.size(); i <= depth; ++i ) {
+            procCtx.add(null);
         }
         
-        ctx.set(depth, ob);
+        procCtx.set(depth, ob);
     }
     
-    public Object getCtxNeighbor(boolean up) {
+    public Object getProcCtxNeighbor(boolean up) {
         Object ret = null;
         
-        if ( null != ctx ) {
+        if ( null != procCtx ) {
             int d = up ? depth - 1 : depth + 1;
-            if ( (0 <= d) && (d < ctx.size()) ) {
-                ret = ctx.get(d);
+            if ( (0 <= d) && (d < procCtx.size()) ) {
+                ret = procCtx.get(d);
             }
         }
         
@@ -129,8 +142,8 @@ public class DustGenAgentSmart implements DustGenConsts, DustGenConsts.DustGenAg
             depth = 0;
             break;
         case RELEASE:
-            if ( null != ctx ) {
-                ctx.clear();
+            if ( null != procCtx ) {
+                procCtx.clear();
             }
             if ( 0 != depth ) {
                 DustException.throwException(null, "invalid depth");

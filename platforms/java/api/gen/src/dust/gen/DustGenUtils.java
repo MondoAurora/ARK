@@ -3,6 +3,7 @@ package dust.gen;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -127,5 +128,15 @@ public class DustGenUtils implements DustGenConsts {
             }
         }
         return false;
+    }
+    
+    private static final EnumSet<DustResultType> RT_READ = EnumSet.of(DustResultType.READ, DustResultType.ACCEPT_READ);
+    private static final EnumSet<DustResultType> RT_REJECT = EnumSet.of(DustResultType.NOTIMPLEMENTED, DustResultType.REJECT);
+    
+    public static boolean isReadOn(DustResultType rt) {
+    	return RT_READ.contains(rt);
+    }
+    public static boolean isReject(DustResultType rt) {
+    	return RT_REJECT.contains(rt);
     }
 }
