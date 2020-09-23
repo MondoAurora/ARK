@@ -1,5 +1,6 @@
 package dust.gen;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -63,6 +64,11 @@ public class DustGenUtils implements DustGenConsts {
     public static boolean isEmpty(String str) {
         return (null == str) || str.isEmpty();
     }
+    
+	public static File ensureParents(File f) {
+		f.getParentFile().mkdirs();
+		return f;
+	}
     
     private static final Map<Class<?>, Map<String, Enum<?>>> ENUM_MAP = new HashMap<Class<?>, Map<String,Enum<?>>>();
 
