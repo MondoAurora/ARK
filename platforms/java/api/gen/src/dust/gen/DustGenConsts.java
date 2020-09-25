@@ -34,6 +34,26 @@ public interface DustGenConsts {
         Entity, Member
     }
     
+	class DustEntityDelta {
+		public DustDialogCmd cmd;
+		
+		public DustEntity target;
+		public Object eKey;
+
+		public DustEntity member;
+		public Object value;
+		public Object key;
+		
+		public DustEntityDelta(DustDialogCmd cmd, DustEntity target, Object eKey, DustEntity member, Object value, Object key) {
+			this.cmd = cmd;
+			this.target = target;
+			this.eKey = eKey;
+			this.member = member;
+			this.value = value;
+			this.key = key;
+		}
+	}
+    
     public class DustEntityContext {
     	public EntityBlock block;
     	

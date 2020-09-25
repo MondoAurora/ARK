@@ -112,6 +112,8 @@ public class DustGenVisitor<EventCtxType> implements DustGenConsts, DustGenConst
                             if ( null == e ) {
                                 e = ex;
                             }
+                        } finally {
+                        	--depth;
                         }
                     }
                     current = ri.parent;
