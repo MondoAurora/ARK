@@ -20,7 +20,7 @@ public interface DustGenConsts {
     }
     
     enum DustCollType {
-        ONE, SET, ARR, MAP
+        ONE, ARR, SET, MAP
     }
 
     enum DustEventLevel {
