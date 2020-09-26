@@ -2,6 +2,7 @@ package dust.mod.runtime;
 
 import java.util.Map;
 
+import dust.gen.DustGenException;
 import dust.gen.DustGenFactory;
 import dust.mod.Dust;
 import dust.mod.Dust.DustDialogAPI;
@@ -145,7 +146,7 @@ public class RuntimeAgent implements DustComponents, Dust.DustDialogAPI, DustCom
         try {
             agentAction(DustAgentAction.PROCESS, null);
         } catch (Exception e) {
-            DustException.throwException(e);
+            DustGenException.throwException(e);
         }
     }
 

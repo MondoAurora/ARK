@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Map;
 
+import dust.gen.DustGenException;
 import dust.gen.DustGenLog;
 import dust.mod.DustComponents;
 import dust.mod.DustUtils;
@@ -70,7 +71,7 @@ public class JdbcAgent implements ModuleTokens, DustComponents.DustAgent {
                 releaseConn(conn, e);
                 conn = null;
                 dbMetaData = null;
-                DustException.throwException(e);
+                DustGenException.throwException(e);
             }
         }
     }

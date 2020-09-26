@@ -11,6 +11,14 @@ import java.util.TreeMap;
 
 public class DustGenUtils implements DustGenConsts {
 
+    public interface HasDefault<T> {
+        T getDefault();
+    }
+
+    public interface ItemCreator<T> {
+        T create();
+    }
+    
     @SuppressWarnings("rawtypes")
     public static Object resolvePath(Object src, Object... path ) {
         Object current = src;

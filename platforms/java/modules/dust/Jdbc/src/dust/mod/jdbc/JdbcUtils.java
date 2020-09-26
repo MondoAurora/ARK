@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import dust.gen.DustGenException;
 import dust.mod.DustUtils;
 
 public class JdbcUtils implements JdbcComponents {
@@ -69,7 +70,7 @@ public class JdbcUtils implements JdbcComponents {
             try {
                 colNames = getAllColumnNames(rsFrom);
             } catch (Throwable e) {
-                DustException.throwException(e);
+                DustGenException.throwException(e);
             }
         }
         

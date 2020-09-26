@@ -11,7 +11,6 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import dust.gen.DustGenConsts.DustEventLevel;
-import dust.gen.DustGenConsts.DustException;
 
 public class DustGenZipper {
     private static final int BUFFER = 32768;
@@ -85,7 +84,7 @@ public class DustGenZipper {
                 File newFile = new File(destDir, zipName);
                 String cPathNew = newFile.getCanonicalPath();
                 if (!cPathNew.startsWith(cPathRoot + File.separator)) {
-                    DustException.throwException(null, "Zip entry:", cPathNew, "is outside of the target dir:" + cPathRoot);
+                    DustGenException.throwException(null, "Zip entry:", cPathNew, "is outside of the target dir:" + cPathRoot);
                 }
 
                 if (zipEntry.isDirectory()) {

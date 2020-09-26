@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import dust.gen.DustGenException;
 import dust.gen.DustGenLog;
 import dust.mod.Dust;
 import dust.mod.DustComponents;
@@ -20,7 +21,7 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
 
         if (!f.exists()) {
             String ap = f.getAbsolutePath();
-            DustException.throwException(null, "Missing library", ap);
+            DustGenException.throwException(null, "Missing library", ap);
         }
 
         URI uri = f.toURI();
@@ -61,7 +62,7 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
                 Class<?> c = modLoader.loadClass("dust.mod." + modName);
                 modAgent = (DustAgent) c.newInstance();
             } catch (Exception e) {
-                DustException.throwException(e, modName, currLib);
+                DustGenException.throwException(e, modName, currLib);
             }
         }
 
@@ -96,7 +97,7 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
                     }
                 }, t);
             } catch (Exception e) {
-               DustException.throwException(e);
+               DustGenException.throwException(e);
             }
         }
 
@@ -105,7 +106,7 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
             try {
                 return classes.get(type).newInstance();
             } catch (Exception e) {
-                return DustException.throwException(e, type);
+                return DustGenException.throwException(e, type);
             }
         }
     }
@@ -136,7 +137,7 @@ public class DustApp implements DustAppComponents, DustComponents.DustAgent, Dus
 
             m.initModule(appTokens);
         } catch (Exception e) {
-            DustException.throwException(e, "Calling createRuntime", runtimeModName);
+            DustGenException.throwException(e, "Calling createRuntime", runtimeModName);
         }
 
     }

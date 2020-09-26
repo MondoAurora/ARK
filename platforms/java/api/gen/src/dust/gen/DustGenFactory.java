@@ -2,8 +2,6 @@ package dust.gen;
 
 import java.util.HashMap;
 
-import dust.gen.DustGenConsts.DustException;
-
 public class DustGenFactory<K, V> extends HashMap<K, V> {
     private static final long serialVersionUID = 1L;
 
@@ -17,7 +15,7 @@ public class DustGenFactory<K, V> extends HashMap<K, V> {
         try {
             return cc.newInstance();
         } catch (Exception e) {
-            return DustException.throwException(e, key);
+            return DustGenException.throwException(e, key);
         }
     }
 

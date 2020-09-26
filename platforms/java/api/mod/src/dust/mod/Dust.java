@@ -1,5 +1,7 @@
 package dust.mod;
 
+import dust.gen.DustGenException;
+
 public class Dust implements DustComponents {
     private static DustDialogAPI DIALOG_API = null;
     private static DustTokenResolver TOKEN_RESOLVER = null;
@@ -20,7 +22,7 @@ public class Dust implements DustComponents {
     
     public static void init(DustDialogAPI api) {
         if ( (null != DIALOG_API ) && (DIALOG_API != api)) {
-            DustException.throwException(null, "Multiple initialization!");
+            DustGenException.throwException(null, "Multiple initialization!");
         }
         
         DIALOG_API = api;

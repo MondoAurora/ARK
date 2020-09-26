@@ -26,7 +26,7 @@ public class DustGenInitParams<T extends Enum<T>> implements DustGenConsts {
 	@SuppressWarnings("unchecked")
 	public String getString(T param) {
 		String v = pv.get(param);
-		return (null == v) ? ((DustHasDefault<String>)param).getDefault() : v;
+		return (null == v) ? ((DustGenUtils.HasDefault<String>)param).getDefault() : v;
 	}
 
 	public int getInt(T param) {

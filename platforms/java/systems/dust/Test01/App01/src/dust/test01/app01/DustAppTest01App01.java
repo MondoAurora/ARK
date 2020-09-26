@@ -2,6 +2,7 @@ package dust.test01.app01;
 
 import dust.app.DustApp;
 import dust.app.DustAppComponents;
+import dust.gen.DustGenException;
 import dust.mod.Dust;
 import dust.mod.DustUtils;
 
@@ -45,7 +46,7 @@ public class DustAppTest01App01 implements DustAppComponents, AppBootTokens {
             dbConn.agentAction(DustAgentAction.END, tray);
 
         } catch (Exception e) {
-            DustException.throwException(e);
+            DustGenException.throwException(e);
         }
     }
 }
