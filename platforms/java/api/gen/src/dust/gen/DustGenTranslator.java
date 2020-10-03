@@ -31,5 +31,34 @@ public class DustGenTranslator<Left, Right> {
     
     public Right getRight(Left l) {
         return l2r.get(l);
+    } 
+    
+    public boolean contains(Object o) {
+        return r2l.containsKey(o) || l2r.containsKey(o);
     }
+    
+    public boolean containsRight(Right r) {
+        return r2l.containsKey(r);
+    }
+    
+    public boolean containsLeft(Left l) {
+        return l2r.containsKey(l);
+    }
+
+	public void clear() {
+		l2r.clear();
+		r2l.clear();
+	}
+
+	public Iterable<Left> getLeftAll() {
+		return l2r.keySet();
+	}
+
+	public Iterable<Right> getRightAll() {
+		return r2l.keySet();
+	}
+
+	public boolean isEmpty() {
+		return l2r.isEmpty();
+	}
 }

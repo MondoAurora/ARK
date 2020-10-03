@@ -74,7 +74,7 @@ public interface DustGenConsts {
     	public DustCollType collType;
         
     	public Object value;
-    	public Object mKey;
+    	public Object key;
     	
     	public DustEntityContext() {
 		}
@@ -90,7 +90,7 @@ public interface DustGenConsts {
 			this.valType = src.valType;
 			this.collType = src.collType;
 			this.value = src.value;
-			this.mKey = src.mKey;
+			this.key = src.key;
 			this.entityId = src.entityId;
 		}
 		
@@ -101,13 +101,13 @@ public interface DustGenConsts {
 			this.valType = null;
 			this.collType = null;
 			this.value = null;
-			this.mKey = null;
+			this.key = null;
 			this.entityId = null;
 		}
 		
 		@Override
 		public String toString() {
-			StringBuilder sb = DustGenUtils.sbAppend(null, ",", true, block, entity, entityId, member, valType, collType, value, mKey);
+			StringBuilder sb = DustGenUtils.sbAppend(null, ",", true, block, entity, entityId, member, valType, collType, value, key);
 			return sb.toString();
 		}
     }
