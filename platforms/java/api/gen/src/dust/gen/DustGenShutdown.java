@@ -15,6 +15,7 @@ public class DustGenShutdown {
 	private static Thread shutdownProcess = new Thread() {
 		@Override
 		public synchronized void run() {
+			DustGenLog.log(DustEventLevel.TRACE, "Shutdown process started");
 			while (!shutdownStack.isEmpty()) {
 				ShutdownAware sa = shutdownStack.pop().get();
 				if ( null != sa ) {
@@ -27,6 +28,7 @@ public class DustGenShutdown {
 					}
 				}
 			}
+			DustGenLog.log(DustEventLevel.INFO, "Shutdown process finished.");
 		}
 	};
 
