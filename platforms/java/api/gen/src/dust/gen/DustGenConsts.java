@@ -1,6 +1,8 @@
 package dust.gen;
 
 public interface DustGenConsts {
+	String ENCODING_UTF8 = "UTF-8";
+	
     final long KEY_APPEND = -1;
     
     enum DustValType {
