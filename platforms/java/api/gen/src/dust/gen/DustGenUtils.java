@@ -78,6 +78,18 @@ public class DustGenUtils implements DustGenConsts {
 		return f;
 	}
     
+	public static void purgeDirectory(File dir, boolean keepDirs) {
+	    for (File file: dir.listFiles()) {
+	        if (file.isDirectory()) {
+	            purgeDirectory(file, keepDirs);
+	            if ( keepDirs ) {
+	            	continue;
+	            }
+	        }
+	        file.delete();
+	    }
+	}
+	
     private static final Map<Class<?>, Map<String, Enum<?>>> ENUM_MAP = new HashMap<Class<?>, Map<String,Enum<?>>>();
 
     @SuppressWarnings("unchecked")
