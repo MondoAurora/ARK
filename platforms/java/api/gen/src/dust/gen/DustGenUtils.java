@@ -1,6 +1,8 @@
 package dust.gen;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -8,6 +10,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 public class DustGenUtils implements DustGenConsts {
 
@@ -165,4 +168,30 @@ public class DustGenUtils implements DustGenConsts {
     public static boolean isReject(DustResultType rt) {
     	return RT_REJECT.contains(rt);
     }
+    
+	public static class RegexFilter implements FilenameFilter, FileFilter {
+		private final Pattern pattern;
+		
+		public RegexFilter(String regexp, int regexFlags) {
+			this.pattern = Pattern.compile(regexp, regexFlags);
+		}
+		
+		public RegexFilter(String regexp) {
+			this(regexp, 0);
+		}
+		
+		public static RegexFilter getEndFilter(String ext, boolean ignoreCase) {
+			return new RegexFilter(".*" + ext + "$", ignoreCase ? Pattern.CASE_INSENSITIVE : 0);
+		}
+		
+		@Override
+		public boolean accept(File pathname) {
+			return pattern.matcher(pathname.getName()).matches();
+		}
+		@Override
+		public boolean accept(File dir, String name) {
+			return pattern.matcher(name).matches();
+		}
+	};
+
 }
