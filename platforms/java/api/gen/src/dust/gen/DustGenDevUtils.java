@@ -22,13 +22,14 @@ public interface DustGenDevUtils {
     }
 
     public class DevMonitor {
+    	String name;
         long interval;
         long next;
 
         long totalCount;
         long lastCount;
 
-        public DevMonitor(long interval) {
+        public DevMonitor(long interval, String name) {
             this.interval = interval;
             totalCount = lastCount = 0;
             next = System.currentTimeMillis() + interval;
@@ -49,7 +50,7 @@ public interface DustGenDevUtils {
         }
 
         public void log() {
-            DustGenLog.log("Total count:", totalCount, "since last step:", lastCount);
+            DustGenLog.log(name, "Total count:", totalCount, "since last step:", lastCount);
         }
     }
 }
