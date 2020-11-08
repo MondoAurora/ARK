@@ -2,18 +2,18 @@ package dust.gen;
 
 public interface DustGenDevUtils {
     public class DevTimer {
-        String header;
+        String name;
         long start;
 
         public DevTimer(String header) {
-            this.header = header;
+            this.name = header;
             this.start = System.currentTimeMillis();
             DustGenLog.log(header, "starting...");
         }
 
         @Override
         public String toString() {
-            return header + " time: " + ((double) System.currentTimeMillis() - start) / 1000 + " sec.";
+            return name + " Elapsed: " + ((double) System.currentTimeMillis() - start) / 1000 + "(s)";
         }
 
         public void log() {
@@ -21,8 +21,7 @@ public interface DustGenDevUtils {
         }
     }
 
-    public class DevMonitor {
-    	String name;
+    public class DevMonitor extends DevTimer {
         long interval;
         long next;
 
@@ -30,9 +29,12 @@ public interface DustGenDevUtils {
         long lastCount;
 
         public DevMonitor(long interval, String name) {
-            this.interval = interval;
+        	super(name);
+
+        	this.interval = interval;
             totalCount = lastCount = 0;
-            next = System.currentTimeMillis() + interval;
+            start = System.currentTimeMillis();
+            next = start + interval;
         }
 
         public boolean step() {
@@ -49,8 +51,9 @@ public interface DustGenDevUtils {
             return ret;
         }
 
-        public void log() {
-            DustGenLog.log(name, "Total count:", totalCount, "since last step:", lastCount);
+        @Override
+        public String toString() {
+        	return DustGenUtils.sbAppend(null, " ", false, super.toString(), "Total count:", totalCount, "Since last:", lastCount).toString();
         }
     }
 }
