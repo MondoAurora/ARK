@@ -5,9 +5,9 @@ import java.util.HashMap;
 public class DustGenFactory<K, V> extends HashMap<K, V> {
     private static final long serialVersionUID = 1L;
 
-    private final Class<V> cc;
+    private final Class<? extends V> cc;
 
-    public DustGenFactory(Class<V> cc) {
+    public DustGenFactory(Class<? extends V> cc) {
         this.cc = cc;
     }
 
