@@ -2,6 +2,7 @@ package dust.gen;
 
 public interface DustGenConsts {
 	String ENCODING_UTF8 = "UTF-8";
+	String FORMAT_TIMESTAMP_DEFAULT = "YYYYMMdd_HHmmss_SSS";
 	
     final long KEY_APPEND = -1;
     
