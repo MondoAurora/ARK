@@ -16,7 +16,10 @@ public class DustGenLog implements DustGenConsts {
         boolean first = true;
 
         for (Object o : obs) {
-            String s = (null == o) ? "" : o.toString();
+            String s = DustGenUtils.toStringSafe(o);
+            if ( null == s ) {
+            	s = "";
+            }
 
             if (first && !s.trim().isEmpty()) {
                 first = false;
@@ -57,6 +60,10 @@ public class DustGenLog implements DustGenConsts {
             p.mkdirs();
         }
         
-        psLog = new PrintStream(fName + "_" + DustGenUtils.strTimestamp() + ".log");
+        String fnameLog = fName + "_" + DustGenUtils.strTimestamp() + ".log";
+				psLog = new PrintStream(fnameLog);
+        
+        System.out.println("Log file set to " + fnameLog);
+        log(DustEventLevel.INFO, "Log file started", fnameLog);
     }
 }
