@@ -38,6 +38,11 @@ public class DustGenUtils implements DustGenConsts {
 		return sdf.format(new Date());
 	}
 
+	public static String strDate() {
+		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE_DEFAULT);
+		return sdf.format(new Date());
+	}
+
 	public static String strTimestamp(long time) {
 		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_TIMESTAMP_DEFAULT);
 		return sdf.format(new Date(time));
