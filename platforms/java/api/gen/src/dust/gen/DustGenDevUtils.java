@@ -42,8 +42,11 @@ public interface DustGenDevUtils {
 
 		public DevMonitor(long interval, String name) {
 			super(name);
-
 			this.interval = interval;
+			reset();
+		}
+		
+		public void reset() {
 			totalCount = lastCount = 0;
 			start = System.currentTimeMillis();
 			next = start + interval;
