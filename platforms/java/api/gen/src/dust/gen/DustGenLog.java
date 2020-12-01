@@ -2,18 +2,27 @@ package dust.gen;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DustGenLog implements DustGenConsts {
 
     static PrintStream psLog = System.out;
     static DustEventLevel logLevel = DustEventLevel.INFO;
+    
+    static Set<LogListener> listeners = new HashSet<>();
+    
+    public static boolean setListener(LogListener l, boolean set) {
+    	return (null == l) ? false : set ? listeners.add(l) : listeners.remove(l);
+    }
 
     public static synchronized void log(DustEventLevel lvl, Object... obs) {
         if ( 0 < lvl.compareTo(logLevel) ) {
             return;
         }
         
-        boolean first = true;
+        long ts = 0;
+        StringBuilder sb = null;
 
         for (Object o : obs) {
             String s = DustGenUtils.toStringSafe(o);
@@ -21,20 +30,30 @@ public class DustGenLog implements DustGenConsts {
             	s = "";
             }
 
-            if (first && !s.trim().isEmpty()) {
-                first = false;
-                psLog.print(DustGenUtils.strTimestamp());
+            if ((0 == ts) && !s.trim().isEmpty()) {
+                ts = System.currentTimeMillis();
+                psLog.print(DustGenUtils.strTimestamp(ts));
                 psLog.print(" ");
                 psLog.print(lvl);
                 psLog.print(" ");
             }
             psLog.print(s);
             psLog.print(" ");
+            
+            sb = DustGenUtils.sbAppend(sb, " ", true, s);
         }
 
-        if (!first) {
+        if (0 != ts) {
             psLog.println();
             psLog.flush();
+            
+            for ( LogListener l : listeners ) {
+            	try {
+            		l.processLog(ts, lvl, sb.toString());
+            	} catch (Throwable t) {
+            		// nevermind...
+            	}
+            }
         }
     }
 

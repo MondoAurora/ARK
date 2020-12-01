@@ -156,4 +156,8 @@ public interface DustGenConsts {
 	public interface DustDeltaListener {
 		void processDelta(DustEntityDelta delta) throws Exception;
 	}
+	
+	interface LogListener {
+		void processLog(long timestamp, DustEventLevel level, String str);
+	}
 }
