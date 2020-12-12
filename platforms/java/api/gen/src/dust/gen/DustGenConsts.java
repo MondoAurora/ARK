@@ -32,8 +32,13 @@ public interface DustGenConsts {
 	enum DustResultType {
 		NOTIMPLEMENTED, REJECT, ACCEPT_PASS, ACCEPT, ACCEPT_READ, READ;
 		
+		private static final EnumSet<DustResultType> RT_ACCEPT = EnumSet.of(ACCEPT_PASS, ACCEPT, ACCEPT_READ);
 		private static final EnumSet<DustResultType> RT_READ = EnumSet.of(READ, ACCEPT_READ);
 		private static final EnumSet<DustResultType> RT_REJECT = EnumSet.of(NOTIMPLEMENTED, REJECT);
+
+		public boolean isAccept() {
+			return RT_ACCEPT.contains(this);
+		}
 
 		public boolean isReadOn() {
 			return RT_READ.contains(this);
