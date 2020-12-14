@@ -13,6 +13,10 @@ public class DustGenConfig {
 		return map;
 	}
 	
+	public void setMap(Map<String, Object> map) {
+		this.map = map;
+	}
+	
 	public String getString(String... path) {
 		return get(path);
 	}
